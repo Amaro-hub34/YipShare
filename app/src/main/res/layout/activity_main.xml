@@ -88,7 +88,7 @@
             android:visibility="gone" />
 
         <EditText
-            android:id="@+id/et_email"
+            android:id="@+id/usuario_IS"
             style="@style/InputBrand"
             android:hint="Usuario"
             android:inputType="textNoSuggestions"
