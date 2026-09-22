@@ -1,14 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.YipShare" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+    <style name="Theme.YipShare" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/fondo_pantalla</item>
+
+        <item name="colorAzulYipShare">@color/azul_yipshare</item>
+        <item name="colorNegroPrimario">@color/negro_primario</item>
+        <item name="colorFondoPantalla">@color/fondo_pantalla</item>
+        <item name="colorColorTarjeta">@color/color_tarjeta</item>
+        <item name="colorInputFondo">@color/input_fondo</item>
+        <item name="colorInputColorStroke">@color/input_stroke</item>
+        <item name="colorTextoPrimario">@color/texto_primario</item>
+        <item name="colorTextSecundario">@color/texto_secundario</item>
+        <item name="colorTextHint">@color/texto_hint</item>
     </style>
 
-    <style name="Theme.YipShare" parent="Base.Theme.YipShare" />
     <style name="Theme.Splash" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
 </resources>

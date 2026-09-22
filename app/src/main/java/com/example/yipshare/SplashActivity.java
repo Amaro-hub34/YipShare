@@ -9,11 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DURATION = 1500;
+    private static final int SPLASH_DURATION = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Splash); // antes de super.onCreate()
+        setTheme(R.style.Theme_Splash);
         super.onCreate(savedInstanceState);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {

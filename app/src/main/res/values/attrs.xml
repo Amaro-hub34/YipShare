@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorAzulYipShare" format="color" />
+    <attr name="colorNegroPrimario" format="color" />
+    <attr name="colorFondoPantalla" format="color" />
+    <attr name="colorColorTarjeta" format="color" />
+    <attr name="colorInputFondo" format="color" />
+    <attr name="colorInputColorStroke" format="color" />
+    <attr name="colorTextoPrimario" format="color" />
+    <attr name="colorTextSecundario" format="color" />
+    <attr name="colorTextHint" format="color" />
+</resources>
