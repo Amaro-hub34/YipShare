@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <color android:color="#1E4B71"/>
+    </item>
+
+    <item
+        android:gravity="top|end"
+        android:width="371dp"
+        android:height="371dp"
+        android:top="-151dp"
+        android:right="-151dp"
+        android:drawable="@drawable/ellipse_1" />
+
+    <item
+        android:gravity="bottom|start"
+        android:width="371dp"
+        android:height="371dp"
+        android:bottom="-151dp"
+        android:left="-151dp"
+        android:drawable="@drawable/ellipse_1" />
+
+    <item
+        android:gravity="center"
+        android:width="180dp"
+        android:height="180dp">
+        <bitmap
+            android:src="@drawable/logo_yipshare"
+            android:gravity="center" />
+    </item>
+
+</layer-list>
