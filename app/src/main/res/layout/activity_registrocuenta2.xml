@@ -99,7 +99,7 @@
             android:id="@+id/correo_electronico"
             style="@style/InputBrand"
             android:hint="Correo Electrónico"
-            android:inputType="TextEmailAddress"
+            android:inputType="textEmailAddress"
             android:minHeight="48dp"
             android:layout_marginBottom="14dp" />
 
@@ -107,14 +107,14 @@
             android:id="@+id/contraseña"
             style="@style/InputBrand"
             android:hint="Contraseña"
-            android:inputType="passwordTextPassword"
+            android:inputType="textPassword"
             android:minHeight="48dp"
             android:layout_marginBottom="14dp" />
         <EditText
             android:id="@+id/contraseña_confirmacion"
             style="@style/InputBrand"
             android:hint="Confirmar Contraseña"
-            android:inputType="passwordTextPassword"
+            android:inputType="textPassword"
             android:minHeight="48dp"
             android:layout_marginBottom="14dp" />
         <ProgressBar
@@ -158,11 +158,6 @@
                 android:text="Inicia sesión" />
 
         </LinearLayout>
-
-
-
-
-
 
     </LinearLayout>
 
