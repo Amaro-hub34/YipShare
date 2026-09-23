@@ -34,10 +34,29 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#991E4B71"
-        app:layout_constraintTop_toTopOf="@id/image_background"
-        app:layout_constraintStart_toStartOf="@id/image_background"
+        app:layout_constraintBottom_toBottomOf="@id/image_background"
         app:layout_constraintEnd_toEndOf="@id/image_background"
-        app:layout_constraintBottom_toBottomOf="@id/image_background" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/image_background"
+        app:layout_constraintTop_toTopOf="@id/image_background"
+        app:layout_constraintVertical_bias="0.0" />
+    <TextView
+        android:id="@+id/btn_regresar_registro2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Regresar"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_arrow_back"
+        android:drawablePadding="8dp"
+        android:drawableTint="#FFFFFF"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/logo_icon"
