@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="azul_yipshare">#1E4B71</color>
-    <color name="negro_primario">#000000</color>
-    <color name="fondo_pantalla">#FFFFFF</color>
-    <color name="color_tarjeta">#FFFFFF</color>
-    <color name="input_fondo">#F2F2F2</color>
-    <color name="input_stroke">#DDDDDD</color>
-    <color name="texto_primario">#1E4B71</color>
-    <color name="texto_secundario">#666666</color>
-    <color name="texto_hint">#888888</color>
-    <color name="texto_error">#FF0000</color>
-
+    <color name="azul_yipshare">#1B2A3B</color>
+    <color name="negro_primario">#0D1622</color>
+    <color name="fondo_pantalla">#EAF2F8</color>
+    <color name="color_tarjeta">#EAF2F8</color>
+    <color name="input_fondo">#EAF2F8</color>
+    <color name="input_stroke">#5B97D1</color>
+    <color name="texto_primario">#0D1622</color>
+    <color name="texto_secundario">#2E4258</color>
+    <color name="texto_hint">#2E4258</color>
+    <color name="texto_error">#B3261E</color>
+    <color name="overlay_imagen">#991B2A3B</color>
+    <color name="texto_sobre_imagen">#FFFFFF</color>
 </resources>

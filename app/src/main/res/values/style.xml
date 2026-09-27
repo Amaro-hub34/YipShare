@@ -14,24 +14,24 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/bg_input</item>
-        <item name="android:textColor">?attr/colorTextoPrimario</item>
-        <item name="android:textColorHint">?attr/colorTextHint</item>
+        <item name="android:textColor">@color/texto_primario</item>
+        <item name="android:textColorHint">@color/texto_hint</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="TextTitle">
-        <item name="android:textColor">?attr/colorAzulYipShare</item>
+        <item name="android:textColor">@color/azul_yipshare</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextBody">
-        <item name="android:textColor">?attr/colorTextSecundario</item>
+        <item name="android:textColor">@color/texto_secundario</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextLink">
-        <item name="android:textColor">?attr/colorAzulYipShare</item>
+        <item name="android:textColor">@color/azul_yipshare</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:clickable">true</item>
