@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">YipShare</string>
-    <string name="footer_contact">Contáctanos: +56 9 1234 5678</string>
+    <string name="footer_contact">Contáctanos: +52 55 1234 5678</string>
     <string name="footer_terms">Conoce nuestros términos y condiciones</string>
+
+    <string-array name="opciones_estado_fisico">
+        <item>Excelente estado</item>
+        <item>Buen estado</item>
+        <item>Estado intermedio</item>
+        <item>Mal estado</item>
+    </string-array>
 </resources>
+
+

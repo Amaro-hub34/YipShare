@@ -117,22 +117,16 @@
             <EditText
                 android:id="@+id/usuario_IS"
                 style="@style/InputBrand"
+                android:autofillHints="username"
                 android:hint="Usuario"
                 android:inputType="textNoSuggestions"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
 
             <EditText
-                android:id="@+id/correo_electronico"
-                style="@style/InputBrand"
-                android:hint="Correo Electrónico"
-                android:inputType="textEmailAddress"
-                android:minHeight="48dp"
-                android:layout_marginBottom="14dp" />
-
-            <EditText
                 android:id="@+id/contraseña"
                 style="@style/InputBrand"
+                android:autofillHints="password"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
@@ -141,6 +135,7 @@
             <EditText
                 android:id="@+id/contraseña_confirmacion"
                 style="@style/InputBrand"
+                android:autofillHints="password"
                 android:hint="Confirmar Contraseña"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
