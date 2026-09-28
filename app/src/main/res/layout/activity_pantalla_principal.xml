@@ -27,8 +27,8 @@
 
     <ImageView
         android:id="@+id/logo_yipshare"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:src="@drawable/logo_yipshare"
         android:contentDescription="@null"
         android:layout_marginStart="16dp"
@@ -326,8 +326,8 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
                 android:contentDescription="Agregar" />
