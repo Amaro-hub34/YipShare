@@ -56,7 +56,6 @@
         app:layout_constraintStart_toEndOf="@id/btn_regresar"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ===================== CONTENIDO (formulario) ===================== -->
 
     <ScrollView
         android:layout_width="0dp"

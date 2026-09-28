@@ -145,7 +145,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- ===== ESTADO VACÍO ===== -->
             <TextView
                 android:id="@+id/tv_no_articulos"
                 style="@style/TextLink"

@@ -55,7 +55,6 @@
         app:layout_constraintStart_toEndOf="@id/btn_regresar"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ===================== CONTENIDO ===================== -->
 
     <ScrollView
         android:layout_width="0dp"
@@ -108,7 +107,6 @@
                         android:maxLines="1"
                         android:hint="Ej: ABC123" />
 
-                    <!-- Mensaje de error (oculto por defecto) -->
                     <TextView
                         android:id="@+id/tv_error_codigo"
                         android:layout_width="wrap_content"
@@ -118,6 +116,26 @@
                         android:textSize="12sp"
                         android:text="Código inválido"
                         android:visibility="gone" />
+
+                    <TextView
+                        style="@style/TextTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginTop="10dp"
+                        android:text="Dirección:" />
+
+                    <EditText
+                        android:id="@+id/et_direccion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textPostalAddress"
+                        android:maxLines="1"
+                        android:hint="Ej: Edificio 2, Departamento: 14" />
+
 
                     <Button
                         android:id="@+id/btn_unirse"
@@ -164,6 +182,8 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
                 app:tint="#99FFFFFF"
+                android:clickable="true"
+                android:focusable="true"
                 android:contentDescription="Inicio" />
 
             <TextView
@@ -191,6 +211,7 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
+
                 android:contentDescription="Préstamos" />
 
             <TextView
@@ -214,10 +235,12 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
+                android:clickable="true"
+                android:focusable="true"
                 android:contentDescription="Agregar" />
         </LinearLayout>
 

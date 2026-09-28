@@ -44,7 +44,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Mi Perfil"
+        android:text="Perfil"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -100,8 +100,37 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
+                    <LinearLayout
+                        android:id="@+id/layoutPagoMes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                    <!-- Mi Calificación -->
+                        <TextView
+                            style="@style/TextTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Pago del mes: "
+                            android:textSize="16sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <CheckBox
+                            android:id="@+id/cbPagoMes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sí, pagó este mes" />
+
+                        <TextView
+                            android:id="@+id/tvResultadoPrestamo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="No puede hacer préstamos"
+                            android:textColor="#D32F2F"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
                     <TextView
                         style="@style/TextTitle"
                         android:layout_width="wrap_content"
@@ -134,7 +163,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:textStyle="bold"
-                            android:text="4.2" />
+                            android:text="4.0" />
 
                     </LinearLayout>
 
@@ -144,7 +173,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:textSize="16sp"
-                        android:text="Correo Electrónico" />
+                        android:text="Usuario" />
 
                     <EditText
                         android:id="@+id/et_correo_electronico"
@@ -153,8 +182,8 @@
                         android:layout_marginTop="4dp"
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
-                        android:inputType="textEmailAddress"
-                        android:hint="[usuario]@ejemplo.com" />
+                        android:inputType="textNoSuggestions"
+                        />
 
                     <TextView
                         style="@style/TextTitle"
@@ -162,7 +191,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="16sp"
-                        android:text="Contraseña" />
+                        android:text="Contraseña"
+                        android:visibility="gone"/>
 
                     <EditText
                         android:id="@+id/et_contrasena"
@@ -172,7 +202,8 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textPassword"
-                        android:hint="Contraseña" />
+                        android:hint="Contraseña"
+                        android:visibility="gone" />
 
                     <TextView
                         style="@style/TextTitle"
@@ -181,7 +212,9 @@
                         android:layout_marginTop="14dp"
                         android:textSize="16sp"
                         android:text="Dirección">
+
                     </TextView>
+
                     <EditText
                         android:id="@+id/et_adress"
                         android:layout_width="match_parent"
@@ -192,7 +225,6 @@
                         android:inputType="textPostalAddress"
                         android:hint="Ej: Edificio 2, Num. 14" />
 
-
                     <Button
                         android:id="@+id/btn_actualizar_datos"
                         style="@style/ButtonPrimary"
@@ -201,7 +233,6 @@
                         android:layout_marginTop="20dp"
                         android:text="Actualizar Datos" />
 
-
                     <Button
                         android:id="@+id/btn_eliminar_cuenta"
                         style="@style/ButtonSecundary"
@@ -209,6 +240,14 @@
                         android:layout_height="52dp"
                         android:layout_marginTop="10dp"
                         android:text="Eliminar Cuenta" />
+                    <Button
+                        android:id="@+id/btn_sacar_habitante"
+                        style="@style/ButtonPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Eliminar Habitante de Condominio"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -217,8 +256,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-    <!-- ===================== BOTTOM NAV (sin cambios, PERFIL activo) ===================== -->
 
     <LinearLayout
         android:id="@+id/bottom_nav"
