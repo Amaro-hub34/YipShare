@@ -110,18 +110,54 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Dirección completa" />
+                        android:text="Dirección" />
 
                     <EditText
-                        android:id="@+id/et_direccion_condominio"
+                        android:id="@+id/et_direccion_condominio1"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
-                        android:gravity="top|start"
+                        android:inputType="text"
+                        android:hint="Calle" />
+                    <EditText
+                        android:id="@+id/et_direccion_condominio2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:hint="Calle, número, colonia, ciudad, C.P." />
+                        android:hint="Colonia" />
+                    <EditText
+                        android:id="@+id/et_direccion_condominio3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textPostalAddress"
+                        android:hint="CP" />
+                    <EditText
+                        android:id="@+id/et_direccion_condominio4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:hint="Alcaldía/Municipio" />
+                    <EditText
+                        android:id="@+id/et_direccion_condominio5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:hint="Ciudad" />
+
 
                     <TextView
                         style="@style/TextTitle"
@@ -224,39 +260,6 @@
                             android:text="Ningún archivo seleccionado" />
                     </LinearLayout>
 
-                    <TextView
-                        style="@style/TextTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:textSize="14sp"
-                        android:text="Identificación Oficial" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <Button
-                            android:id="@+id/btn_adjuntar_identificacion"
-                            style="@style/ButtonSecundary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Adjuntar PDF" />
-
-                        <TextView
-                            android:id="@+id/tv_archivo_identificacion"
-                            style="@style/TextBody"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="10dp"
-                            android:maxLines="1"
-                            android:ellipsize="middle"
-                            android:text="Ningún archivo seleccionado" />
-                    </LinearLayout>
 
                     <TextView
                         style="@style/TextTitle"

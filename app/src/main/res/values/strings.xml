@@ -9,6 +9,16 @@
         <item>Estado intermedio</item>
         <item>Mal estado</item>
     </string-array>
+    <string-array name="categorias_articulo">
+        <item>Herramientas</item>
+        <item>Electrodomésticos</item>
+        <item>Jardinería</item>
+        <item>Cocina</item>
+        <item>Limpieza</item>
+        <item>Electrónica</item>
+        <item>Automotriz</item>
+        <item>Otros</item>
+    </string-array>
 </resources>
 
 

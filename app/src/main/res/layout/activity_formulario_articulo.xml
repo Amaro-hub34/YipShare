@@ -113,15 +113,14 @@
                         android:textSize="14sp"
                         android:text="Categoría" />
 
-                    <EditText
-                        android:id="@+id/et_categoria"
+                    <Spinner
+                        android:id="@+id/spinner_categoria"
+                        style="@style/InputBrand"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:background="@drawable/bg_input"
-                        android:padding="12dp"
-                        android:inputType="text"
-                        android:hint="Ej: Jardineria" />
+                        android:entries="@array/categorias_articulo"
+                        android:spinnerMode="dropdown" />
 
                     <TextView
                         style="@style/TextTitle"
