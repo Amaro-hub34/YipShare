@@ -102,7 +102,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textCapWords"
-                        android:hint="" />
+                        android:hint="Ej. Condominio 123" />
 
                     <TextView
                         style="@style/TextTitle"
@@ -351,6 +351,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageView_inicio"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
@@ -358,6 +359,7 @@
                 android:contentDescription="Inicio" />
 
             <TextView
+                android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INICIO"
@@ -378,6 +380,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageView_prestamos"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
@@ -385,6 +388,7 @@
                 android:contentDescription="Préstamos" />
 
             <TextView
+                android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PRÉSTAMOS"
@@ -405,6 +409,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageView_agregar"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
@@ -424,6 +429,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageView_reportes"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
@@ -431,11 +437,12 @@
                 android:contentDescription="Reportes" />
 
             <TextView
+                android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="REPORTES"
                 android:textColor="#99FFFFFF"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:layout_marginTop="2dp" />
         </LinearLayout>
 
@@ -451,6 +458,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageView_perfil"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
@@ -458,6 +466,7 @@
                 android:contentDescription="Perfil" />
 
             <TextView
+                android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PERFIL"

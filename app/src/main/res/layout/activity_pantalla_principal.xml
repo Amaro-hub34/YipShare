@@ -13,10 +13,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_header"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_header"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_header" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_header"
@@ -27,8 +29,8 @@
 
     <ImageView
         android:id="@+id/logo_yipshare"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:src="@drawable/logo_yipshare"
         android:contentDescription="@null"
         android:layout_marginStart="16dp"
@@ -131,7 +133,6 @@
         app:layout_constraintBottom_toBottomOf="@id/et_buscar"
         app:layout_constraintEnd_toEndOf="@id/et_buscar" />
 
-    <!-- CONTENIDO SCROLLEABLE -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -197,9 +198,6 @@
                 android:layout_marginTop="10dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/item_articulo"
-                tools:itemCount="2"
                 app:layout_constraintTop_toBottomOf="@id/tv_mis_articulos"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -222,9 +220,6 @@
                 android:layout_marginBottom="16dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/item_articulo"
-                tools:itemCount="4"
                 app:layout_constraintTop_toBottomOf="@id/tv_articulos_disponibles"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -271,6 +266,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageViewInicio"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
@@ -278,6 +274,7 @@
                 android:contentDescription="Inicio" />
 
             <TextView
+                android:id="@+id/textViewInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INICIO"
@@ -298,6 +295,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageViewPrestamos"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
@@ -305,6 +303,7 @@
                 android:contentDescription="Préstamos" />
 
             <TextView
+                android:id="@+id/textViewPrestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PRÉSTAMOS"
@@ -325,6 +324,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageViewAgregar"
                 android:layout_width="44dp"
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
@@ -344,6 +344,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageViewReportes"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
@@ -351,6 +352,7 @@
                 android:contentDescription="Reportes" />
 
             <TextView
+                android:id="@+id/textViewReportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="REPORTES"
@@ -371,6 +373,7 @@
             android:background="?attr/selectableItemBackgroundBorderless">
 
             <ImageView
+                android:id="@+id/imageViewPerfil"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
@@ -378,6 +381,7 @@
                 android:contentDescription="Perfil" />
 
             <TextView
+                android:id="@+id/textViewPerfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="PERFIL"

@@ -17,22 +17,12 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/casas1"
+            android:src="@drawable/img"
             android:contentDescription="@null"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/guideline_card_top" />
-
-        <ImageView
-            android:id="@+id/image_decor"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:alpha="0.2"
-            android:scaleType="fitXY"
-            android:contentDescription="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/image_background" />
 
         <View
             android:layout_width="0dp"
@@ -69,7 +59,7 @@
             android:background="@drawable/bg_card_white"
             android:elevation="8dp"
             android:padding="28dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="45dp"
             app:layout_constraintTop_toTopOf="@id/guideline_card_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

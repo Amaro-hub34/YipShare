@@ -54,6 +54,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvTituloHeader">
 
         <LinearLayout
+            android:id="@+id/layoutCalificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_card_white"
@@ -123,7 +124,7 @@
                 android:textColorHint="#94A3B8"
                 android:textSize="14sp" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <Button
                 android:id="@+id/btnEnviarCalificacion"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
