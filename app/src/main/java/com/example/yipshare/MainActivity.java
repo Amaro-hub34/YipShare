@@ -1,5 +1,6 @@
 package com.example.yipshare;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -20,5 +21,14 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        findViewById(R.id.btn_entrar).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, PantallaPrincipalActivity.class)));
+
+        findViewById(R.id.boton_registrate).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, RegistroCuenta1Activity.class)));
+
+        findViewById(R.id.tv_terms).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, TermsAndConditionsActivity.class)));
     }
 }
