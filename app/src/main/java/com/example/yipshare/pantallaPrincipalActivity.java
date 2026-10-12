@@ -75,6 +75,8 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
                 startActivity(new Intent(pantallaPrincipalActivity.this, perfilActivity.class)));
         findViewById(R.id.logo_yipshare).setOnClickListener(v -> mostrarPanelCondominios());
+        findViewById(R.id.nav_agregar).setOnClickListener(v ->
+                startActivity(new Intent(pantallaPrincipalActivity.this, formularioArticuloActivity.class)));
     }
 
     private void mostrarMenuAgregar() {

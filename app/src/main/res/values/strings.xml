@@ -27,6 +27,11 @@
         <item>2 semanas</item>
         <item>1 mes</item>
     </string-array>
+    <string-array name="estado_prestamo">
+        <item>Disponible</item>
+        <item>Pendiente</item>
+        <item>No disponible</item>
+    </string-array>
 </resources>
 
 

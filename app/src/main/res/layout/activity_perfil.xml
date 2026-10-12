@@ -117,7 +117,7 @@
                         android:textSize="16sp"
                         android:text="Usuario" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/et_correo_electronico"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                         android:text="Contraseña"
                         />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/et_contrasena"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         />
-                    <EditText
+                    <TextView
                         android:id="@+id/apellido_paterno"
                         style="@style/InputBrand"
                         android:hint="Apellido Paterno"
@@ -168,7 +168,7 @@
                         android:minHeight="48dp"
                         android:layout_marginBottom="14dp" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/apellido_materno"
                         style="@style/InputBrand"
                         android:hint="Apellido Materno"
@@ -177,7 +177,7 @@
                         android:minHeight="48dp"
                         android:layout_marginBottom="14dp" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/nombres"
                         style="@style/InputBrand"
                         android:hint="Nombre(s)"
@@ -195,7 +195,7 @@
                         android:layout_marginTop="10dp"
                         android:text="Dirección:" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/et_direccion_edificio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
                         android:hint="Ej: Edificio 2" />
-                    <EditText
+                    <TextView
                         android:id="@+id/et_direccion_departamento"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

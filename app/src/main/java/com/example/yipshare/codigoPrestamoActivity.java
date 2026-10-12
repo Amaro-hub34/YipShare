@@ -1,0 +1,55 @@
+package com.example.yipshare;
+
+import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Random;
+
+public class codigoPrestamoActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_codigo_prestamo);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(0, bars.top, 0, bars.bottom);
+            return insets;
+        });
+
+        TextView tvArticulo = findViewById(R.id.tv_articulo_codigo);
+        TextView tvCodigo = findViewById(R.id.tv_codigo_generado);
+        EditText etCodigo = findViewById(R.id.et_codigo);
+
+        String articulo = getIntent().getStringExtra("articulo");
+        if (articulo != null) {
+            tvArticulo.setText(articulo);
+        }
+
+        findViewById(R.id.btn_generar_codigo).setOnClickListener(v -> {
+            String codigo = String.format("%06d", new Random().nextInt(1000000));
+            tvCodigo.setText(codigo);
+            tvCodigo.setVisibility(TextView.VISIBLE);
+        });
+
+        findViewById(R.id.btn_confirmar_codigo).setOnClickListener(v -> {
+            String codigo = etCodigo.getText().toString().trim();
+            if (codigo.length() != 6) {
+                etCodigo.setError("Debe tener 6 dígitos");
+            } else {
+                Toast.makeText(codigoPrestamoActivity.this, "Código confirmado", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+}

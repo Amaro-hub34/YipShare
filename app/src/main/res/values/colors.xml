@@ -13,5 +13,8 @@
     <color name="overlay_imagen">#80194B76</color>
     <color name="texto_sobre_imagen">#FFFFFF</color>
     <color name="verde_disponible">#2ECC71</color>
+    <color name="estado_disponible">#2E7D32</color>
+    <color name="estado_pendiente">#F9A825</color>
+    <color name="estado_no_disponible">#C62828</color>
     <color name="rojo_en_uso">#E74C3C</color>
 </resources>

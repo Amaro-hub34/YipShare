@@ -52,7 +52,11 @@
         <activity android:name=".reporteActivity"
             android:exported="false" />
         <activity android:name=".prestamoActivity"
-            android:exported="false" />
+            android:exported="false"/>
+        <activity android:name=".codigoPrestamoActivity"
+            android:exported="false"/>
+        <activity android:name=".formularioArticuloActivity"
+            android:exported="false"/>
 
     </application>
 

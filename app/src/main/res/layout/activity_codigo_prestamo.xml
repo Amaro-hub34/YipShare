@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_pantalla"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
+
+        <TextView
+            style="@style/TextTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="CÓDIGO DE PRÉSTAMO" />
+
+        <TextView
+            android:id="@+id/tv_articulo_codigo"
+            style="@style/TextBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="[Nombre del artículo]" />
+
+        <Button
+            android:id="@+id/btn_generar_codigo"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="32dp"
+            android:text="Generar código" />
+
+        <TextView
+            android:id="@+id/tv_codigo_generado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:letterSpacing="0.3"
+            android:textColor="@color/azul_yipshare"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:text="000000" />
+
+        <TextView
+            style="@style/TextBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="28dp"
+            android:text="o" />
+
+        <EditText
+            android:id="@+id/et_codigo"
+            style="@style/InputBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:hint="Ingresa el código de 6 dígitos"
+            android:inputType="number"
+            android:maxLength="6" />
+
+        <Button
+            android:id="@+id/btn_confirmar_codigo"
+            style="@style/ButtonPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginTop="14dp"
+            android:text="Confirmar código" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -45,5 +45,20 @@ public class registrarCondominioActivity extends AppCompatActivity {
 
             return insets;
         });
+        findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
+        findViewById(R.id.nav_inicio).setOnClickListener(v ->
+                startActivity(new Intent(registrarCondominioActivity.this, pantallaPrincipalActivity.class)));
+
+        findViewById(R.id.nav_reportes).setOnClickListener(v ->
+                startActivity(new Intent(registrarCondominioActivity.this, reporteActivity.class)));
+
+        findViewById(R.id.nav_perfil).setOnClickListener(v ->
+                startActivity(new Intent(registrarCondominioActivity.this, perfilActivity.class)));
+        findViewById(R.id.nav_prestamos).setOnClickListener(v -> {
+            startActivity(new Intent(registrarCondominioActivity.this, prestamoActivity.class));
+
+        });
+        findViewById(R.id.nav_agregar).setOnClickListener(v ->
+                startActivity(new Intent(registrarCondominioActivity.this, formularioArticuloActivity.class)));
     }
 }
