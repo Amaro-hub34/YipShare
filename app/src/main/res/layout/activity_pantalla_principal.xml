@@ -13,29 +13,27 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_header"
-        app:layout_constraintBottom_toBottomOf="@id/guideline_header"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/space_header" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_header"
+        android:id="@+id/guideline_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="180dp" />
+        app:layout_constraintGuide_begin="0dp" />
 
     <ImageView
         android:id="@+id/logo_yipshare"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@drawable/logo_yipshare"
         android:contentDescription="@null"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/guideline_status"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -61,8 +59,8 @@
         android:focusable="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logo_yipshare"
+        app:layout_constraintBottom_toBottomOf="@id/logo_yipshare"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
@@ -86,8 +84,9 @@
         android:text="[Nombre del Condominio]"
         android:textColor="#CCFFFFFF"
         android:textSize="12sp"
+        android:includeFontPadding="false"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="6dp"
         app:layout_constraintTop_toBottomOf="@id/logo_yipshare"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -99,27 +98,30 @@
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:includeFontPadding="false"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         app:layout_constraintTop_toBottomOf="@id/tv_condominio"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/et_buscar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:background="@drawable/bg_search"
         android:hint="Buscar artículo..."
         android:textColorHint="@color/texto_hint"
+        android:textSize="14sp"
         android:paddingStart="16dp"
         android:paddingEnd="40dp"
         android:inputType="text"
         android:imeOptions="actionSearch"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintTop_toBottomOf="@id/tv_saludo"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/iv_buscar_icono"
@@ -133,10 +135,18 @@
         app:layout_constraintBottom_toBottomOf="@id/et_buscar"
         app:layout_constraintEnd_toEndOf="@id/et_buscar" />
 
+    <Space
+        android:id="@+id/space_header"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        app:layout_constraintTop_toBottomOf="@id/et_buscar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/guideline_header"
+        app:layout_constraintTop_toBottomOf="@id/space_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav">
@@ -198,6 +208,7 @@
                 android:layout_marginTop="10dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
                 app:layout_constraintTop_toBottomOf="@id/tv_mis_articulos"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -220,6 +231,7 @@
                 android:layout_marginBottom="16dp"
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
                 app:layout_constraintTop_toBottomOf="@id/tv_articulos_disponibles"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -229,13 +241,13 @@
                 android:id="@+id/group_empty_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:visibility="gone"
                 app:constraint_referenced_ids="tv_no_articulos, btn_crear_condominio, btn_unirse_condominio" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_content_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                tools:visibility="gone"
                 app:constraint_referenced_ids="tv_mis_articulos, rv_mis_articulos, tv_articulos_disponibles, rv_articulos_disponibles" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

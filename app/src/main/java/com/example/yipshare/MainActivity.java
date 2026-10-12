@@ -9,6 +9,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.yipshare.register.RegistroCuenta1Activity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -23,12 +25,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btn_entrar).setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, PantallaPrincipalActivity.class)));
+                startActivity(new Intent(MainActivity.this, pantallaPrincipalActivity.class)));
 
         findViewById(R.id.boton_registrate).setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RegistroCuenta1Activity.class)));
 
         findViewById(R.id.tv_terms).setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, TermsAndConditionsActivity.class)));
+                startActivity(new Intent(MainActivity.this, termsAndConditionsActivity.class)));
     }
 }

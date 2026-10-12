@@ -13,7 +13,7 @@
         android:theme="@style/Theme.YipShare">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".animation_yipshare.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Splash">
             <intent-filter>
@@ -27,17 +27,23 @@
             android:exported="false" />
 
         <activity
-            android:name=".PantallaPrincipalActivity"
+            android:name=".pantallaPrincipalActivity"
             android:exported="false" />
 
         <activity
-            android:name=".RegistroCuenta1Activity"
+            android:name=".register.RegistroCuenta1Activity"
             android:exported="false" />
 
         <activity
-            android:name=".TermsAndConditionsActivity"
+            android:name=".termsAndConditionsActivity"
             android:exported="false" />
-        <activity android:name=".RegistroCuenta2Activity"
+        <activity android:name=".register.RegistroCuenta2Activity"
+            android:exported="false" />
+        <activity android:name=".registrarCondominioActivity"
+            android:exported="false" />
+        <activity android:name=".ingresoCondominioActivity"
+            android:exported="false" />
+        <activity android:name=".notificacionActivity"
             android:exported="false" />
 
 

@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.example.yipshare.animation_yipshare;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.yipshare.MainActivity;
+import com.example.yipshare.R;
 
 public class SplashActivity extends AppCompatActivity {
 

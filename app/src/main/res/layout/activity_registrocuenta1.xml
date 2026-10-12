@@ -33,23 +33,6 @@
             app:layout_constraintEnd_toEndOf="@id/image_background"
             app:layout_constraintBottom_toBottomOf="@id/image_background" />
 
-        <TextView
-            android:id="@+id/btn_regresar_registro1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Regresar"
-            android:textColor="@color/texto_sobre_imagen"
-            android:textSize="16sp"
-            android:drawableStart="@drawable/ic_arrow_back"
-            android:drawablePadding="8dp"
-            android:drawableTint="@color/texto_sobre_imagen"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/logo_icon"
@@ -166,12 +149,15 @@
                     android:text="¿Ya tienes una cuenta? " />
 
                 <TextView
-                    android:id="@+id/boton_entrar"
+                    android:id="@+id/boton_regresar_Main"
                     style="@style/TextLink"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
+                    android:padding="5dp"
                     android:gravity="center_vertical"
                     android:text="Inicia sesión" />
 
