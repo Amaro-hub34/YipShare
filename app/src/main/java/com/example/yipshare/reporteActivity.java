@@ -20,6 +20,7 @@ public class reporteActivity  extends AppCompatActivity{
         setContentView(R.layout.activity_reporte);
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
+        Guideline guidelineStatus = findViewById(R.id.guideline_status);
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -27,6 +28,7 @@ public class reporteActivity  extends AppCompatActivity{
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
+            guidelineStatus.setGuidelineBegin(bars.top);
             guidelineHeader.setGuidelineBegin(headerBase + bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
@@ -35,9 +37,6 @@ public class reporteActivity  extends AppCompatActivity{
             bottomNav.setLayoutParams(lp);
 
             return insets;
-        });
-        findViewById(R.id.btn_regresar).setOnClickListener(v -> {
-            startActivity(new Intent(reporteActivity.this, pantallaPrincipalActivity.class));
         });
         findViewById(R.id.btn_enviar_Reporte).setOnClickListener(v -> {
             startActivity(new Intent(reporteActivity.this, pantallaPrincipalActivity.class));

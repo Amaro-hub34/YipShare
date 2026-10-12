@@ -20,6 +20,8 @@ public class perfilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_perfil);
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
+        Guideline guidelineStatus = findViewById(R.id.guideline_status);
+
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -28,6 +30,7 @@ public class perfilActivity extends AppCompatActivity {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
             guidelineHeader.setGuidelineBegin(headerBase + bars.top);
+            guidelineStatus.setGuidelineBegin(bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
             ViewGroup.LayoutParams lp = bottomNav.getLayoutParams();
@@ -38,7 +41,6 @@ public class perfilActivity extends AppCompatActivity {
         });
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(perfilActivity.this, pantallaPrincipalActivity.class)));
-        findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
                 startActivity(new Intent(perfilActivity.this, reporteActivity.class)));
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
