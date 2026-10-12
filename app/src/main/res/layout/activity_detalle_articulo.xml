@@ -143,6 +143,22 @@
                         android:layout_marginTop="10dp"
                         android:lineSpacingExtra="2dp"
                         android:text="Esta es una descripción de prueba" />
+                    <TextView
+                        style="@style/TextTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:textSize="14sp"
+                        android:text="Tiempo préstamo" />
+                    <Spinner
+                        android:id="@+id/sp_estado_fisico"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:entries="@array/tiempo_prestamo"
+                        android:spinnerMode="dropdown" />
 
                     <View
                         android:id="@+id/view_linea"

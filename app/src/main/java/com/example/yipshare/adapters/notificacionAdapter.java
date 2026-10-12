@@ -41,6 +41,9 @@ public class notificacionAdapter extends RecyclerView.Adapter<notificacionAdapte
         return cantidad;
     }
 
+    /**
+     * ViewHolder for the notification items. this method is not final but is just for the teacher homework
+     */
     static class NotificacionViewHolder extends RecyclerView.ViewHolder {
         TextView nombreArticulo, solicitante, calificacion, direccion;
         RatingBar ratingBar;

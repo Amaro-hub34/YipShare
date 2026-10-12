@@ -13,6 +13,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
+import android.view.Window;
+import android.widget.TextView;
+
+import com.example.yipshare.adapters.condominioAdapter;
+
+import java.util.Arrays;
 
 import com.example.yipshare.adapters.articuloAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -42,21 +51,31 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
             return insets;
         });
 
-        boolean hayArticulos = true;
-        findViewById(R.id.group_empty_state).setVisibility(hayArticulos ? View.GONE : View.VISIBLE);
-        findViewById(R.id.group_content_state).setVisibility(hayArticulos ? View.VISIBLE : View.GONE);
+        boolean articlesExist = true;
+        findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
+        findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
         RecyclerView rvMisArticulos = findViewById(R.id.rv_mis_articulos);
         rvMisArticulos.setAdapter(new articuloAdapter(1));
 
+        RecyclerView rvArticulosDisponibles = findViewById(R.id.rv_articulos_disponibles);
+        rvArticulosDisponibles.setAdapter(new articuloAdapter(1));
+
         findViewById(R.id.iv_agregar_top).setOnClickListener(v -> mostrarMenuAgregar());
 
-        findViewById(R.id.iv_notificaciones).setOnClickListener(v -> {
-            startActivity(new Intent(pantallaPrincipalActivity.this, notificacionActivity.class));
-        });
+        findViewById(R.id.iv_notificaciones).setOnClickListener(v ->
+                startActivity(new Intent(pantallaPrincipalActivity.this, notificacionActivity.class)));
 
+        findViewById(R.id.nav_prestamos).setOnClickListener(v ->
+                startActivity(new Intent(pantallaPrincipalActivity.this, prestamoActivity.class)));
+
+        findViewById(R.id.nav_reportes).setOnClickListener(v ->
+                startActivity(new Intent(pantallaPrincipalActivity.this, reporteActivity.class)));
+
+        findViewById(R.id.nav_perfil).setOnClickListener(v ->
+                startActivity(new Intent(pantallaPrincipalActivity.this, perfilActivity.class)));
+        findViewById(R.id.logo_yipshare).setOnClickListener(v -> mostrarPanelCondominios());
     }
-
 
     private void mostrarMenuAgregar() {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
@@ -77,5 +96,29 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
 
         dialog.show();
     }
+    private void mostrarPanelCondominios() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        View panel = getLayoutInflater().inflate(R.layout.activity_panel_condominios, null);
+        dialog.setContentView(panel);
+
+        RecyclerView rv = panel.findViewById(R.id.rv_condominios);
+        rv.setAdapter(new condominioAdapter(
+                Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma"),
+                nombre -> {
+                    ((TextView) findViewById(R.id.tv_condominio)).setText(nombre);
+                    dialog.dismiss();
+                }));
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            window.setGravity(Gravity.START);
+            window.setLayout((int) (getResources().getDisplayMetrics().widthPixels * 0.8),
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+
+        dialog.show();
+    }
 }

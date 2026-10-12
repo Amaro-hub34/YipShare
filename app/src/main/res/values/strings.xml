@@ -19,6 +19,14 @@
         <item>Automotriz</item>
         <item>Otros</item>
     </string-array>
+    <string-array name="tiempo_prestamo">
+        <item>1 día</item>
+        <item>2 días</item>
+        <item>3 días</item>
+        <item>1 semana</item>
+        <item>2 semanas</item>
+        <item>1 mes</item>
+    </string-array>
 </resources>
 
 

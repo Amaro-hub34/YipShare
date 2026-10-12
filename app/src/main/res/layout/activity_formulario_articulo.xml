@@ -158,6 +158,26 @@
                         android:entries="@array/opciones_estado_fisico"
                         android:spinnerMode="dropdown" />
 
+                    <TextView
+                        android:id="@+id/tv_tiempo_prestamo"
+                        style="@style/TextTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:textSize="14sp"
+                        android:text="Tiempo de préstamo" />
+                    <Spinner
+                        android:id="@+id/sp_tiempo_prestamo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:entries="@array/tiempo_prestamo"
+                        android:spinnerMode="dropdown" />
+
+
+
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="140dp"

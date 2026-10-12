@@ -45,7 +45,14 @@
             android:exported="false" />
         <activity android:name=".notificacionActivity"
             android:exported="false" />
-
+        <activity android:name=".perfilActivity"
+            android:exported="false" />
+        <activity android:name=".detalleArticuloActivity"
+            android:exported="false" />
+        <activity android:name=".reporteActivity"
+            android:exported="false" />
+        <activity android:name=".prestamoActivity"
+            android:exported="false" />
 
     </application>
 

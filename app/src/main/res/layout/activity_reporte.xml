@@ -161,7 +161,7 @@
 
 
                     <Button
-                        android:id="@+id/btn_cambiar_imagen"
+                        android:id="@+id/btn_enviar_Reporte"
                         style="@style/ButtonPrimary"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
