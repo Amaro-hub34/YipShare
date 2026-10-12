@@ -38,7 +38,7 @@ public class perfilActivity extends AppCompatActivity {
         });
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(perfilActivity.this, pantallaPrincipalActivity.class)));
-
+        findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
                 startActivity(new Intent(perfilActivity.this, reporteActivity.class)));
         findViewById(R.id.nav_agregar).setOnClickListener(v ->

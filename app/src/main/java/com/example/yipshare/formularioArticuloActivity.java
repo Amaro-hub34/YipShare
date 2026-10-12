@@ -38,6 +38,7 @@ public class formularioArticuloActivity extends AppCompatActivity {
         });
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(formularioArticuloActivity.this, pantallaPrincipalActivity.class)));
+        findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
                 startActivity(new Intent(formularioArticuloActivity.this, reporteActivity.class)));
