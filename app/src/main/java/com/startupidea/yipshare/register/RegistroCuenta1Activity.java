@@ -1,13 +1,13 @@
-package com.example.yipshare.register;
+package com.startupidea.yipshare.register;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.yipshare.MainActivity;
-import com.example.yipshare.R;
-import com.example.yipshare.termsAndConditionsActivity;
+import com.startupidea.yipshare.MainActivity;
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.TermsAndConditionsActivity;
 
 public class RegistroCuenta1Activity extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
                 startActivity(new Intent(RegistroCuenta1Activity.this, MainActivity.class))
         );
         findViewById(R.id.tv_terms).setOnClickListener(v ->
-                startActivity(new Intent(RegistroCuenta1Activity.this, termsAndConditionsActivity.class))
+                startActivity(new Intent(RegistroCuenta1Activity.this, TermsAndConditionsActivity.class))
         );
     }
 }

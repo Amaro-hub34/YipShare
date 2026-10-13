@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.yipshare"
+    namespace = "com.startupidea.yipshare"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.yipshare"
+        applicationId = "com.startupidea.yipshare"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

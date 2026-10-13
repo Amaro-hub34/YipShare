@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,16 +11,20 @@ import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.startupidea.yipshare.adapters.NotificacionAdapter;
 
-public class detalleArticuloActivity extends AppCompatActivity {
+public class NotificacionActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_detalle_articulo);
+        setContentView(R.layout.activity_notificacion);
 
-        Guideline guidelineHeader = findViewById(R.id.guideline_header);
+        Guideline lineaGuiaCabeza = findViewById(R.id.guideline_header);
+        Guideline lineaGuiaEstado = findViewById(R.id.guideline_status);
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -28,7 +32,8 @@ public class detalleArticuloActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-            guidelineHeader.setGuidelineBegin(headerBase + bars.top);
+            lineaGuiaEstado.setGuidelineBegin(bars.top);
+            lineaGuiaCabeza.setGuidelineBegin(headerBase + bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
             ViewGroup.LayoutParams lp = bottomNav.getLayoutParams();
@@ -37,21 +42,33 @@ public class detalleArticuloActivity extends AppCompatActivity {
 
             return insets;
         });
+
+
+
+        findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
-                startActivity(new Intent(detalleArticuloActivity.this, pantallaPrincipalActivity.class)));
+                startActivity(new Intent(NotificacionActivity.this, PantallaPrincipalActivity.class)));
 
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
-                startActivity(new Intent(detalleArticuloActivity.this, reporteActivity.class)));
+                startActivity(new Intent(NotificacionActivity.this, ReporteActivity.class)));
 
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
-                startActivity(new Intent(detalleArticuloActivity.this, perfilActivity.class)));
+                startActivity(new Intent(NotificacionActivity.this, PerfilActivity.class)));
         findViewById(R.id.nav_prestamos).setOnClickListener(v -> {
-            startActivity(new Intent(detalleArticuloActivity.this, prestamoActivity.class));
+            startActivity(new Intent(NotificacionActivity.this, PrestamoActivity.class));
 
         });
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
-                startActivity(new Intent(detalleArticuloActivity.this, formularioArticuloActivity.class)));
+                startActivity(new Intent(NotificacionActivity.this, FormularioArticuloActivity.class)));
 
+        boolean hayNotificaciones = true;
+        findViewById(R.id.tv_sin_notificaciones)
+                .setVisibility(hayNotificaciones ? View.GONE : View.VISIBLE);
+        findViewById(R.id.rv_notificaciones)
+                .setVisibility(hayNotificaciones ? View.VISIBLE : View.GONE);
+
+        RecyclerView rvNotificaciones = findViewById(R.id.rv_notificaciones);
+        rvNotificaciones.setAdapter(new NotificacionAdapter(1));
     }
 }

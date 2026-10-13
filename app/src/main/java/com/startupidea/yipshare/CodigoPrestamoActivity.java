@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.os.Bundle;
 import android.widget.EditText;
@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Random;
 
-public class codigoPrestamoActivity extends AppCompatActivity {
+public class CodigoPrestamoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class codigoPrestamoActivity extends AppCompatActivity {
             if (codigo.length() != 6) {
                 etCodigo.setError("Debe tener 6 dígitos");
             } else {
-                Toast.makeText(codigoPrestamoActivity.this, "Código confirmado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CodigoPrestamoActivity.this, "Código confirmado", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

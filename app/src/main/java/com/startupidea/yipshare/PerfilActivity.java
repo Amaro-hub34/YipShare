@@ -1,30 +1,27 @@
-package com.example.yipshare;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-
+package com.startupidea.yipshare;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.yipshare.adapters.prestamoAdapter;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class prestamoActivity extends AppCompatActivity {
 
+public class PerfilActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_prestamo);
+        setContentView(R.layout.activity_perfil);
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         Guideline guidelineStatus = findViewById(R.id.guideline_status);
+
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -32,8 +29,8 @@ public class prestamoActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-            guidelineStatus.setGuidelineBegin(bars.top);
             guidelineHeader.setGuidelineBegin(headerBase + bars.top);
+            guidelineStatus.setGuidelineBegin(bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
             ViewGroup.LayoutParams lp = bottomNav.getLayoutParams();
@@ -42,21 +39,21 @@ public class prestamoActivity extends AppCompatActivity {
 
             return insets;
         });
-
-        RecyclerView rvPrestamos = findViewById(R.id.rv_prestamos);
-        rvPrestamos.setAdapter(new prestamoAdapter());
-
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
-                startActivity(new Intent(prestamoActivity.this, pantallaPrincipalActivity.class)));
-
+                startActivity(new Intent(PerfilActivity.this, PantallaPrincipalActivity.class)));
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
-                startActivity(new Intent(prestamoActivity.this, reporteActivity.class)));
+                startActivity(new Intent(PerfilActivity.this, ReporteActivity.class)));
+        findViewById(R.id.nav_agregar).setOnClickListener(v ->
+                startActivity(new Intent(PerfilActivity.this, FormularioArticuloActivity.class)));
+
+        findViewById(R.id.nav_prestamos).setOnClickListener(v ->
+                startActivity(new Intent(PerfilActivity.this, PrestamoActivity.class)));
 
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
-                startActivity(new Intent(prestamoActivity.this, perfilActivity.class)));
-        findViewById(R.id.nav_agregar).setOnClickListener(v -> {
-            startActivity(new Intent(prestamoActivity.this, formularioArticuloActivity.class));
-        });
+                startActivity(new Intent(PerfilActivity.this, PerfilActivity.class)));
+        findViewById(R.id.btn_eliminar_cuenta).setOnClickListener(v -> {
+            startActivity(new Intent(PerfilActivity.this, MainActivity.class));
 
+        });
     }
 }

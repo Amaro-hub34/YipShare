@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.content.Context;
 

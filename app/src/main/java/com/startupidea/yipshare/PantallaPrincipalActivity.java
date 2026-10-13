@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,14 +19,14 @@ import android.view.Gravity;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.example.yipshare.adapters.condominioAdapter;
+import com.startupidea.yipshare.adapters.CondominioAdapter;
 
 import java.util.Arrays;
 
-import com.example.yipshare.adapters.articuloAdapter;
+import com.startupidea.yipshare.adapters.ArticuloAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-public class pantallaPrincipalActivity extends AppCompatActivity {
+public class PantallaPrincipalActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,27 +56,27 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
         RecyclerView rvMisArticulos = findViewById(R.id.rv_mis_articulos);
-        rvMisArticulos.setAdapter(new articuloAdapter(1));
+        rvMisArticulos.setAdapter(new ArticuloAdapter(1));
 
         RecyclerView rvArticulosDisponibles = findViewById(R.id.rv_articulos_disponibles);
-        rvArticulosDisponibles.setAdapter(new articuloAdapter(1));
+        rvArticulosDisponibles.setAdapter(new ArticuloAdapter(1));
 
         findViewById(R.id.iv_agregar_top).setOnClickListener(v -> mostrarMenuAgregar());
 
         findViewById(R.id.iv_notificaciones).setOnClickListener(v ->
-                startActivity(new Intent(pantallaPrincipalActivity.this, notificacionActivity.class)));
+                startActivity(new Intent(PantallaPrincipalActivity.this, NotificacionActivity.class)));
 
         findViewById(R.id.nav_prestamos).setOnClickListener(v ->
-                startActivity(new Intent(pantallaPrincipalActivity.this, prestamoActivity.class)));
+                startActivity(new Intent(PantallaPrincipalActivity.this, PrestamoActivity.class)));
 
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
-                startActivity(new Intent(pantallaPrincipalActivity.this, reporteActivity.class)));
+                startActivity(new Intent(PantallaPrincipalActivity.this, ReporteActivity.class)));
 
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
-                startActivity(new Intent(pantallaPrincipalActivity.this, perfilActivity.class)));
+                startActivity(new Intent(PantallaPrincipalActivity.this, PerfilActivity.class)));
         findViewById(R.id.logo_yipshare).setOnClickListener(v -> mostrarPanelCondominios());
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
-                startActivity(new Intent(pantallaPrincipalActivity.this, formularioArticuloActivity.class)));
+                startActivity(new Intent(PantallaPrincipalActivity.this, FormularioArticuloActivity.class)));
     }
 
     private void mostrarMenuAgregar() {
@@ -88,12 +88,12 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
 
         sheet.findViewById(R.id.btn_sheet_crear).setOnClickListener(v -> {
             dialog.dismiss();
-            startActivity(new Intent(pantallaPrincipalActivity.this, registrarCondominioActivity.class));
+            startActivity(new Intent(PantallaPrincipalActivity.this, RegistrarCondominioActivity.class));
         });
 
         sheet.findViewById(R.id.btn_sheet_unirse).setOnClickListener(v -> {
             dialog.dismiss();
-            startActivity(new Intent(pantallaPrincipalActivity.this, ingresoCondominioActivity.class));
+            startActivity(new Intent(PantallaPrincipalActivity.this, IngresoCondominioActivity.class));
         });
 
         dialog.show();
@@ -106,7 +106,7 @@ public class pantallaPrincipalActivity extends AppCompatActivity {
         dialog.setContentView(panel);
 
         RecyclerView rv = panel.findViewById(R.id.rv_condominios);
-        rv.setAdapter(new condominioAdapter(
+        rv.setAdapter(new CondominioAdapter(
                 Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma"),
                 nombre -> {
                     ((TextView) findViewById(R.id.tv_condominio)).setText(nombre);

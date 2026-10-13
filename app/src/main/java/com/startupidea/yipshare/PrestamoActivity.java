@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,13 +11,17 @@ import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class formularioArticuloActivity extends AppCompatActivity {
+import com.startupidea.yipshare.adapters.PrestamoAdapter;
+
+public class PrestamoActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_formulario_articulo);
+        setContentView(R.layout.activity_prestamo);
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         Guideline guidelineStatus = findViewById(R.id.guideline_status);
@@ -38,16 +42,21 @@ public class formularioArticuloActivity extends AppCompatActivity {
 
             return insets;
         });
+
+        RecyclerView rvPrestamos = findViewById(R.id.rv_prestamos);
+        rvPrestamos.setAdapter(new PrestamoAdapter());
+
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
-                startActivity(new Intent(formularioArticuloActivity.this, pantallaPrincipalActivity.class)));
+                startActivity(new Intent(PrestamoActivity.this, PantallaPrincipalActivity.class)));
+
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
-                startActivity(new Intent(formularioArticuloActivity.this, reporteActivity.class)));
-        findViewById(R.id.nav_agregar).setOnClickListener(v ->
-                startActivity(new Intent(formularioArticuloActivity.this, formularioArticuloActivity.class)));
+                startActivity(new Intent(PrestamoActivity.this, ReporteActivity.class)));
+
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
-                startActivity(new Intent(formularioArticuloActivity.this, perfilActivity.class)));
-        findViewById(R.id.nav_prestamos).setOnClickListener(v -> {
-            startActivity(new Intent(formularioArticuloActivity.this, prestamoActivity.class));
+                startActivity(new Intent(PrestamoActivity.this, PerfilActivity.class)));
+        findViewById(R.id.nav_agregar).setOnClickListener(v -> {
+            startActivity(new Intent(PrestamoActivity.this, FormularioArticuloActivity.class));
         });
+
     }
 }

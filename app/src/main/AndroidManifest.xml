@@ -27,7 +27,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".pantallaPrincipalActivity"
+            android:name=".PantallaPrincipalActivity"
             android:exported="false" />
 
         <activity
@@ -35,27 +35,27 @@
             android:exported="false" />
 
         <activity
-            android:name=".termsAndConditionsActivity"
+            android:name=".TermsAndConditionsActivity"
             android:exported="false" />
         <activity android:name=".register.RegistroCuenta2Activity"
             android:exported="false" />
-        <activity android:name=".registrarCondominioActivity"
+        <activity android:name=".RegistrarCondominioActivity"
             android:exported="false" />
-        <activity android:name=".ingresoCondominioActivity"
+        <activity android:name=".IngresoCondominioActivity"
             android:exported="false" />
-        <activity android:name=".notificacionActivity"
+        <activity android:name=".NotificacionActivity"
             android:exported="false" />
-        <activity android:name=".perfilActivity"
+        <activity android:name=".PerfilActivity"
             android:exported="false" />
-        <activity android:name=".detalleArticuloActivity"
+        <activity android:name=".DetalleArticuloActivity"
             android:exported="false" />
-        <activity android:name=".reporteActivity"
+        <activity android:name=".ReporteActivity"
             android:exported="false" />
-        <activity android:name=".prestamoActivity"
+        <activity android:name=".PrestamoActivity"
             android:exported="false"/>
-        <activity android:name=".codigoPrestamoActivity"
+        <activity android:name=".CodigoPrestamoActivity"
             android:exported="false"/>
-        <activity android:name=".formularioArticuloActivity"
+        <activity android:name=".FormularioArticuloActivity"
             android:exported="false"/>
 
     </application>

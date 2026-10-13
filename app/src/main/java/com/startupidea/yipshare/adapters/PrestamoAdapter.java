@@ -1,4 +1,4 @@
-package com.example.yipshare.adapters;
+package com.startupidea.yipshare.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.yipshare.R;
-import com.example.yipshare.codigoPrestamoActivity;
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.CodigoPrestamoActivity;
 
-public class prestamoAdapter extends RecyclerView.Adapter<prestamoAdapter.PrestamoViewHolder> {
+public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
 
     private final String[] articulos = {"Taladro eléctrico", "Escalera plegable", "Bocina portátil"};
     private final String[] personas = {"Carlos Ramírez", "Ana López", "Luis Torres"};
@@ -35,7 +35,7 @@ public class prestamoAdapter extends RecyclerView.Adapter<prestamoAdapter.Presta
 
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
-            Intent intent = new Intent(context, codigoPrestamoActivity.class);
+            Intent intent = new Intent(context, CodigoPrestamoActivity.class);
             intent.putExtra("articulo", articulos[holder.getAdapterPosition()]);
             context.startActivity(intent);
         });

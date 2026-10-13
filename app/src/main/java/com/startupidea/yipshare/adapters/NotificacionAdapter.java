@@ -1,4 +1,4 @@
-package com.example.yipshare.adapters;
+package com.startupidea.yipshare.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.yipshare.R;
+import com.startupidea.yipshare.R;
 
-public class notificacionAdapter extends RecyclerView.Adapter<notificacionAdapter.NotificacionViewHolder> {
+public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapter.NotificacionViewHolder> {
 
     private final int cantidad;
 
-    public notificacionAdapter(int cantidad) {
+    public NotificacionAdapter(int cantidad) {
         this.cantidad = cantidad;
     }
 

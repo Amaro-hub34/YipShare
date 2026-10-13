@@ -1,4 +1,4 @@
-package com.example.yipshare.adapters;
+package com.startupidea.yipshare.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,11 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.yipshare.R;
+import com.startupidea.yipshare.R;
 
 import java.util.List;
 
-public class condominioAdapter extends RecyclerView.Adapter<condominioAdapter.CondominioViewHolder> {
+public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.CondominioViewHolder> {
 
     public interface OnCondominioClick {
         void onClick(String nombre);
@@ -22,7 +22,7 @@ public class condominioAdapter extends RecyclerView.Adapter<condominioAdapter.Co
     private final OnCondominioClick listener;
     private int seleccionado = 0;
 
-    public condominioAdapter(List<String> nombres, OnCondominioClick listener) {
+    public CondominioAdapter(List<String> nombres, OnCondominioClick listener) {
         this.nombres = nombres;
         this.listener = listener;
     }

@@ -1,4 +1,4 @@
-package com.example.yipshare;
+package com.startupidea.yipshare;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ingresoCondominioActivity extends AppCompatActivity {
+public class IngresoCondominioActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +21,10 @@ public class ingresoCondominioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ingreso_condominio);
 
         findViewById(R.id.btn_regresar).setOnClickListener(v -> {
-            startActivity(new Intent(ingresoCondominioActivity.this, pantallaPrincipalActivity.class));
+            startActivity(new Intent(IngresoCondominioActivity.this, PantallaPrincipalActivity.class));
         });
         findViewById(R.id.btn_unirse).setOnClickListener(v -> {
-            startActivity(new Intent(ingresoCondominioActivity.this, pantallaPrincipalActivity.class));
+            startActivity(new Intent(IngresoCondominioActivity.this, PantallaPrincipalActivity.class));
         });
         Guideline lineaGuiaCabeza = findViewById(R.id.guideline_header);
         View bottomNav = findViewById(R.id.bottom_nav);
@@ -45,16 +45,16 @@ public class ingresoCondominioActivity extends AppCompatActivity {
         });
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
-                startActivity(new Intent(ingresoCondominioActivity.this, pantallaPrincipalActivity.class)));
+                startActivity(new Intent(IngresoCondominioActivity.this, PantallaPrincipalActivity.class)));
 
         findViewById(R.id.nav_reportes).setOnClickListener(v ->
-                startActivity(new Intent(ingresoCondominioActivity.this, reporteActivity.class)));
+                startActivity(new Intent(IngresoCondominioActivity.this, ReporteActivity.class)));
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
-                startActivity(new Intent(ingresoCondominioActivity.this, formularioArticuloActivity.class)));
+                startActivity(new Intent(IngresoCondominioActivity.this, FormularioArticuloActivity.class)));
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
-                startActivity(new Intent(ingresoCondominioActivity.this, perfilActivity.class)));
+                startActivity(new Intent(IngresoCondominioActivity.this, PerfilActivity.class)));
         findViewById(R.id.nav_prestamos).setOnClickListener(v -> {
-            startActivity(new Intent(ingresoCondominioActivity.this, prestamoActivity.class));
+            startActivity(new Intent(IngresoCondominioActivity.this, PrestamoActivity.class));
 
         });
     }

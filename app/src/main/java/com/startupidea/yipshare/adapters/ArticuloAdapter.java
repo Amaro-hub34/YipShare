@@ -1,4 +1,4 @@
-package com.example.yipshare.adapters;
+package com.startupidea.yipshare.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.yipshare.R;
-import com.example.yipshare.detalleArticuloActivity;
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.DetalleArticuloActivity;
 
-public class articuloAdapter extends RecyclerView.Adapter<articuloAdapter.ArticuloViewHolder> {
+public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.ArticuloViewHolder> {
 
     private final int cantidad;
 
-    public articuloAdapter(int cantidad) {
+    public ArticuloAdapter(int cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -32,7 +32,7 @@ public class articuloAdapter extends RecyclerView.Adapter<articuloAdapter.Articu
     public void onBindViewHolder(@NonNull ArticuloViewHolder holder, int position) {
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
-            context.startActivity(new Intent(context, detalleArticuloActivity.class));
+            context.startActivity(new Intent(context, DetalleArticuloActivity.class));
         });
     }
 

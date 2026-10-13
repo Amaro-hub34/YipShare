@@ -1,13 +1,13 @@
-package com.example.yipshare.register;
+package com.startupidea.yipshare.register;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.yipshare.MainActivity;
-import com.example.yipshare.pantallaPrincipalActivity;
-import com.example.yipshare.R;
+import com.startupidea.yipshare.MainActivity;
+import com.startupidea.yipshare.PantallaPrincipalActivity;
+import com.startupidea.yipshare.R;
 
 public class RegistroCuenta2Activity extends AppCompatActivity {
 
@@ -17,7 +17,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_registrocuenta2);
 
         findViewById(R.id.btn_siguiente).setOnClickListener(v ->
-                startActivity(new Intent(RegistroCuenta2Activity.this, pantallaPrincipalActivity.class))
+                startActivity(new Intent(RegistroCuenta2Activity.this, PantallaPrincipalActivity.class))
         );
         findViewById(R.id.btn_regresar_registro2).setOnClickListener(v ->
                 startActivity(new Intent(RegistroCuenta2Activity.this, RegistroCuenta1Activity.class))
