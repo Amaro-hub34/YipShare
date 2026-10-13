@@ -7,9 +7,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 
 public class PerfilActivity extends AppCompatActivity {
@@ -51,9 +54,26 @@ public class PerfilActivity extends AppCompatActivity {
 
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
                 startActivity(new Intent(PerfilActivity.this, PerfilActivity.class)));
+
+        findViewById(R.id.btn_actualizar_datos).setOnClickListener(v -> mostrarMenuActualizarDatos());
+
         findViewById(R.id.btn_eliminar_cuenta).setOnClickListener(v -> {
             startActivity(new Intent(PerfilActivity.this, MainActivity.class));
 
         });
+    }
+
+    private void mostrarMenuActualizarDatos() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View sheet = getLayoutInflater().inflate(R.layout.activity_actualizar_perfil, null);
+        dialog.setContentView(sheet);
+
+        ((View) sheet.getParent()).setBackgroundColor(Color.TRANSPARENT);
+
+        sheet.findViewById(R.id.btn_actualizar_datos).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }
