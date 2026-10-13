@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
                 etCodigo.setError("Debe tener 6 dígitos");
             } else {
                 Toast.makeText(CodigoPrestamoActivity.this, "Código confirmado", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(CodigoPrestamoActivity.this, CalificarUsuarioActivity.class));
                 finish();
             }
         });
