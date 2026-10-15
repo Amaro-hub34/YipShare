@@ -171,7 +171,7 @@
                 android:gravity="center"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:text="@string/footer_terms" />
+                android:text="@string/footer_terminos" />
 
         </LinearLayout>
 

@@ -143,7 +143,7 @@
                 style="@style/TextBody"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/footer_contact" />
+                android:text="@string/footer_contacto" />
 
             <TextView
                 android:id="@+id/tv_terms"
@@ -151,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/footer_terms" />
+                android:text="@string/footer_terminos" />
 
         </LinearLayout>
 
