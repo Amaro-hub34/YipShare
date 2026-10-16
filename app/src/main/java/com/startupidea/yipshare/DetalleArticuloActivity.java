@@ -40,6 +40,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         findViewById(R.id.btn_accion_articulo).setOnClickListener(v -> {
             startActivity(new Intent(DetalleArticuloActivity.this, PantallaPrincipalActivity.class));
         });
+
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(DetalleArticuloActivity.this, PantallaPrincipalActivity.class)));
