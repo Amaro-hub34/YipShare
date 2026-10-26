@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="CÓDIGO DE PRÉSTAMO" />
+            android:text="@string/TextTitle" />
 
         <TextView
             android:id="@+id/tv_articulo_codigo"
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="[Nombre del artículo]" />
+            android:text="@string/tv_articulo_codigo" />
 
         <Button
             android:id="@+id/btn_generar_codigo"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:layout_marginTop="32dp"
-            android:text="Generar código" />
+            android:text="@string/btn_generar_codigo" />
 
         <TextView
             android:id="@+id/tv_codigo_generado"

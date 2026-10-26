@@ -32,6 +32,9 @@
         <item>Pendiente</item>
         <item>No disponible</item>
     </string-array>
+
+    <!-- activity_aceptar_habitantes -->
+    <string name="tv_titulo_pantalla"></string>
 </resources>
 
 

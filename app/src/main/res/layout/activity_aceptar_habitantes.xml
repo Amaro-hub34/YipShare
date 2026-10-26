@@ -30,7 +30,7 @@
         android:layout_height="24dp"
         android:src="@drawable/ic_arrow_back"
         app:tint="@android:color/white"
-        android:contentDescription="Regresar"
+        android:contentDescription="@string/btnRegresar"
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -43,7 +43,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Solicitudes de Habitantes"
+        android:text="@string/tv_titulo_pantalla"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -101,7 +101,7 @@
                 android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -130,7 +130,7 @@
                 android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -179,7 +179,7 @@
                 android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -208,7 +208,7 @@
                 android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
