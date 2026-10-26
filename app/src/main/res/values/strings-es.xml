@@ -45,6 +45,8 @@
     <string name="imageView_reportes">Reportes</string>
     <string name="imageView_perfil">Perfil</string>
 
+    <string name="btnRegresar">Regresar</string>
+
     <!-- activity_aceptar_habitantes -->
     <string name="tv_titulo_pantalla">Solicitudes de Habitantes</string>
 
@@ -63,7 +65,6 @@
     <string name="btn_actualizar_datos">Actualizar</string>
 
     <!--activity_calificar_usuario-->
-    <string name="btnRegresar">Regresar</string>
     <string name="tvTituloHeader">Calificar Usuario</string>
     <string name="tvNombreUsuario">Nombre del Vecino</string>
     <string name="tvSubtitulo">¿Cómo fue tu experiencia con el préstamo?</string>
@@ -75,7 +76,9 @@
     <string name="TextTitle">CÓDIGO DE PRÉSTAMO</string>
     <string name="tv_articulo_codigo">[Nombre del artículo]</string>
     <string name="btn_generar_codigo">Generar código</string>
-    <string name="tv_codigo_generado">000000</string>
+    <string name="or">ó</string>
+    <string name="et_codigo">Ingresa el código de 6 dígitos</string>
+    <string name="btn_confirmar_codigo">Confirmar código</string>
 
     <!--activity_detalle_articulo-->
     <string name="DA_tv_titulo_pantalla">Detalle del Artículo</string>
@@ -86,7 +89,6 @@
     <string name="tv_descripcion">Esta es una descripción de prueba</string>
     <string name="DA_TextTitle">Tiempo préstamo</string>
     <string name="tv_prestamista">Nombre de usuario</string>
-    <string name="tv_calificacion_numero">0.0</string>
     <string name="btn_accion_articulo">Solicitar Artículo</string>
 
     <!--activity_formulario_articulo-->
@@ -103,4 +105,14 @@
     <string name="FA_formatos">Formatos: PNG, JPG, JPEG</string>
     <string name="btn_accion_principal">Publicar</string>
     <string name="btn_borrar_objeto">Borrar objeto</string>
+
+    <!--activity_ingreso_condominio-->
+    <string name="IC_tv_titulo_pantalla">Unirse a un Condominio</string>
+    <string name="IC_TextTitle">Código del condominio</string>
+    <string name="et_codigo_condominio">Ej: ABC123</string>
+    <string name="tv_error_codigo">Código inválido</string>
+    <string name="tv_direccion">Dirección: </string>
+    <string name="IC_et_direccion_edificio">Ej: Edificio 2</string>
+    <string name="IC_et_direccion_departamento">Ej: Departamento: 14</string>
+    <string name="btn_unirse">Unirse</string>
 </resources>

@@ -31,7 +31,7 @@
         android:layout_height="24dp"
         android:src="@drawable/ic_arrow_back"
         app:tint="@android:color/white"
-        android:contentDescription="Regresar"
+        android:contentDescription="@string/btnRegresar"
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -45,7 +45,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Unirse a un Condominio"
+        android:text="@string/IC_tv_titulo_pantalla"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -94,7 +94,7 @@
                         style="@style/TextTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Código del condominio"
+                        android:text="@string/IC_TextTitle"
                         android:textSize="20sp" />
 
                     <EditText
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:background="@drawable/bg_input"
-                        android:hint="Ej: ABC123"
+                        android:hint="@string/et_codigo_condominio"
                         android:inputType="textCapCharacters"
                         android:maxLines="1"
                         android:padding="12dp" />
@@ -113,7 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Código inválido"
+                        android:text="@string/tv_error_codigo"
                         android:textColor="#D32F2F"
                         android:textSize="12sp"
                         android:visibility="gone" />
@@ -124,7 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Dirección:"
+                        android:text="@string/tv_direccion"
                         android:textSize="20sp" />
 
                     <EditText
@@ -133,7 +133,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_input"
-                        android:hint="Ej: Edificio 2"
+                        android:hint="@string/IC_et_direccion_edificio"
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
                         android:padding="12dp" />
@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_input"
-                        android:hint="Ej: Departamento: 14"
+                        android:hint="@string/IC_et_direccion_departamento"
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
                         android:padding="12dp" />
@@ -155,7 +155,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="20dp"
-                        android:text="Unirse" />
+                        android:text="@string/btn_unirse" />
 
                 </LinearLayout>
 
@@ -197,13 +197,13 @@
                 app:tint="#99FFFFFF"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="Inicio" />
+                android:contentDescription="@string/imageView_inicio" />
 
             <TextView
                 android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -227,13 +227,13 @@
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
 
-                android:contentDescription="Préstamos" />
+                android:contentDescription="@string/imageView_prestamos" />
 
             <TextView
                 android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -258,7 +258,7 @@
                 app:tint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="Agregar" />
+                android:contentDescription="@string/imageView_agregar" />
         </LinearLayout>
 
         <LinearLayout
@@ -278,13 +278,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Reportes" />
+                android:contentDescription="@string/imageView_reportes" />
 
             <TextView
                 android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -307,13 +307,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Perfil" />
+                android:contentDescription="@string/imageView_perfil" />
 
             <TextView
                 android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />

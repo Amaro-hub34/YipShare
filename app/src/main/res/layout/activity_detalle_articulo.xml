@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Tiempo préstamo" />
+                        android:text="@string/tv_tiempo_prestamo" />
                     <Spinner
                         android:id="@+id/sp_estado_fisico"
                         android:layout_width="match_parent"
@@ -223,7 +223,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="6dp"
-                                    android:text="@string/tv_calificacion_numero" />
+                                    android:text="0.0" />
 
                             </LinearLayout>
 

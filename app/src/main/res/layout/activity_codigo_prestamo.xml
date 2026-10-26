@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="28dp"
-            android:text="ó" />
+            android:text="@string/or" />
 
         <EditText
             android:id="@+id/et_codigo"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:gravity="center"
-            android:hint="Ingresa el código de 6 dígitos"
+            android:hint="@string/et_codigo"
             android:inputType="number"
             android:maxLength="6" />
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:layout_marginTop="14dp"
-            android:text="Confirmar código" />
+            android:text="@string/btn_confirmar_codigo" />
 
     </LinearLayout>
 
