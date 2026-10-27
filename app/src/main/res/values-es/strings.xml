@@ -69,7 +69,7 @@
     <string name="tvNombreUsuario">Nombre del Vecino</string>
     <string name="tvSubtitulo">¿Cómo fue tu experiencia con el préstamo?</string>
     <string name="comentario">Comentario (opcional)</string>
-    <string name="etComentario">Escribe una breve reseña...</string>
+    <string name="etComentario">Escribe una breve reseña</string>
     <string name="btnEnviarCalificacion">Enviar Calificación</string>
 
     <!--activity_codigo_prestamo-->
@@ -115,4 +115,5 @@
     <string name="IC_et_direccion_edificio">Ej: Edificio 2</string>
     <string name="IC_et_direccion_departamento">Ej: Departamento: 14</string>
     <string name="btn_unirse">Unirse</string>
+
 </resources>

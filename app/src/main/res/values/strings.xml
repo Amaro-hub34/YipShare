@@ -1,40 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">YipShare</string>
-    <string name="footer_contacto">Contáctanos: +52 55 1234 5678</string>
-    <string name="footer_terminos">Conoce nuestros términos y condiciones</string>
+    <string name="footer_contacto">Contact us: +52 55 1234 5678</string>
+    <string name="footer_terminos">Read our terms and conditions</string>
 
     <string-array name="opciones_estado_fisico">
-        <item>Excelente estado</item>
-        <item>Buen estado</item>
-        <item>Estado intermedio</item>
-        <item>Mal estado</item>
+        <item>Excellent condition</item>
+        <item>Good condition</item>
+        <item>Fair condition</item>
+        <item>Poor condition</item>
     </string-array>
     <string-array name="categorias_articulo">
-        <item>Herramientas</item>
-        <item>Electrodomésticos</item>
-        <item>Jardinería</item>
-        <item>Cocina</item>
-        <item>Limpieza</item>
-        <item>Electrónica</item>
-        <item>Automotriz</item>
-        <item>Otros</item>
+        <item>Tools</item>
+        <item>Appliances</item>
+        <item>Gardening</item>
+        <item>Kitchen</item>
+        <item>Cleaning</item>
+        <item>Electronics</item>
+        <item>Automotive</item>
+        <item>Others</item>
     </string-array>
     <string-array name="tiempo_prestamo">
-        <item>1 día</item>
-        <item>2 días</item>
-        <item>3 días</item>
-        <item>1 semana</item>
-        <item>2 semanas</item>
-        <item>1 mes</item>
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>1 week</item>
+        <item>2 weeks</item>
+        <item>1 month</item>
     </string-array>
     <string-array name="estado_prestamo">
-        <item>Disponible</item>
-        <item>Pendiente</item>
-        <item>No disponible</item>
+        <item>Available</item>
+        <item>Pending</item>
+        <item>Unavailable</item>
     </string-array>
 
+    <string name="textView_inicio">HOME</string>
+    <string name="textView_prestamos">LOANS</string>
+    <string name="textView_reportes">REPORTS</string>
+    <string name="textView_perfil">PROFILE</string>
+
+    <string name="imageView_inicio">Home</string>
+    <string name="imageView_prestamos">Loans</string>
+    <string name="imageView_agregar">Add</string>
+    <string name="imageView_reportes">Reports</string>
+    <string name="imageView_perfil">Profile</string>
+
+    <string name="btnRegresar">Back</string>
+
     <!-- activity_aceptar_habitantes -->
-    <string name="tv_titulo_pantalla"></string>
+    <string name="tv_titulo_pantalla">Resident Requests</string>
+
+    <!--activity_actualizar_perfil-->
+    <string name="pago_mes_actualizar_perfil">Monthly payment: </string>
+    <string name="usuario_actualizar_perfil">User</string>
+    <string name="contrasena_actualizar_perfil">Password</string>
+    <string name="datos_personales">Personal Information</string>
+    <string name="apellido_paterno">Paternal Last Name</string>
+    <string name="apellido_materno">Maternal Last Name</string>
+    <string name="direccion_actualizar_perfil">Address:</string>
+    <string name="et_direccion_edificio">e.g., Building 2</string>
+    <string name="et_direccion_departamento">e.g., Apartment: 14</string>
+    <string name="btn_adjuntar_identificacion">Attach PDF</string>
+    <string name="tv_archivo_identificacion">No file selected</string>
+    <string name="btn_actualizar_datos">Update</string>
+
+    <!--activity_calificar_usuario-->
+    <string name="tvTituloHeader">Rate User</string>
+    <string name="tvNombreUsuario">Neighbor\'s Name</string>
+    <string name="tvSubtitulo">How was your experience with the loan?</string>
+    <string name="comentario">Comment (optional)</string>
+    <string name="etComentario">Write a brief review...</string>
+    <string name="btnEnviarCalificacion">Submit Rating</string>
+
+    <!--activity_codigo_prestamo-->
+    <string name="TextTitle">LOAN CODE</string>
+    <string name="tv_articulo_codigo">[Item name]</string>
+    <string name="btn_generar_codigo">Generate code</string>
+    <string name="or">or</string>
+    <string name="et_codigo">Enter the 6-digit code</string>
+    <string name="btn_confirmar_codigo">Confirm code</string>
+
+    <!--activity_detalle_articulo-->
+    <string name="DA_tv_titulo_pantalla">Item Details</string>
+    <string name="eliminar_articulo">Delete Item</string>
+    <string name="tv_estado_articulo">Available</string>
+    <string name="tv_nombre_articulo">[FULL ITEM NAME]</string>
+    <string name="tv_categoria">(Category)</string>
+    <string name="tv_descripcion">This is a test description</string>
+    <string name="DA_TextTitle">Loan period</string>
+    <string name="tv_prestamista">Username</string>
+    <string name="btn_accion_articulo">Request Item</string>
+
+    <!--activity_formulario_articulo-->
+    <string name="FA_tv_titulo_pantalla">Post Item</string>
+    <string name="FA_nombre_articulo">Item name</string>
+    <string name="et_nombre_articulo">e.g., Scissors</string>
+    <string name="FA_categoria">Category</string>
+    <string name="FA_descripcion">Description</string>
+    <string name="et_descripcion">Item description</string>
+    <string name="FA_TextTitle">Physical condition</string>
+    <string name="tv_tiempo_prestamo">Loan duration</string>
+    <string name="iv_preview_imagen">Image preview</string>
+    <string name="btn_cambiar_imagen">Change image</string>
+    <string name="FA_formatos">Formats: PNG, JPG, JPEG</string>
+    <string name="btn_accion_principal">Post</string>
+    <string name="btn_borrar_objeto">Delete item</string>
+
+    <!--activity_ingreso_condominio-->
+    <string name="IC_tv_titulo_pantalla">Join a Condominium</string>
+    <string name="IC_TextTitle">Condominium code</string>
+    <string name="et_codigo_condominio">e.g., ABC123</string>
+    <string name="tv_error_codigo">Invalid code</string>
+    <string name="tv_direccion">Address: </string>
+    <string name="IC_et_direccion_edificio">e.g., Building 2</string>
+    <string name="IC_et_direccion_departamento">e.g., Apartment: 14</string>
+    <string name="btn_unirse">Join</string>
 </resources>
 
 
