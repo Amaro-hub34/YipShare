@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="INICIAR SESIÓN"
+                android:text="@string/Main_TextTitle"
                 android:layout_marginBottom="20dp" />
 
             <TextView
@@ -80,27 +80,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Error de inicio de sesión"
+                android:text="@string/tv_error"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/usuario_IS"
                 style="@style/InputBrand"
-                android:hint="Usuario"
+                android:hint="@string/usuario_IS"
                 android:inputType="textNoSuggestions"
                 android:layout_marginBottom="14dp" />
 
             <EditText
                 android:id="@+id/et_password"
                 style="@style/InputBrand"
-                android:hint="Contraseña"
+                android:hint="@string/et_password"
                 android:inputType="textPassword"
                 android:layout_marginBottom="22dp" />
 
             <Button
                 android:id="@+id/btn_entrar"
                 style="@style/ButtonPrimary"
-                android:text="Entrar"
+                android:text="@string/btn_entrar"
                 android:layout_marginBottom="16dp" />
 
             <LinearLayout
@@ -113,14 +113,14 @@
                     style="@style/TextBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¿No tienes cuenta? " />
+                    android:text="@string/noCuneta_message" />
 
                 <TextView
                     android:id="@+id/boton_registrate"
                     style="@style/TextLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Regístrate" />
+                    android:text="@string/boton_registrate" />
 
             </LinearLayout>
 

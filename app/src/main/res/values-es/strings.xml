@@ -47,6 +47,8 @@
 
     <string name="btnRegresar">Regresar</string>
 
+    <string name="notification">Notificaciones</string>
+
     <!-- activity_aceptar_habitantes -->
     <string name="tv_titulo_pantalla">Solicitudes de Habitantes</string>
 
@@ -115,5 +117,28 @@
     <string name="IC_et_direccion_edificio">Ej: Edificio 2</string>
     <string name="IC_et_direccion_departamento">Ej: Departamento: 14</string>
     <string name="btn_unirse">Unirse</string>
+
+    <!--activity_main-->
+    <string name="Main_TextTitle">INICIAR SESIÓN</string>
+    <string name="tv_error">Error de inicio de sesión</string>
+    <string name="usuario_IS">Usuario</string>
+    <string name="et_password">Contraseña</string>
+    <string name="btn_entrar">Entrar</string>
+    <string name="noCuneta_message">¿No tienes cuenta? </string>
+    <string name="boton_registrate">Regístrate</string>
+
+    <!--activity_notificacion-->
+    <string name="tv_sin_notificaciones">No tienes notificaciones</string>
+
+    <!--activity_panel_condominios-->
+    <string name="misCondominios">Mis condominios</string>
+
+    <!--activity_pantalla_principal-->
+    <string name="tv_condominio">[Nombre del Condominio]</string>
+    <string name="tv_saludo">Hola, [Nombre]</string>
+    <string name="et_buscar">Buscar artículo...</string>
+    <string name="tv_no_articulos">No hay artículos disponibles</string>
+    <string name="btn_crear_condominio">Crear Condominio</string>
+    <string name="btn_unirse_condominio">Unirse a Condominio</string>
 
 </resources>

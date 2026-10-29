@@ -37,7 +37,7 @@
         android:layout_height="24dp"
         android:src="@drawable/ic_arrow_back"
         app:tint="@android:color/white"
-        android:contentDescription="Regresar"
+        android:contentDescription="@string/btnRegresar"
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -50,7 +50,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Notificaciones"
+        android:text="@string/notification"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -79,7 +79,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="No tienes notificaciones"
+        android:text="@string/tv_sin_notificaciones"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/guideline_header"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
@@ -114,12 +114,12 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
                 app:tint="@android:color/white"
-                android:contentDescription="Inicio" />
+                android:contentDescription="@string/imageView_inicio" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -141,12 +141,12 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Préstamos" />
+                android:contentDescription="@string/imageView_prestamos" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -168,7 +168,7 @@
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
-                android:contentDescription="Agregar" />
+                android:contentDescription="@string/imageView_agregar" />
         </LinearLayout>
 
         <LinearLayout
@@ -187,12 +187,12 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Reportes" />
+                android:contentDescription="@string/imageView_reportes" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -214,12 +214,12 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Perfil" />
+                android:contentDescription="@string/imageView_perfil" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
