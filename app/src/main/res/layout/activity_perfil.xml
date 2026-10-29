@@ -36,7 +36,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Perfil"
+        android:text="@string/textView_reportes"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -88,7 +88,7 @@
                             style="@style/TextTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Pago del mes: "
+                            android:text="@string/pagoMes"
                             android:textSize="16sp"
                             android:layout_marginBottom="8dp" />
 
@@ -96,7 +96,7 @@
                             android:id="@+id/cbPagoMes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí, pagó este mes" />
+                            android:text="@string/cbPagoMes" />
 
 
                     </LinearLayout>
@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:textSize="16sp"
-                        android:text="Usuario" />
+                        android:text="" />
 
                     <TextView
                         android:id="@+id/et_correo_electronico"

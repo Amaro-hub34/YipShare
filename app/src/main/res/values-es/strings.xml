@@ -140,5 +140,10 @@
     <string name="tv_no_articulos">No hay artículos disponibles</string>
     <string name="btn_crear_condominio">Crear Condominio</string>
     <string name="btn_unirse_condominio">Unirse a Condominio</string>
+    <string name="tv_articulos_disponibles">Artículos Disponibles</string>
+
+    <!--activity_perfil-->
+    <string name="pagoMes">Pago del mes: </string>
+    <string name="cbPagoMes">Sí, pagó este mes</string>
 
 </resources>
