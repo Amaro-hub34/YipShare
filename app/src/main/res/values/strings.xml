@@ -60,8 +60,8 @@
     <string name="direccion_actualizar_perfil">Address:</string>
     <string name="et_direccion_edificio">e.g., Building 2</string>
     <string name="et_direccion_departamento">e.g., Apartment: 14</string>
-    <string name="btn_adjuntar_identificacion">Attach PDF</string>
-    <string name="tv_archivo_identificacion">No file selected</string>
+    <string name="btn_adjuntar">Attach PDF</string>
+    <string name="tv_archivo">No file selected</string>
     <string name="btn_actualizar_datos">Update</string>
 
     <!--activity_calificar_usuario-->
@@ -97,7 +97,7 @@
     <string name="et_nombre_articulo">e.g., Scissors</string>
     <string name="FA_categoria">Category</string>
     <string name="FA_descripcion">Description</string>
-    <string name="et_descripcion">Item description</string>
+    <string name="et_descripcionObject">Item description</string>
     <string name="FA_TextTitle">Physical condition</string>
     <string name="tv_tiempo_prestamo">Loan duration</string>
     <string name="iv_preview_imagen">Image preview</string>
@@ -115,6 +115,79 @@
     <string name="IC_et_direccion_edificio">e.g., Building 2</string>
     <string name="IC_et_direccion_departamento">e.g., Apartment: 14</string>
     <string name="btn_unirse">Join</string>
+
+    <!--activity_main-->
+    <string name="Main_TextTitle">LOG IN</string>
+    <string name="tv_error">Login error</string>
+    <string name="usuario_IS">Username</string>
+    <string name="et_password">Password</string>
+    <string name="btn_entrar">Log In</string>
+    <string name="noCuneta_message">Don\'t have an account? </string>
+    <string name="boton_registrate">Sign up</string>
+
+    <!--activity_notificacion-->
+    <string name="tv_sin_notificaciones">You have no notifications</string>
+
+    <!--activity_panel_condominios-->
+    <string name="misCondominios">My condominiums</string>
+
+    <!--activity_pantalla_principal-->
+    <string name="tv_condominio">[Condominium Name]</string>
+    <string name="tv_saludo">Hello, [Name]</string>
+    <string name="et_buscar">Search item...</string>
+    <string name="tv_no_articulos">No items available</string>
+    <string name="btn_crear_condominio">Create Condominium</string>
+    <string name="btn_unirse_condominio">Join Condominium</string>
+    <string name="tv_articulos_disponibles">Available Items</string>
+
+    <!--activity_perfil-->
+    <string name="pagoMes">Monthly payment: </string>
+    <string name="cbPagoMes">Yes, paid this month</string>
+    <string name="AP_contrasena">Password</string>
+    <string name="nombres">First Name(s)</string>
+    <string name="id_oficial">Official ID</string>
+    <string name="miCalificacion">My Rating</string>
+    <string name="btn_eliminar_cuenta">Delete Account</string>
+    <string name="btn_sacar_habitante">Remove Resident from Condominium</string>
+
+    <!--activity_registrar_condominio-->
+    <string name="ARC_tv_titulo_pantalla">Create Condominium</string>
+    <string name="nameCondominio">Official condominium name</string>
+    <string name="et_nombre_condominio">e.g., Condominium 123</string>
+    <string name="ARC_direccion">Address</string>
+    <string name="et_direccion_condominio1">Street</string>
+    <string name="et_direccion_condominio2">Neighborhood / Suburb</string>
+    <string name="et_direccion_condominio3">ZIP Code</string>
+    <string name="et_direccion_condominio4">Borough / Municipality</string>
+    <string name="et_direccion_condominio5">City</string>
+    <string name="cantUnidades">Number of units</string>
+    <string name="et_cantidad_unidades">Apartments or houses</string>
+    <string name="Doc">Documents (PDF)</string>
+    <string name="RegimenCondominio">Condominium Master Deed / Articles of Incorporation</string>
+    <string name="tv_archivo_escritura">No file selected</string>
+    <string name="nombramientoAdmin">Assembly Minutes of Administrator Appointment</string>
+    <string name="tv_archivo_acta">No file selected</string>
+    <string name="RFCCondo">Condominium Tax ID (RFC)</string>
+    <string name="tv_archivo_rfc">No file selected</string>
+    <string name="formatoPermitido">Allowed format: PDF</string>
+
+    <!--activity_registrocuenta1 y 2-->
+    <string name="registrarCuenta">REGISTER ACCOUNT</string>
+    <string name="RC_tv_error">Login error</string>
+    <string name="btn_siguiente">Next</string>
+    <string name="YaTienesCuenta">Already have an account?</string>
+    <string name="boton_regresar_Main">Log in</string>
+    <string name="contrasena_confirmacion">Confirm Password</string>
+    <string name="btn_crearCuenta">Create Account</string>
+
+    <!--activity_reporte-->
+    <string name="report_vecino">Neighbor involved</string>
+    <string name="et_nombre_vecino">e.g., John Doe</string>
+    <string name="descripcion">Description</string>
+    <string name="et_descripcion">Tell us what happened</string>
+    <string name="img_objetoAfectado">Image of affected object</string>
+    <string name="btn_cambiar_imagen2">Change image</string>
+    <string name="btn_enviar_Reporte">Submit Report</string>
 </resources>
 
 

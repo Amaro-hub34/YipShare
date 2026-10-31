@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:textSize="16sp"
-                        android:text="Contraseña"
+                        android:text="@string/contrasena_actualizar_perfil"
                         />
 
                     <TextView
@@ -135,7 +135,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textPassword"
-                        android:hint="Contraseña"
+                        android:hint="@string/AP_contrasena"
                         android:maxLines="1"
                         android:layout_marginBottom="10dp"/>
 
@@ -144,7 +144,7 @@
                         style="@style/TextTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Datos Personales"
+                        android:text="@string/datos_personales"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="10dp"
@@ -153,7 +153,7 @@
                     <TextView
                         android:id="@+id/apellido_paterno"
                         style="@style/InputBrand"
-                        android:hint="Apellido Paterno"
+                        android:hint="@string/apellido_paterno"
                         android:inputType="textPersonName"
                         android:background="@drawable/bg_input"
                         android:minHeight="48dp"
@@ -162,7 +162,7 @@
                     <TextView
                         android:id="@+id/apellido_materno"
                         style="@style/InputBrand"
-                        android:hint="Apellido Materno"
+                        android:hint="@string/apellido_materno"
                         android:inputType="textPersonName"
                         android:background="@drawable/bg_input"
                         android:minHeight="48dp"
@@ -171,7 +171,7 @@
                     <TextView
                         android:id="@+id/nombres"
                         style="@style/InputBrand"
-                        android:hint="Nombre(s)"
+                        android:hint="@string/nombres"
                         android:inputType="textPersonName"
                         android:background="@drawable/bg_input"
                         android:minHeight="48dp"
@@ -184,7 +184,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:layout_marginTop="10dp"
-                        android:text="Dirección:" />
+                        android:text="@string/tv_direccion" />
 
                     <TextView
                         android:id="@+id/et_direccion_edificio"
@@ -195,7 +195,7 @@
                         android:padding="12dp"
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
-                        android:hint="Ej: Edificio 2" />
+                        android:hint="@string/IC_et_direccion_edificio" />
                     <TextView
                         android:id="@+id/et_direccion_departamento"
                         android:layout_width="match_parent"
@@ -205,14 +205,14 @@
                         android:padding="12dp"
                         android:inputType="textPostalAddress"
                         android:maxLines="1"
-                        android:hint="Ej: Departamento: 14" />
+                        android:hint="@string/IC_et_direccion_departamento" />
                     <TextView
                         style="@style/TextTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Identificación Oficial" />
+                        android:text="@string/id_oficial" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                             style="@style/ButtonSecundary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Adjuntar PDF" />
+                            android:text="@string/btn_adjuntar" />
 
                         <TextView
                             android:id="@+id/tv_archivo_identificacion"
@@ -237,7 +237,7 @@
                             android:layout_marginStart="10dp"
                             android:maxLines="1"
                             android:ellipsize="middle"
-                            android:text="Ningún archivo seleccionado" />
+                            android:text="@string/tv_archivo" />
                     </LinearLayout>
 
                     <TextView
@@ -246,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:layout_marginTop="10dp"
-                        android:text="Mi Calificación" />
+                        android:text="@string/miCalificacion" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -283,7 +283,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="20dp"
-                        android:text="Actualizar Datos" />
+                        android:text="@string/btn_actualizar_datos" />
 
                     <Button
                         android:id="@+id/btn_eliminar_cuenta"
@@ -291,14 +291,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
                         android:layout_marginTop="10dp"
-                        android:text="Eliminar Cuenta" />
+                        android:text="@string/btn_eliminar_cuenta" />
                     <Button
                         android:id="@+id/btn_sacar_habitante"
                         style="@style/ButtonPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginTop="10dp"
-                        android:text="Eliminar Habitante de Condominio"
+                        android:text="@string/btn_sacar_habitante"
                         android:visibility="gone" />
 
                 </LinearLayout>
@@ -338,13 +338,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Inicio" />
+                android:contentDescription="@string/imageView_inicio" />
 
             <TextView
                 android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -367,13 +367,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Préstamos" />
+                android:contentDescription="@string/imageView_prestamos" />
 
             <TextView
                 android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -396,7 +396,7 @@
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
-                android:contentDescription="Agregar" />
+                android:contentDescription="@string/imageView_agregar" />
         </LinearLayout>
 
         <LinearLayout
@@ -416,13 +416,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Reportes" />
+                android:contentDescription="@string/imageView_reportes" />
 
             <TextView
                 android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -445,13 +445,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
                 app:tint="@android:color/white"
-                android:contentDescription="Perfil" />
+                android:contentDescription="@string/imageView_perfil" />
 
             <TextView
                 android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />

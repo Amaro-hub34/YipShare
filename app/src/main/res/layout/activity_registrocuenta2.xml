@@ -37,7 +37,7 @@
             android:id="@+id/btn_regresar_registro2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regresar"
+            android:text="@string/btnRegresar"
             android:textColor="@color/texto_sobre_imagen"
             android:textSize="16sp"
             android:layout_margin="16dp"
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="REGISTRAR CUENTA"
+                android:text="@string/registrarCuenta"
                 android:layout_marginBottom="20dp" />
 
             <TextView
@@ -101,14 +101,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Error de inicio de sesión"
+                android:text="@string/RC_tv_error"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/usuario_IS"
                 style="@style/InputBrand"
                 android:autofillHints="username"
-                android:hint="Usuario"
+                android:hint="@string/usuario_IS"
                 android:inputType="textNoSuggestions"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
@@ -117,16 +117,16 @@
                 android:id="@+id/contraseña"
                 style="@style/InputBrand"
                 android:autofillHints="password"
-                android:hint="Contraseña"
+                android:hint="@string/AP_contrasena"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
 
             <EditText
-                android:id="@+id/contraseña_confirmacion"
+                android:id="@+id/contrasena_confirmacion"
                 style="@style/InputBrand"
                 android:autofillHints="password"
-                android:hint="Confirmar Contraseña"
+                android:hint="@string/contrasena_confirmacion"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
@@ -142,7 +142,7 @@
             <Button
                 android:id="@+id/btn_siguiente"
                 style="@style/ButtonPrimary"
-                android:text="Crear Cuenta"
+                android:text="@string/btn_crearCuenta"
                 android:minHeight="48dp"
                 android:layout_marginBottom="10dp" />
 
@@ -157,7 +157,7 @@
                     style="@style/TextBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¿Ya tienes una cuenta? " />
+                    android:text="@string/YaTienesCuenta" />
 
                 <TextView
                     android:id="@+id/btn_regresar_main"
@@ -169,7 +169,7 @@
                     android:minWidth="48dp"
                     android:minHeight="48dp"
                     android:gravity="center_vertical"
-                    android:text="Inicia sesión" />
+                    android:text="@string/boton_regresar_Main" />
 
             </LinearLayout>
 

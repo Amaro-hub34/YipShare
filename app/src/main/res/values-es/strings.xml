@@ -62,9 +62,9 @@
     <string name="direccion_actualizar_perfil">Dirección:</string>
     <string name="et_direccion_edificio">Ej: Edificio 2</string>
     <string name="et_direccion_departamento">Ej: Departamento: 14</string>
-    <string name="btn_adjuntar_identificacion">Adjuntar PDF</string>
-    <string name="tv_archivo_identificacion">Ningún archivo seleccionado</string>
-    <string name="btn_actualizar_datos">Actualizar</string>
+    <string name="btn_adjuntar">Adjuntar PDF</string>
+    <string name="tv_archivo">Ningún archivo seleccionado</string>
+    <string name="btn_actualizar_datos">Actualizar Datos</string>
 
     <!--activity_calificar_usuario-->
     <string name="tvTituloHeader">Calificar Usuario</string>
@@ -99,7 +99,7 @@
     <string name="et_nombre_articulo">Ej: Tijeras</string>
     <string name="FA_categoria">Categoría</string>
     <string name="FA_descripcion">Descripción</string>
-    <string name="et_descripcion">Descripción de objeto</string>
+    <string name="et_descripcionObject">Descripción de objeto</string>
     <string name="FA_TextTitle">Estado físico</string>
     <string name="tv_tiempo_prestamo">Tiempo de préstamo</string>
     <string name="iv_preview_imagen">Vista previa de la imagen</string>
@@ -145,5 +145,50 @@
     <!--activity_perfil-->
     <string name="pagoMes">Pago del mes: </string>
     <string name="cbPagoMes">Sí, pagó este mes</string>
+    <string name="AP_contrasena">Contraseña</string>
+    <string name="nombres">Nombre(s)"</string>
+    <string name="id_oficial">Identificación Oficial</string>
+    <string name="miCalificacion">Mi Calificación</string>
+    <string name="btn_eliminar_cuenta">Eliminar Cuenta</string>
+    <string name="btn_sacar_habitante">Eliminar Habitante de Condominio</string>
+
+    <!--activity_registrar_condominio-->
+    <string name="ARC_tv_titulo_pantalla">Crear Condominio</string>
+    <string name="nameCondominio">Nombre oficial del condominio</string>
+    <string name="et_nombre_condominio">Ej. Condominio 123</string>
+    <string name="ARC_direccion">Dirección</string>
+    <string name="et_direccion_condominio1">Calle</string>
+    <string name="et_direccion_condominio2">Colonia</string>
+    <string name="et_direccion_condominio3">CP</string>
+    <string name="et_direccion_condominio4">Alcaldía/Municipio</string>
+    <string name="et_direccion_condominio5">Ciudad</string>
+    <string name="cantUnidades">Cantidad de unidades</string>
+    <string name="et_cantidad_unidades">Departamentos o casas</string>
+    <string name="Doc">Documentos (PDF)</string>
+    <string name="RegimenCondominio">Escritura Constitutiva del Régimen de Propiedad en Condominio</string>
+    <string name="tv_archivo_escritura">Ningún archivo seleccionado</string>
+    <string name="nombramientoAdmin">Acta de Asamblea de Nombramiento del Administrador</string>
+    <string name="tv_archivo_acta">Ningún archivo seleccionado</string>
+    <string name="RFCCondo">RFC del Condominio</string>
+    <string name="tv_archivo_rfc">Ningún archivo seleccionado</string>
+    <string name="formatoPermitido">Formato permitido: PDF</string>
+
+    <!--activity_registrocuenta1 y 2-->
+    <string name="registrarCuenta">REGISTRAR CUENTA</string>
+    <string name="RC_tv_error">Error de inicio de sesión</string>
+    <string name="btn_siguiente">Siguiente</string>
+    <string name="YaTienesCuenta">¿Ya tienes una cuenta?</string>
+    <string name="boton_regresar_Main">Inicia sesión</string>
+    <string name="contrasena_confirmacion">Confirmar Contraseña</string>
+    <string name="btn_crearCuenta">Crear Cuenta</string>
+
+    <!--activity_reporte-->
+<string name="report_vecino">Vecino involucrado</string>
+    <string name="et_nombre_vecino">Ej: Pedro Pérez</string>
+    <string name="descripcion">Descripción</string>
+    <string name="et_descripcion">Hablanos de lo que sucedio</string>
+    <string name="img_objetoAfectado">Imagen del objeto afectado</string>
+    <string name="btn_cambiar_imagen2">Cambiar imagen</string>
+    <string name="btn_enviar_Reporte">Enviar Reporte</string>
 
 </resources>
