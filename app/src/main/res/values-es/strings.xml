@@ -191,4 +191,16 @@
     <string name="btn_cambiar_imagen2">Cambiar imagen</string>
     <string name="btn_enviar_Reporte">Enviar Reporte</string>
 
+    <!--activity_terms_and_conditions-->
+    <string name="termsConditions">Términos y Condiciones</string>
+    <string name="ultimaActualizacion">Última actualización: octubre de 2026</string>
+    <string name="bienvenido">Bienvenido a YipShare. Al crear una cuenta o usar la plataforma aceptas los Términos y Condiciones.</string>
+    <string name="acceptTerms">1. Aceptación de los términos</string>
+    <string name="alRegistrarse">Al registrarte, iniciar sesión o utilizar cualquier función de YipShare, confirmas que has leído, entendido y aceptado estos términos. Si no estás de acuerdo con alguna parte, te pedimos que no uses la plataforma. Debes ser mayor de edad o contar con la autorización de tu madre, padre o tutor legal.</string>
+    <string name="YipshareQueEs">2. Qué es YipShare</string>
+    <string name="YipshareEs">YipShare es una plataforma que conecta a personas de una misma comunidad para compartir, prestar y utilizar objetos (herramientas, bicicletas, libros, equipo, entre otros) en lugar de comprarlos y acumularlos. Nuestra idea es simple: el valor está en el uso, no en la posesión.\n\nYipShare actúa únicamente como intermediario que facilita el contacto entre usuarios. No es propietario de los artículos publicados, no participa como parte en los acuerdos entre usuarios y no garantiza que un préstamo se concrete.</string>
+    <string name="registroYCuenta">3. Registro y cuenta</string>
+    <string name="registroYCuenta_descripcion">• Debes proporcionar información verdadera, completa y actualizada al registrarte.\n• Eres responsable de mantener la confidencialidad de tu usuario y contraseña.\n• Cada persona puede tener una sola cuenta; no está permitido suplantar a otros usuarios.\n• Debes avisarnos de inmediato si sospechas que tu cuenta fue usada sin tu permiso.</string>
+    <string name="publicacionArti">4. Publicación de artículos</string>
+
 </resources>

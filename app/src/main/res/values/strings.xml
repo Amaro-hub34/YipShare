@@ -47,6 +47,8 @@
 
     <string name="btnRegresar">Back</string>
 
+    <string name="notification">Notifications</string>
+
     <!-- activity_aceptar_habitantes -->
     <string name="tv_titulo_pantalla">Resident Requests</string>
 
