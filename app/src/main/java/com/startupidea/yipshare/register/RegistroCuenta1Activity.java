@@ -1,29 +1,96 @@
 package com.startupidea.yipshare.register;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.TermsAndConditionsActivity;
+import com.startupidea.yipshare.user.InvalidField;
+import com.startupidea.yipshare.user.PendingUserRepository;
+import com.startupidea.yipshare.user.RegistrationDraft;
+import com.startupidea.yipshare.user.RegistrationField;
+import com.startupidea.yipshare.user.UserService;
 
 public class RegistroCuenta1Activity extends AppCompatActivity {
+
+    private final UserService userService = new UserService(new PendingUserRepository());
+
+    private final ActivityResultLauncher<Intent> credentialsScreen = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    draft = RegistrationDraft.fromIntent(result.getData());
+                }
+            });
+
+    private RegistrationDraft draft = RegistrationDraft.EMPTY;
+    private EditText etPaternalLastName;
+    private EditText etMaternalLastName;
+    private EditText etFirstNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrocuenta1);
 
-        findViewById(R.id.btn_siguiente).setOnClickListener(v ->
-                startActivity(new Intent(RegistroCuenta1Activity.this, RegistroCuenta2Activity.class))
-        );
-        findViewById(R.id.boton_regresar_Main).setOnClickListener(v ->
-                startActivity(new Intent(RegistroCuenta1Activity.this, MainActivity.class))
-        );
+        if (savedInstanceState != null) {
+            draft = RegistrationDraft.fromBundle(savedInstanceState);
+        }
+
+        etPaternalLastName = findViewById(R.id.apellido_paterno);
+        etMaternalLastName = findViewById(R.id.apellido_materno);
+        etFirstNames = findViewById(R.id.nombres);
+
+        findViewById(R.id.btn_siguiente).setOnClickListener(v -> goToCredentials());
+        findViewById(R.id.boton_regresar_Main).setOnClickListener(v -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        });
         findViewById(R.id.tv_terms).setOnClickListener(v ->
-                startActivity(new Intent(RegistroCuenta1Activity.this, TermsAndConditionsActivity.class))
-        );
+                startActivity(new Intent(this, TermsAndConditionsActivity.class)));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        draft.putInto(outState);
+    }
+
+    private void goToCredentials() {
+        draft = draft.withNames(
+                etPaternalLastName.getText().toString(),
+                etMaternalLastName.getText().toString(),
+                etFirstNames.getText().toString());
+
+        try {
+            userService.validateNames(draft);
+            Intent intent = new Intent(this, RegistroCuenta2Activity.class);
+            draft.putInto(intent);
+            credentialsScreen.launch(intent);
+        } catch (InvalidField e) {
+            EditText input = inputFor(e.getField());
+            input.setError(getString(e.getMessageRes()));
+            input.requestFocus();
+        }
+    }
+
+    private EditText inputFor(RegistrationField field) {
+        switch (field) {
+            case PATERNAL_LAST_NAME:
+                return etPaternalLastName;
+            case MATERNAL_LAST_NAME:
+                return etMaternalLastName;
+            default:
+                return etFirstNames;
+        }
     }
 }

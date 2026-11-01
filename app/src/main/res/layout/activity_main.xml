@@ -90,12 +90,31 @@
                 android:inputType="textNoSuggestions"
                 android:layout_marginBottom="14dp" />
 
-            <EditText
-                android:id="@+id/et_password"
-                style="@style/InputBrand"
-                android:hint="@string/et_password"
-                android:inputType="textPassword"
-                android:layout_marginBottom="22dp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp">
+
+                <EditText
+                    android:id="@+id/et_password"
+                    style="@style/InputBrand"
+                    android:hint="@string/et_password"
+                    android:inputType="textPassword"
+                    android:paddingEnd="48dp" />
+
+                <ImageView
+                    android:id="@+id/btn_toggle_password"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:padding="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_visibility"
+                    android:contentDescription="@string/mostrar_contrasena"
+                    app:tint="@color/texto_secundario" />
+            </FrameLayout>
 
             <Button
                 android:id="@+id/btn_entrar"

@@ -127,6 +127,22 @@
     <string name="noCuneta_message">¿No tienes cuenta?\u0020</string>
     <string name="boton_registrate">Regístrate</string>
 
+    <string name="error_usuario_vacio">Ingresa tu usuario</string>
+    <string name="error_contrasena_vacia">Ingresa tu contraseña</string>
+    <string name="error_credenciales">Usuario o contraseña incorrectos</string>
+    <string name="error_usuario_duplicado">Ese usuario ya existe</string>
+    <string name="error_bd_no_disponible">No se pudo conectar. Inténtalo más tarde</string>
+
+    <string name="error_campo_obligatorio">Este campo es obligatorio</string>
+    <string name="error_nombre_largo">Máximo 150 caracteres</string>
+    <string name="error_nombre_formato">Solo se permiten letras</string>
+    <string name="error_usuario_corto">Mínimo 6 caracteres</string>
+    <string name="error_contrasena_formato">Mínimo 8 caracteres, con una mayúscula, un número y un carácter especial</string>
+    <string name="error_contrasena_no_coincide">Las contraseñas no coinciden</string>
+
+    <string name="mostrar_contrasena">Mostrar contraseña</string>
+    <string name="ocultar_contrasena">Ocultar contraseña</string>
+
     <!--activity_notificacion-->
     <string name="tv_sin_notificaciones">No tienes notificaciones</string>
 

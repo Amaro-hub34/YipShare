@@ -113,23 +113,61 @@
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
 
-            <EditText
-                android:id="@+id/contraseña"
-                style="@style/InputBrand"
-                android:autofillHints="password"
-                android:hint="@string/contrasena_actualizar_perfil"
-                android:inputType="textPassword"
-                android:minHeight="48dp"
-                android:layout_marginBottom="14dp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
 
-            <EditText
-                android:id="@+id/contraseña_confirmacion"
-                style="@style/InputBrand"
-                android:autofillHints="password"
-                android:hint="@string/confirmar_contrasena"
-                android:inputType="textPassword"
-                android:minHeight="48dp"
-                android:layout_marginBottom="14dp" />
+                <EditText
+                    android:id="@+id/contraseña"
+                    style="@style/InputBrand"
+                    android:autofillHints="password"
+                    android:hint="@string/contrasena_actualizar_perfil"
+                    android:inputType="textPassword"
+                    android:minHeight="48dp"
+                    android:paddingEnd="48dp" />
+
+                <ImageView
+                    android:id="@+id/btn_toggle_password"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:padding="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_visibility"
+                    android:contentDescription="@string/mostrar_contrasena"
+                    app:tint="@color/texto_secundario" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <EditText
+                    android:id="@+id/contraseña_confirmacion"
+                    style="@style/InputBrand"
+                    android:autofillHints="password"
+                    android:hint="@string/confirmar_contrasena"
+                    android:inputType="textPassword"
+                    android:minHeight="48dp"
+                    android:paddingEnd="48dp" />
+
+                <ImageView
+                    android:id="@+id/btn_toggle_password_confirmation"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:padding="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/ic_visibility"
+                    android:contentDescription="@string/mostrar_contrasena"
+                    app:tint="@color/texto_secundario" />
+            </FrameLayout>
 
             <ProgressBar
                 android:id="@+id/pbSubida"

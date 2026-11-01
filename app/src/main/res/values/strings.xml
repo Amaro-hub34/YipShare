@@ -127,6 +127,22 @@
     <string name="noCuneta_message">Don\'t have an account?\u0020</string>
     <string name="boton_registrate">Sign up</string>
 
+    <string name="error_usuario_vacio">Enter your username</string>
+    <string name="error_contrasena_vacia">Enter your password</string>
+    <string name="error_credenciales">Incorrect username or password</string>
+    <string name="error_usuario_duplicado">That username is already taken</string>
+    <string name="error_bd_no_disponible">Could not connect. Try again later</string>
+
+    <string name="error_campo_obligatorio">This field is required</string>
+    <string name="error_nombre_largo">Maximum 150 characters</string>
+    <string name="error_nombre_formato">Only letters are allowed</string>
+    <string name="error_usuario_corto">Minimum 6 characters</string>
+    <string name="error_contrasena_formato">At least 8 characters, with one uppercase letter, one number and one special character</string>
+    <string name="error_contrasena_no_coincide">Passwords do not match</string>
+
+    <string name="mostrar_contrasena">Show password</string>
+    <string name="ocultar_contrasena">Hide password</string>
+
     <!--activity_notificacion-->
     <string name="tv_sin_notificaciones">You have no notifications</string>
 
