@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -105,6 +106,8 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         View panel = getLayoutInflater().inflate(R.layout.activity_panel_condominios, null);
         dialog.setContentView(panel);
 
+        panel.findViewById(R.id.btn_cerrar_sesion).setOnClickListener(v -> confirmarCerrarSesion());
+
         RecyclerView rv = panel.findViewById(R.id.rv_condominios);
         rv.setAdapter(new CondominioAdapter(
                 Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma"),
@@ -122,5 +125,17 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         }
 
         dialog.show();
+    }
+
+    private void confirmarCerrarSesion() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.confirmar_cerrar_sesion)
+                .setPositiveButton(R.string.opcion_si, (d, which) -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton(R.string.opcion_cancelar, null)
+                .show();
     }
 }

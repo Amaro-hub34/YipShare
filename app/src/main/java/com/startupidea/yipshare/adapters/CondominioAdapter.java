@@ -40,6 +40,7 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
         holder.nombre.setText(nombres.get(position));
         holder.detalle.setText(R.string.residente);
         holder.check.setVisibility(position == seleccionado ? View.VISIBLE : View.GONE);
+        holder.itemView.setActivated(position == seleccionado);
 
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();

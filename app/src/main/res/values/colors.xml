@@ -3,6 +3,8 @@
     <color name="azul_yipshare">#1B2A3B</color>
     <color name="negro_primario">#0D1622</color>
     <color name="fondo_pantalla">#EAF2F8</color>
+    <color name="fondo_panel">#FFFFFF</color>
+    <color name="fondo_item_seleccionado">#DCE9F5</color>
     <color name="color_tarjeta">#EAF2F8</color>
     <color name="input_fondo">#EAF2F8</color>
     <color name="input_stroke">#5B97D1</color>

@@ -20,7 +20,7 @@
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:padding="10dp"
-        android:background="@drawable/ic_condominio"
+        android:background="@drawable/bg_condominio_icono"
         android:src="@drawable/ic_condominio"
         app:tint="@android:color/white"
         android:contentDescription="@null" />

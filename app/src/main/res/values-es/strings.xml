@@ -131,6 +131,10 @@
     <string name="tv_sin_notificaciones">No tienes notificaciones</string>
 
     <!--activity_panel_condominios-->
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="confirmar_cerrar_sesion">¿Estás seguro?</string>
+    <string name="opcion_si">Sí</string>
+    <string name="opcion_cancelar">Cancelar</string>
     <string name="misCondominios">Mis condominios</string>
 
     <!--activity_pantalla_principal-->
