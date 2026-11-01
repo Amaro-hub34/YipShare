@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="REGISTRAR CUENTA"
+                android:text="@string/registro_titulo"
                 android:layout_marginBottom="20dp" />
 
             <TextView
@@ -93,13 +93,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Error de inicio de sesión"
+                android:text="@string/tv_error"
                 android:visibility="gone" />
 
             <EditText
                 android:id="@+id/apellido_paterno"
                 style="@style/InputBrand"
-                android:hint="Apellido Paterno"
+                android:hint="@string/apellido_paterno"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
@@ -107,7 +107,7 @@
             <EditText
                 android:id="@+id/apellido_materno"
                 style="@style/InputBrand"
-                android:hint="Apellido Materno"
+                android:hint="@string/apellido_materno"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
@@ -115,7 +115,7 @@
             <EditText
                 android:id="@+id/nombres"
                 style="@style/InputBrand"
-                android:hint="Nombre(s)"
+                android:hint="@string/nombres"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:layout_marginBottom="14dp" />
@@ -131,7 +131,7 @@
             <Button
                 android:id="@+id/btn_siguiente"
                 style="@style/ButtonPrimary"
-                android:text="Siguiente"
+                android:text="@string/btn_siguiente"
                 android:minHeight="48dp"
                 android:layout_marginBottom="16dp" />
 
@@ -146,7 +146,7 @@
                     style="@style/TextBody"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¿Ya tienes una cuenta? " />
+                    android:text="@string/ya_tienes_cuenta" />
 
                 <TextView
                     android:id="@+id/boton_regresar_Main"
@@ -159,7 +159,7 @@
                     android:minHeight="48dp"
                     android:padding="5dp"
                     android:gravity="center_vertical"
-                    android:text="Inicia sesión" />
+                    android:text="@string/link_inicia_sesion" />
 
             </LinearLayout>
 

@@ -15,9 +15,9 @@ import com.startupidea.yipshare.CodigoPrestamoActivity;
 
 public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
 
-    private final String[] articulos = {"Taladro eléctrico", "Escalera plegable", "Bocina portátil"};
+    private final int[] articulos = {R.string.demo_taladro, R.string.demo_escalera, R.string.demo_bocina};
     private final String[] personas = {"Carlos Ramírez", "Ana López", "Luis Torres"};
-    private final String[] tipos = {"Prestaste a", "Te prestaron", "Prestaste a"};
+    private final int[] tipos = {R.string.prestaste_a, R.string.te_prestaron, R.string.prestaste_a};
 
     @NonNull
     @Override
@@ -36,7 +36,7 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, CodigoPrestamoActivity.class);
-            intent.putExtra("articulo", articulos[holder.getAdapterPosition()]);
+            intent.putExtra("articulo", context.getString(articulos[holder.getAdapterPosition()]));
             context.startActivity(intent);
         });
     }

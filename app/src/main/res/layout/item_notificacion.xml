@@ -23,7 +23,7 @@
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             android:background="@drawable/bg_placeholder_imagen"
-            android:contentDescription="Imagen de la publicación" />
+            android:contentDescription="@string/imagen_publicacion" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,7 +37,7 @@
                 style="@style/TextBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Han solicitado tu artículo:" />
+                android:text="@string/notif_solicitud" />
 
             <TextView
                 android:id="@+id/tv_nombre_articulo"
@@ -47,7 +47,7 @@
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="[Nombre del artículo]" />
+                android:text="@string/tv_articulo_codigo" />
 
             <TextView
                 android:id="@+id/tv_solicitante"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:textSize="13sp"
-                android:text="Nombre del solicitante" />
+                android:text="@string/notif_solicitante" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    android:text="0.0" />
+                    android:text="@string/placeholder_calificacion" />
             </LinearLayout>
 
             <TextView
@@ -93,7 +93,7 @@
                 android:layout_marginTop="2dp"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:text="Dirección del solicitante" />
+                android:text="@string/notif_direccion" />
 
         </LinearLayout>
 

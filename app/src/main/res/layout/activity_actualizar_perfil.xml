@@ -67,7 +67,7 @@
                             android:id="@+id/cbPagoMes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí, pagó este mes" />
+                            android:text="@string/cbPagoMes" />
 
 
                     </LinearLayout>
@@ -142,7 +142,7 @@
                     <EditText
                         android:id="@+id/nombres"
                         style="@style/InputBrand"
-                        android:hint="Nombre(s)"
+                        android:hint="@string/nombres"
                         android:inputType="textPersonName"
                         android:background="@drawable/bg_input"
                         android:minHeight="48dp"
@@ -183,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Identificación Oficial" />
+                        android:text="@string/identificacion_oficial" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

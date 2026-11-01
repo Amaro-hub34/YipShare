@@ -22,7 +22,7 @@
         style="@style/ButtonPrimary"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:text="Crear Condominio" />
+        android:text="@string/btn_crear_condominio" />
 
     <Button
         android:id="@+id/btn_sheet_unirse"
@@ -30,6 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_marginTop="10dp"
-        android:text="Unirse a Condominio" />
+        android:text="@string/btn_unirse_condominio" />
 
 </LinearLayout>

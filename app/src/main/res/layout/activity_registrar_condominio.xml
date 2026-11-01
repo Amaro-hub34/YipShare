@@ -32,7 +32,7 @@
         android:layout_height="24dp"
         android:src="@drawable/ic_arrow_back"
         app:tint="@android:color/white"
-        android:contentDescription="Regresar"
+        android:contentDescription="@string/btnRegresar"
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -45,7 +45,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Crear Condominio"
+        android:text="@string/btn_crear_condominio"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:text="Nombre oficial del condominio" />
+                        android:text="@string/rc_nombre_oficial" />
 
                     <EditText
                         android:id="@+id/et_nombre_condominio"
@@ -102,7 +102,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textCapWords"
-                        android:hint="Ej. Condominio 123" />
+                        android:hint="@string/rc_nombre_hint" />
 
                     <TextView
                         style="@style/TextTitle"
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Dirección" />
+                        android:text="@string/rc_direccion" />
 
                     <EditText
                         android:id="@+id/et_direccion_condominio1"
@@ -120,7 +120,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="text"
-                        android:hint="Calle" />
+                        android:hint="@string/rc_calle" />
                     <EditText
                         android:id="@+id/et_direccion_condominio2"
                         android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:hint="Colonia" />
+                        android:hint="@string/rc_colonia" />
                     <EditText
                         android:id="@+id/et_direccion_condominio3"
                         android:layout_width="match_parent"
@@ -138,7 +138,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textPostalAddress"
-                        android:hint="CP" />
+                        android:hint="@string/rc_cp" />
                     <EditText
                         android:id="@+id/et_direccion_condominio4"
                         android:layout_width="match_parent"
@@ -147,7 +147,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:hint="Alcaldía/Municipio" />
+                        android:hint="@string/rc_municipio" />
                     <EditText
                         android:id="@+id/et_direccion_condominio5"
                         android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:hint="Ciudad" />
+                        android:hint="@string/rc_ciudad" />
 
 
                     <TextView
@@ -165,7 +165,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Cantidad de unidades" />
+                        android:text="@string/rc_unidades" />
 
                     <EditText
                         android:id="@+id/et_cantidad_unidades"
@@ -176,7 +176,7 @@
                         android:padding="12dp"
                         android:inputType="number"
                         android:maxLength="5"
-                        android:hint="Departamentos o casas" />
+                        android:hint="@string/rc_unidades_hint" />
 
                     <View
                         android:layout_width="match_parent"
@@ -190,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="16sp"
-                        android:text="Documentos (PDF)" />
+                        android:text="@string/rc_documentos" />
 
                     <TextView
                         style="@style/TextTitle"
@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:textSize="14sp"
-                        android:text="Escritura Constitutiva del Régimen de Propiedad en Condominio" />
+                        android:text="@string/rc_doc_escritura" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -212,7 +212,7 @@
                             style="@style/ButtonSecundary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Adjuntar PDF" />
+                            android:text="@string/btn_adjuntar_identificacion" />
 
                         <TextView
                             android:id="@+id/tv_archivo_escritura"
@@ -223,7 +223,7 @@
                             android:layout_marginStart="10dp"
                             android:maxLines="1"
                             android:ellipsize="middle"
-                            android:text="Ningún archivo seleccionado" />
+                            android:text="@string/tv_archivo_identificacion" />
                     </LinearLayout>
 
                     <TextView
@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="Acta de Asamblea de Nombramiento del Administrador" />
+                        android:text="@string/rc_doc_acta" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -246,7 +246,7 @@
                             style="@style/ButtonSecundary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Adjuntar PDF" />
+                            android:text="@string/btn_adjuntar_identificacion" />
 
                         <TextView
                             android:id="@+id/tv_archivo_acta"
@@ -257,7 +257,7 @@
                             android:layout_marginStart="10dp"
                             android:maxLines="1"
                             android:ellipsize="middle"
-                            android:text="Ningún archivo seleccionado" />
+                            android:text="@string/tv_archivo_identificacion" />
                     </LinearLayout>
 
 
@@ -267,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
-                        android:text="RFC del Condominio" />
+                        android:text="@string/rc_doc_rfc" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -281,7 +281,7 @@
                             style="@style/ButtonSecundary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Adjuntar PDF" />
+                            android:text="@string/btn_adjuntar_identificacion" />
 
                         <TextView
                             android:id="@+id/tv_archivo_rfc"
@@ -292,7 +292,7 @@
                             android:layout_marginStart="10dp"
                             android:maxLines="1"
                             android:ellipsize="middle"
-                            android:text="Ningún archivo seleccionado" />
+                            android:text="@string/tv_archivo_identificacion" />
                     </LinearLayout>
 
                     <TextView
@@ -303,7 +303,7 @@
                         android:gravity="center"
                         android:textStyle="bold"
                         android:textSize="12sp"
-                        android:text="Formato permitido: PDF" />
+                        android:text="@string/rc_formato" />
 
                 </LinearLayout>
 
@@ -314,7 +314,7 @@
                 style="@style/ButtonPrimary"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
-                android:text="Crear Condominio"
+                android:text="@string/btn_crear_condominio"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="16dp"
                 app:layout_constraintTop_toBottomOf="@id/card_condominio"
@@ -356,13 +356,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Inicio" />
+                android:contentDescription="@string/imageView_inicio" />
 
             <TextView
                 android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -385,13 +385,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Préstamos" />
+                android:contentDescription="@string/imageView_prestamos" />
 
             <TextView
                 android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -414,7 +414,7 @@
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
-                android:contentDescription="Agregar" />
+                android:contentDescription="@string/imageView_agregar" />
         </LinearLayout>
 
         <LinearLayout
@@ -434,13 +434,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Reportes" />
+                android:contentDescription="@string/imageView_reportes" />
 
             <TextView
                 android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="11sp"
                 android:layout_marginTop="2dp" />
@@ -463,13 +463,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Perfil" />
+                android:contentDescription="@string/imageView_perfil" />
 
             <TextView
                 android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />

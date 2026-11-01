@@ -25,14 +25,14 @@
                 style="@style/TextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Términos y Condiciones"
+                android:text="@string/terms_titulo"
                 android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Última actualización: octubre de 2026"
+                android:text="@string/terms_actualizacion"
                 android:textColor="@color/texto_hint"
                 android:textSize="12sp" />
 
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Bienvenido a YipShare. Al crear una cuenta o usar la plataforma aceptas los Términos y Condiciones."
+                android:text="@string/terms_intro"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -49,14 +49,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="1. Aceptación de los términos" />
+                android:text="@string/terms_1_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Al registrarte, iniciar sesión o utilizar cualquier función de YipShare, confirmas que has leído, entendido y aceptado estos términos. Si no estás de acuerdo con alguna parte, te pedimos que no uses la plataforma. Debes ser mayor de edad o contar con la autorización de tu madre, padre o tutor legal."
+                android:text="@string/terms_1_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -65,14 +65,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="2. Qué es YipShare" />
+                android:text="@string/terms_2_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="YipShare es una plataforma que conecta a personas de una misma comunidad para compartir, prestar y utilizar objetos (herramientas, bicicletas, libros, equipo, entre otros) en lugar de comprarlos y acumularlos. Nuestra idea es simple: el valor está en el uso, no en la posesión.\n\nYipShare actúa únicamente como intermediario que facilita el contacto entre usuarios. No es propietario de los artículos publicados, no participa como parte en los acuerdos entre usuarios y no garantiza que un préstamo se concrete."
+                android:text="@string/terms_2_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -81,14 +81,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="3. Registro y cuenta" />
+                android:text="@string/terms_3_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="• Debes proporcionar información verdadera, completa y actualizada al registrarte.\n• Eres responsable de mantener la confidencialidad de tu usuario y contraseña.\n• Cada persona puede tener una sola cuenta; no está permitido suplantar a otros usuarios.\n• Debes avisarnos de inmediato si sospechas que tu cuenta fue usada sin tu permiso."
+                android:text="@string/terms_3_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -97,14 +97,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="4. Publicación de artículos" />
+                android:text="@string/terms_4_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Al publicar un artículo declaras y aceptas que:\n• Eres el propietario del artículo o tienes autorización para compartirlo.\n• La descripción, el estado y las fotografías son reales y no engañosas.\n• El artículo es legal, seguro y funciona de manera adecuada para el uso indicado.\n• No publicarás objetos prohibidos, peligrosos, robados o que infrinjan derechos de terceros.\n\nYipShare puede retirar cualquier publicación que incumpla estos términos o que considere inapropiada, sin previo aviso."
+                android:text="@string/terms_4_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -113,14 +113,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="5. Préstamos y uso compartido" />
+                android:text="@string/terms_5_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="• Quien presta y quien recibe acuerdan directamente las condiciones: duración, lugar y forma de entrega y devolución, y cuidados específicos del artículo.\n• Se recomienda revisar juntos el estado del artículo al momento de la entrega y de la devolución.\n• El artículo debe devolverse en la fecha acordada y en las mismas condiciones en que se recibió, salvo el desgaste normal por uso.\n• Los encuentros deben realizarse en lugares seguros. Te sugerimos preferir espacios públicos o conocidos de tu comunidad."
+                android:text="@string/terms_5_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -129,14 +129,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="6. Responsabilidades del usuario" />
+                android:text="@string/terms_6_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Como usuario de YipShare te comprometes a:\n• Tratar con respeto a los demás miembros de la comunidad.\n• Cuidar los artículos que recibes como si fueran tuyos.\n• Cumplir los acuerdos que hagas con otros usuarios.\n• Usar los artículos únicamente para el fin acordado y sin ponerte ni poner a otros en riesgo.\n• Cumplir las leyes aplicables en el uso de la plataforma."
+                android:text="@string/terms_6_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -145,14 +145,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="7. Daños, pérdidas y disputas" />
+                android:text="@string/terms_7_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Quien recibe un artículo es responsable de repararlo o reponerlo si se daña, se pierde o es robado mientras está bajo su cuidado, salvo que el daño se deba al desgaste normal o a un defecto previo. Los usuarios deben intentar resolver cualquier desacuerdo de buena fe y de manera directa.\n\nSi no logran un acuerdo, pueden escribirnos desde la página de contacto. YipShare podrá orientar a las partes, pero no está obligado a resolver la disputa ni responde por su resultado."
+                android:text="@string/terms_7_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -161,14 +161,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="8. Conductas prohibidas" />
+                android:text="@string/terms_8_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="• Publicar contenido falso, ofensivo, discriminatorio o que incite a la violencia.\n• Ofrecer armas, sustancias ilegales o cualquier objeto cuya posesión o préstamo sea ilícito.\n• Acosar, amenazar o engañar a otros usuarios.\n• Usar la plataforma para fines comerciales no autorizados, spam o fraude.\n• Intentar acceder sin permiso a cuentas, sistemas o datos de YipShare o de otros usuarios.\n• Copiar, modificar o alterar el funcionamiento de la plataforma."
+                android:text="@string/terms_8_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -177,14 +177,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="9. Privacidad y datos personales" />
+                android:text="@string/terms_9_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Recopilamos y tratamos tus datos personales (como nombre, correo electrónico y la información de tu cuenta) únicamente para operar la plataforma, permitir el contacto entre usuarios, mejorar el servicio y mantener la seguridad. No vendemos tus datos a terceros.\n\nPuedes solicitar el acceso, la corrección o la eliminación de tus datos, así como oponerte a su uso, escribiéndonos desde la página de contacto. Parte de tu información, como tu nombre de usuario y tus publicaciones, será visible para otros miembros de la comunidad."
+                android:text="@string/terms_9_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -193,14 +193,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="10. Propiedad intelectual" />
+                android:text="@string/terms_10_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="El nombre, el logotipo, el diseño y el código de YipShare pertenecen a sus creadores y no pueden usarse sin autorización. Al subir fotos o textos a la plataforma, nos otorgas una licencia limitada para mostrarlos dentro de YipShare con el único fin de operar el servicio. Sigues siendo dueño de tu contenido."
+                android:text="@string/terms_10_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -209,14 +209,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="11. Limitación de responsabilidad" />
+                android:text="@string/terms_11_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="YipShare se ofrece «tal cual» y hacemos lo posible por mantenerlo disponible y seguro, pero no garantizamos que funcione sin interrupciones ni errores. En la medida permitida por la ley, YipShare no es responsable por daños, lesiones, pérdidas o conflictos derivados del uso de los artículos compartidos ni de la conducta de los usuarios. Cada persona asume la responsabilidad de los acuerdos que realiza."
+                android:text="@string/terms_11_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -225,14 +225,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="12. Suspensión y cancelación" />
+                android:text="@string/terms_12_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Podemos suspender o cancelar tu cuenta si incumples estos términos, si pones en riesgo a otros usuarios o si usas la plataforma de forma indebida. También puedes dejar de usar YipShare y solicitar la eliminación de tu cuenta en cualquier momento."
+                android:text="@string/terms_12_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -241,14 +241,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="13. Cambios a estos términos" />
+                android:text="@string/terms_13_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Podemos actualizar estos términos cuando sea necesario. Publicaremos la versión vigente con su fecha de actualización. Si sigues usando YipShare después de un cambio, entendemos que lo aceptas."
+                android:text="@string/terms_13_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -257,14 +257,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="14. Ley aplicable" />
+                android:text="@string/terms_14_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="Estos términos se rigen por las leyes de los Estados Unidos Mexicanos. Para cualquier controversia, las partes se someten a la jurisdicción de los tribunales competentes de la Ciudad de México, renunciando a cualquier otro fuero que pudiera corresponderles."
+                android:text="@string/terms_14_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -273,14 +273,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="15. Contacto" />
+                android:text="@string/terms_15_titulo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:lineSpacingExtra="3dp"
-                android:text="¿Tienes dudas sobre estos términos? Escríbenos desde nuestra página de contacto y con gusto te ayudamos."
+                android:text="@string/terms_15_texto"
                 android:textColor="@color/texto_primario"
                 android:textSize="14sp" />
 
@@ -293,6 +293,6 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_margin="16dp"
-        android:text="Volver" />
+        android:text="@string/terms_volver" />
 
 </LinearLayout>

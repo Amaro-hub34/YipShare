@@ -31,7 +31,7 @@
             android:paddingEnd="8dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:text="Disponible"
+            android:text="@string/tv_estado_articulo"
             android:textColor="@android:color/white"
             android:textSize="11sp" />
 
@@ -42,14 +42,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textSize="15sp"
-            android:text="[Objeto]" />
+            android:text="@string/item_objeto" />
 
         <TextView
             android:id="@+id/tv_prestamista"
             style="@style/TextBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="[Usuario prestamista]" />
+            android:text="@string/item_prestamista" />
         <RatingBar
             android:id="@+id/tv_calificacion"
             style="@style/Widget.AppCompat.RatingBar.Small"

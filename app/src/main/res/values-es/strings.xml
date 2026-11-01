@@ -53,7 +53,7 @@
     <string name="tv_titulo_pantalla">Solicitudes de Habitantes</string>
 
     <!--activity_actualizar_perfil-->
-    <string name="pago_mes_actualizar_perfil">Pago del mes: </string>
+    <string name="pago_mes_actualizar_perfil">Pago del mes:\u0020</string>
     <string name="usuario_actualizar_perfil">Usuario</string>
     <string name="contrasena_actualizar_perfil">Contraseña</string>
     <string name="datos_personales">Datos Personales</string>
@@ -113,7 +113,7 @@
     <string name="IC_TextTitle">Código del condominio</string>
     <string name="et_codigo_condominio">Ej: ABC123</string>
     <string name="tv_error_codigo">Código inválido</string>
-    <string name="tv_direccion">Dirección: </string>
+    <string name="tv_direccion">Dirección:\u0020</string>
     <string name="IC_et_direccion_edificio">Ej: Edificio 2</string>
     <string name="IC_et_direccion_departamento">Ej: Departamento: 14</string>
     <string name="btn_unirse">Unirse</string>
@@ -124,7 +124,7 @@
     <string name="usuario_IS">Usuario</string>
     <string name="et_password">Contraseña</string>
     <string name="btn_entrar">Entrar</string>
-    <string name="noCuneta_message">¿No tienes cuenta? </string>
+    <string name="noCuneta_message">¿No tienes cuenta?\u0020</string>
     <string name="boton_registrate">Regístrate</string>
 
     <!--activity_notificacion-->
@@ -143,7 +143,112 @@
     <string name="tv_articulos_disponibles">Artículos Disponibles</string>
 
     <!--activity_perfil-->
-    <string name="pagoMes">Pago del mes: </string>
+    <string name="pagoMes">Pago del mes:\u0020</string>
     <string name="cbPagoMes">Sí, pagó este mes</string>
 
+    <!--registro (nuevo)-->
+    <string name="registro_titulo">REGISTRAR CUENTA</string>
+    <string name="nombres">Nombre(s)</string>
+    <string name="btn_siguiente">Siguiente</string>
+    <string name="ya_tienes_cuenta">¿Ya tienes una cuenta?\u0020</string>
+    <string name="link_inicia_sesion">Inicia sesión</string>
+    <string name="confirmar_contrasena">Confirmar Contraseña</string>
+    <string name="btn_crear_cuenta">Crear Cuenta</string>
+
+    <!--activity_perfil (nuevo)-->
+    <string name="identificacion_oficial">Identificación Oficial</string>
+    <string name="mi_calificacion">Mi Calificación</string>
+    <string name="btn_actualizar_perfil">Actualizar Datos</string>
+    <string name="btn_eliminar_cuenta">Eliminar Cuenta</string>
+    <string name="btn_eliminar_habitante">Eliminar Habitante de Condominio</string>
+
+    <!--activity_pantalla_principal (nuevo)-->
+    <string name="mis_articulos">Mis Artículos</string>
+
+    <!--activity_reporte (nuevo)-->
+    <string name="reporte_titulo">Reporte</string>
+    <string name="reporte_vecino">Vecino involucrado</string>
+    <string name="reporte_vecino_hint">Ej: Pedro Pérez</string>
+    <string name="reporte_descripcion_hint">Háblanos de lo que sucedió</string>
+    <string name="reporte_imagen">Imagen del objeto afectado</string>
+    <string name="btn_enviar_reporte">Enviar Reporte</string>
+
+    <!--activity_registrar_condominio (nuevo)-->
+    <string name="rc_nombre_oficial">Nombre oficial del condominio</string>
+    <string name="rc_nombre_hint">Ej. Condominio 123</string>
+    <string name="rc_direccion">Dirección</string>
+    <string name="rc_calle">Calle</string>
+    <string name="rc_colonia">Colonia</string>
+    <string name="rc_cp">CP</string>
+    <string name="rc_municipio">Alcaldía/Municipio</string>
+    <string name="rc_ciudad">Ciudad</string>
+    <string name="rc_unidades">Cantidad de unidades</string>
+    <string name="rc_unidades_hint">Departamentos o casas</string>
+    <string name="rc_documentos">Documentos (PDF)</string>
+    <string name="rc_doc_escritura">Escritura Constitutiva del Régimen de Propiedad en Condominio</string>
+    <string name="rc_doc_acta">Acta de Asamblea de Nombramiento del Administrador</string>
+    <string name="rc_doc_rfc">RFC del Condominio</string>
+    <string name="rc_formato">Formato permitido: PDF</string>
+
+    <!--items (nuevo)-->
+    <string name="item_nombre_condominio">Nombre del Condominio</string>
+    <string name="residente">Residente</string>
+    <string name="condominio_activo">Condominio activo</string>
+    <string name="imagen_publicacion">Imagen de la publicación</string>
+    <string name="notif_solicitud">Han solicitado tu artículo:</string>
+    <string name="notif_solicitante">Nombre del solicitante</string>
+    <string name="notif_direccion">Dirección del solicitante</string>
+    <string name="item_objeto">[Objeto]</string>
+    <string name="item_prestamista">[Usuario prestamista]</string>
+    <string name="prestaste_a">Prestaste a</string>
+    <string name="item_nombre_persona">Nombre de la persona</string>
+    <string name="btn_rechazar">Rechazar</string>
+    <string name="btn_aceptar">Aceptar</string>
+    <string name="item_nombre_habitante">Nombre del habitante</string>
+    <string name="item_direccion_unidad">Dirección / Unidad</string>
+
+    <!--java-->
+    <string name="te_prestaron">Te prestaron</string>
+    <string name="error_codigo_longitud">Debe tener 6 dígitos</string>
+    <string name="codigo_confirmado">Código confirmado</string>
+    <string name="demo_taladro">Taladro eléctrico</string>
+    <string name="demo_escalera">Escalera plegable</string>
+    <string name="demo_bocina">Bocina portátil</string>
+    <string name="demo_direccion">Edificio B, Depto. 302</string>
+
+    <!--activity_terms_and_conditions-->
+    <string name="terms_titulo">Términos y Condiciones</string>
+    <string name="terms_actualizacion">Última actualización: octubre de 2026</string>
+    <string name="terms_intro">Bienvenido a YipShare. Al crear una cuenta o usar la plataforma aceptas los Términos y Condiciones.</string>
+    <string name="terms_1_titulo">1. Aceptación de los términos</string>
+    <string name="terms_1_texto">Al registrarte, iniciar sesión o utilizar cualquier función de YipShare, confirmas que has leído, entendido y aceptado estos términos. Si no estás de acuerdo con alguna parte, te pedimos que no uses la plataforma. Debes ser mayor de edad o contar con la autorización de tu madre, padre o tutor legal.</string>
+    <string name="terms_2_titulo">2. Qué es YipShare</string>
+    <string name="terms_2_texto">YipShare es una plataforma que conecta a personas de una misma comunidad para compartir, prestar y utilizar objetos (herramientas, bicicletas, libros, equipo, entre otros) en lugar de comprarlos y acumularlos. Nuestra idea es simple: el valor está en el uso, no en la posesión.\n\nYipShare actúa únicamente como intermediario que facilita el contacto entre usuarios. No es propietario de los artículos publicados, no participa como parte en los acuerdos entre usuarios y no garantiza que un préstamo se concrete.</string>
+    <string name="terms_3_titulo">3. Registro y cuenta</string>
+    <string name="terms_3_texto">• Debes proporcionar información verdadera, completa y actualizada al registrarte.\n• Eres responsable de mantener la confidencialidad de tu usuario y contraseña.\n• Cada persona puede tener una sola cuenta; no está permitido suplantar a otros usuarios.\n• Debes avisarnos de inmediato si sospechas que tu cuenta fue usada sin tu permiso.</string>
+    <string name="terms_4_titulo">4. Publicación de artículos</string>
+    <string name="terms_4_texto">Al publicar un artículo declaras y aceptas que:\n• Eres el propietario del artículo o tienes autorización para compartirlo.\n• La descripción, el estado y las fotografías son reales y no engañosas.\n• El artículo es legal, seguro y funciona de manera adecuada para el uso indicado.\n• No publicarás objetos prohibidos, peligrosos, robados o que infrinjan derechos de terceros.\n\nYipShare puede retirar cualquier publicación que incumpla estos términos o que considere inapropiada, sin previo aviso.</string>
+    <string name="terms_5_titulo">5. Préstamos y uso compartido</string>
+    <string name="terms_5_texto">• Quien presta y quien recibe acuerdan directamente las condiciones: duración, lugar y forma de entrega y devolución, y cuidados específicos del artículo.\n• Se recomienda revisar juntos el estado del artículo al momento de la entrega y de la devolución.\n• El artículo debe devolverse en la fecha acordada y en las mismas condiciones en que se recibió, salvo el desgaste normal por uso.\n• Los encuentros deben realizarse en lugares seguros. Te sugerimos preferir espacios públicos o conocidos de tu comunidad.</string>
+    <string name="terms_6_titulo">6. Responsabilidades del usuario</string>
+    <string name="terms_6_texto">Como usuario de YipShare te comprometes a:\n• Tratar con respeto a los demás miembros de la comunidad.\n• Cuidar los artículos que recibes como si fueran tuyos.\n• Cumplir los acuerdos que hagas con otros usuarios.\n• Usar los artículos únicamente para el fin acordado y sin ponerte ni poner a otros en riesgo.\n• Cumplir las leyes aplicables en el uso de la plataforma.</string>
+    <string name="terms_7_titulo">7. Daños, pérdidas y disputas</string>
+    <string name="terms_7_texto">Quien recibe un artículo es responsable de repararlo o reponerlo si se daña, se pierde o es robado mientras está bajo su cuidado, salvo que el daño se deba al desgaste normal o a un defecto previo. Los usuarios deben intentar resolver cualquier desacuerdo de buena fe y de manera directa.\n\nSi no logran un acuerdo, pueden escribirnos desde la página de contacto. YipShare podrá orientar a las partes, pero no está obligado a resolver la disputa ni responde por su resultado.</string>
+    <string name="terms_8_titulo">8. Conductas prohibidas</string>
+    <string name="terms_8_texto">• Publicar contenido falso, ofensivo, discriminatorio o que incite a la violencia.\n• Ofrecer armas, sustancias ilegales o cualquier objeto cuya posesión o préstamo sea ilícito.\n• Acosar, amenazar o engañar a otros usuarios.\n• Usar la plataforma para fines comerciales no autorizados, spam o fraude.\n• Intentar acceder sin permiso a cuentas, sistemas o datos de YipShare o de otros usuarios.\n• Copiar, modificar o alterar el funcionamiento de la plataforma.</string>
+    <string name="terms_9_titulo">9. Privacidad y datos personales</string>
+    <string name="terms_9_texto">Recopilamos y tratamos tus datos personales (como nombre, correo electrónico y la información de tu cuenta) únicamente para operar la plataforma, permitir el contacto entre usuarios, mejorar el servicio y mantener la seguridad. No vendemos tus datos a terceros.\n\nPuedes solicitar el acceso, la corrección o la eliminación de tus datos, así como oponerte a su uso, escribiéndonos desde la página de contacto. Parte de tu información, como tu nombre de usuario y tus publicaciones, será visible para otros miembros de la comunidad.</string>
+    <string name="terms_10_titulo">10. Propiedad intelectual</string>
+    <string name="terms_10_texto">El nombre, el logotipo, el diseño y el código de YipShare pertenecen a sus creadores y no pueden usarse sin autorización. Al subir fotos o textos a la plataforma, nos otorgas una licencia limitada para mostrarlos dentro de YipShare con el único fin de operar el servicio. Sigues siendo dueño de tu contenido.</string>
+    <string name="terms_11_titulo">11. Limitación de responsabilidad</string>
+    <string name="terms_11_texto">YipShare se ofrece «tal cual» y hacemos lo posible por mantenerlo disponible y seguro, pero no garantizamos que funcione sin interrupciones ni errores. En la medida permitida por la ley, YipShare no es responsable por daños, lesiones, pérdidas o conflictos derivados del uso de los artículos compartidos ni de la conducta de los usuarios. Cada persona asume la responsabilidad de los acuerdos que realiza.</string>
+    <string name="terms_12_titulo">12. Suspensión y cancelación</string>
+    <string name="terms_12_texto">Podemos suspender o cancelar tu cuenta si incumples estos términos, si pones en riesgo a otros usuarios o si usas la plataforma de forma indebida. También puedes dejar de usar YipShare y solicitar la eliminación de tu cuenta en cualquier momento.</string>
+    <string name="terms_13_titulo">13. Cambios a estos términos</string>
+    <string name="terms_13_texto">Podemos actualizar estos términos cuando sea necesario. Publicaremos la versión vigente con su fecha de actualización. Si sigues usando YipShare después de un cambio, entendemos que lo aceptas.</string>
+    <string name="terms_14_titulo">14. Ley aplicable</string>
+    <string name="terms_14_texto">Estos términos se rigen por las leyes de los Estados Unidos Mexicanos. Para cualquier controversia, las partes se someten a la jurisdicción de los tribunales competentes de la Ciudad de México, renunciando a cualquier otro fuero que pudiera corresponderles.</string>
+    <string name="terms_15_titulo">15. Contacto</string>
+    <string name="terms_15_texto">¿Tienes dudas sobre estos términos? Escríbenos desde nuestra página de contacto y con gusto te ayudamos.</string>
+    <string name="terms_volver">Volver</string>
 </resources>

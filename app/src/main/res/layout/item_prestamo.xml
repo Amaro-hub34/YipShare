@@ -38,7 +38,7 @@
                 style="@style/TextBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Prestaste a" />
+                android:text="@string/prestaste_a" />
 
             <TextView
                 android:id="@+id/tv_articulo_prestamo"
@@ -48,7 +48,7 @@
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="[Nombre del artículo]" />
+                android:text="@string/tv_articulo_codigo" />
 
             <TextView
                 android:id="@+id/tv_persona_prestamo"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Nombre de la persona" />
+                android:text="@string/item_nombre_persona" />
 
             <TextView
                 android:id="@+id/tv_estado_prestamo"
@@ -68,7 +68,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
-                android:text="Disponible"
+                android:text="@string/tv_estado_articulo"
                 android:textColor="@android:color/white"
                 android:textSize="11sp" />
 

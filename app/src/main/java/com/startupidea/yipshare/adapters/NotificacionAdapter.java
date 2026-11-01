@@ -29,11 +29,11 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
-        holder.nombreArticulo.setText("Taladro eléctrico");
+        holder.nombreArticulo.setText(R.string.demo_taladro);
         holder.solicitante.setText("Carlos Ramírez");
         holder.ratingBar.setRating(4.5f);
         holder.calificacion.setText("4.5");
-        holder.direccion.setText("Edificio B, Depto. 302");
+        holder.direccion.setText(R.string.demo_direccion);
     }
 
     @Override

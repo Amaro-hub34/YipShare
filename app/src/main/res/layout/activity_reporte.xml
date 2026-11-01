@@ -37,7 +37,7 @@
         android:id="@+id/tv_titulo_pantalla"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Reporte"
+        android:text="@string/reporte_titulo"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -86,7 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
-                        android:text="Vecino involucrado" />
+                        android:text="@string/reporte_vecino" />
 
                     <EditText
                         android:id="@+id/et_nombre_vecino"
@@ -96,7 +96,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textCapSentences"
-                        android:hint="Ej: Pedro Pérez" />
+                        android:hint="@string/reporte_vecino_hint" />
 
 
                     <TextView
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
                         android:textSize="20sp"
-                        android:text="Descripción" />
+                        android:text="@string/FA_descripcion" />
 
                     <EditText
                         android:id="@+id/et_descripcion"
@@ -116,13 +116,13 @@
                         android:padding="12dp"
                         android:gravity="top|start"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:hint="Hablanos de lo que sucedio" />
+                        android:hint="@string/reporte_descripcion_hint" />
 
                     <TextView
                         style="@style/TextTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Imagen del objeto afectado"
+                        android:text="@string/reporte_imagen"
                         android:textSize="20sp"
                         android:layout_marginTop="14dp" />
 
@@ -137,7 +137,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
-                            android:contentDescription="Vista previa de la imagen"
+                            android:contentDescription="@string/iv_preview_imagen"
                             android:visibility="gone" />
 
                         <Button
@@ -146,7 +146,7 @@
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Cambiar imagen" />
+                            android:text="@string/btn_cambiar_imagen" />
 
                     </FrameLayout>
 
@@ -158,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
-                        android:text="Enviar Reporte" />
+                        android:text="@string/btn_enviar_reporte" />
 
 
 
@@ -202,13 +202,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_house_princial"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Inicio" />
+                android:contentDescription="@string/imageView_inicio" />
 
             <TextView
                 android:id="@+id/textView_inicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INICIO"
+                android:text="@string/textView_inicio"
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -231,13 +231,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_calendar_month"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Préstamos" />
+                android:contentDescription="@string/imageView_prestamos" />
 
             <TextView
                 android:id="@+id/textView_prestamos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PRÉSTAMOS"
+                android:text="@string/textView_prestamos"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -260,7 +260,7 @@
                 android:layout_height="44dp"
                 android:src="@drawable/ic_plus_icon"
                 app:tint="@android:color/white"
-                android:contentDescription="Agregar" />
+                android:contentDescription="@string/imageView_agregar" />
         </LinearLayout>
 
         <LinearLayout
@@ -280,13 +280,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_warning"
                 app:tint="@android:color/white"
-                android:contentDescription="Reportes" />
+                android:contentDescription="@string/imageView_reportes" />
 
             <TextView
                 android:id="@+id/textView_reportes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REPORTES"
+                android:text="@string/textView_reportes"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />
@@ -309,13 +309,13 @@
                 android:layout_height="22dp"
                 android:src="@drawable/ic_person"
                 app:tint="#99FFFFFF"
-                android:contentDescription="Perfil" />
+                android:contentDescription="@string/imageView_perfil" />
 
             <TextView
                 android:id="@+id/textView_perfil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PERFIL"
+                android:text="@string/textView_perfil"
                 android:textColor="#99FFFFFF"
                 android:textSize="10sp"
                 android:layout_marginTop="2dp" />

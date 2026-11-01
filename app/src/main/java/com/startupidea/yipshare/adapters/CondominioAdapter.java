@@ -38,7 +38,7 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull CondominioViewHolder holder, int position) {
         holder.nombre.setText(nombres.get(position));
-        holder.detalle.setText("Residente");
+        holder.detalle.setText(R.string.residente);
         holder.check.setVisibility(position == seleccionado ? View.VISIBLE : View.GONE);
 
         holder.itemView.setOnClickListener(v -> {

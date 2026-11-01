@@ -46,9 +46,9 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
         findViewById(R.id.btn_confirmar_codigo).setOnClickListener(v -> {
             String codigo = etCodigo.getText().toString().trim();
             if (codigo.length() != 6) {
-                etCodigo.setError("Debe tener 6 dígitos");
+                etCodigo.setError(getString(R.string.error_codigo_longitud));
             } else {
-                Toast.makeText(CodigoPrestamoActivity.this, "Código confirmado", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CodigoPrestamoActivity.this, R.string.codigo_confirmado, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(CodigoPrestamoActivity.this, CalificarUsuarioActivity.class));
                 finish();
             }

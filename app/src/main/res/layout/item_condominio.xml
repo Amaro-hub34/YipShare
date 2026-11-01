@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="Nombre del Condominio"
+            android:text="@string/item_nombre_condominio"
             android:textColor="@color/texto_primario"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -50,7 +50,7 @@
             android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Residente"
+            android:text="@string/residente"
             android:textColor="@color/texto_hint"
             android:textSize="12sp" />
     </LinearLayout>
@@ -62,7 +62,7 @@
         android:layout_marginStart="8dp"
         android:src="@drawable/ic_check"
         app:tint="@color/azul_yipshare"
-        android:contentDescription="Condominio activo"
+        android:contentDescription="@string/condominio_activo"
         android:visibility="gone" />
 
 </LinearLayout>

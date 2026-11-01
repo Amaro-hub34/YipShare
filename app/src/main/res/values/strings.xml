@@ -47,11 +47,13 @@
 
     <string name="btnRegresar">Back</string>
 
+    <string name="notification">Notifications</string>
+
     <!-- activity_aceptar_habitantes -->
     <string name="tv_titulo_pantalla">Resident Requests</string>
 
     <!--activity_actualizar_perfil-->
-    <string name="pago_mes_actualizar_perfil">Monthly payment: </string>
+    <string name="pago_mes_actualizar_perfil">Monthly payment:\u0020</string>
     <string name="usuario_actualizar_perfil">User</string>
     <string name="contrasena_actualizar_perfil">Password</string>
     <string name="datos_personales">Personal Information</string>
@@ -111,10 +113,147 @@
     <string name="IC_TextTitle">Condominium code</string>
     <string name="et_codigo_condominio">e.g., ABC123</string>
     <string name="tv_error_codigo">Invalid code</string>
-    <string name="tv_direccion">Address: </string>
+    <string name="tv_direccion">Address:\u0020</string>
     <string name="IC_et_direccion_edificio">e.g., Building 2</string>
     <string name="IC_et_direccion_departamento">e.g., Apartment: 14</string>
     <string name="btn_unirse">Join</string>
+
+    <!--activity_main-->
+    <string name="Main_TextTitle">LOG IN</string>
+    <string name="tv_error">Login error</string>
+    <string name="usuario_IS">User</string>
+    <string name="et_password">Password</string>
+    <string name="btn_entrar">Log in</string>
+    <string name="noCuneta_message">Don\'t have an account?\u0020</string>
+    <string name="boton_registrate">Sign up</string>
+
+    <!--activity_notificacion-->
+    <string name="tv_sin_notificaciones">You have no notifications</string>
+
+    <!--activity_panel_condominios-->
+    <string name="misCondominios">My condominiums</string>
+
+    <!--activity_pantalla_principal-->
+    <string name="tv_condominio">[Condominium Name]</string>
+    <string name="tv_saludo">Hello, [Name]</string>
+    <string name="et_buscar">Search items...</string>
+    <string name="tv_no_articulos">No items available</string>
+    <string name="btn_crear_condominio">Create Condominium</string>
+    <string name="btn_unirse_condominio">Join Condominium</string>
+    <string name="tv_articulos_disponibles">Available Items</string>
+
+    <!--activity_perfil-->
+    <string name="pagoMes">Monthly payment:\u0020</string>
+    <string name="cbPagoMes">Yes, paid this month</string>
+
+    <!--registro (nuevo)-->
+    <string name="registro_titulo">CREATE ACCOUNT</string>
+    <string name="nombres">First name(s)</string>
+    <string name="btn_siguiente">Next</string>
+    <string name="ya_tienes_cuenta">Already have an account?\u0020</string>
+    <string name="link_inicia_sesion">Log in</string>
+    <string name="confirmar_contrasena">Confirm Password</string>
+    <string name="btn_crear_cuenta">Create Account</string>
+
+    <!--activity_perfil (nuevo)-->
+    <string name="identificacion_oficial">Official ID</string>
+    <string name="mi_calificacion">My Rating</string>
+    <string name="btn_actualizar_perfil">Update Information</string>
+    <string name="btn_eliminar_cuenta">Delete Account</string>
+    <string name="btn_eliminar_habitante">Remove Resident from Condominium</string>
+
+    <!--activity_pantalla_principal (nuevo)-->
+    <string name="mis_articulos">My Items</string>
+
+    <!--activity_reporte (nuevo)-->
+    <string name="reporte_titulo">Report</string>
+    <string name="reporte_vecino">Neighbor involved</string>
+    <string name="reporte_vecino_hint">e.g., Pedro Pérez</string>
+    <string name="reporte_descripcion_hint">Tell us what happened</string>
+    <string name="reporte_imagen">Image of the affected item</string>
+    <string name="btn_enviar_reporte">Submit Report</string>
+
+    <!--activity_registrar_condominio (nuevo)-->
+    <string name="rc_nombre_oficial">Official condominium name</string>
+    <string name="rc_nombre_hint">e.g., Condominium 123</string>
+    <string name="rc_direccion">Address</string>
+    <string name="rc_calle">Street</string>
+    <string name="rc_colonia">Neighborhood</string>
+    <string name="rc_cp">ZIP code</string>
+    <string name="rc_municipio">Borough/Municipality</string>
+    <string name="rc_ciudad">City</string>
+    <string name="rc_unidades">Number of units</string>
+    <string name="rc_unidades_hint">Apartments or houses</string>
+    <string name="rc_documentos">Documents (PDF)</string>
+    <string name="rc_doc_escritura">Deed Establishing the Condominium Property Regime</string>
+    <string name="rc_doc_acta">Assembly Minutes Appointing the Administrator</string>
+    <string name="rc_doc_rfc">Condominium Tax ID (RFC)</string>
+    <string name="rc_formato">Allowed format: PDF</string>
+
+    <!--items (nuevo)-->
+    <string name="item_nombre_condominio">Condominium Name</string>
+    <string name="residente">Resident</string>
+    <string name="condominio_activo">Active condominium</string>
+    <string name="imagen_publicacion">Post image</string>
+    <string name="notif_solicitud">Someone requested your item:</string>
+    <string name="notif_solicitante">Requester\'s name</string>
+    <string name="notif_direccion">Requester\'s address</string>
+    <string name="item_objeto">[Item]</string>
+    <string name="item_prestamista">[Lender username]</string>
+    <string name="prestaste_a">You lent to</string>
+    <string name="item_nombre_persona">Person\'s name</string>
+    <string name="btn_rechazar">Reject</string>
+    <string name="btn_aceptar">Accept</string>
+    <string name="item_nombre_habitante">Resident\'s name</string>
+    <string name="item_direccion_unidad">Address / Unit</string>
+
+    <!--java-->
+    <string name="te_prestaron">Lent to you by</string>
+    <string name="error_codigo_longitud">Must be 6 digits</string>
+    <string name="codigo_confirmado">Code confirmed</string>
+    <string name="demo_taladro">Electric drill</string>
+    <string name="demo_escalera">Folding ladder</string>
+    <string name="demo_bocina">Portable speaker</string>
+    <string name="demo_direccion">Building B, Apt. 302</string>
+
+    <!--activity_terms_and_conditions-->
+    <string name="terms_titulo">Terms and Conditions</string>
+    <string name="terms_actualizacion">Last updated: October 2026</string>
+    <string name="terms_intro">Welcome to YipShare. By creating an account or using the platform, you accept these Terms and Conditions.</string>
+    <string name="terms_1_titulo">1. Acceptance of the terms</string>
+    <string name="terms_1_texto">By signing up, logging in, or using any YipShare feature, you confirm that you have read, understood, and accepted these terms. If you disagree with any part of them, please do not use the platform. You must be of legal age or have the authorization of your mother, father, or legal guardian.</string>
+    <string name="terms_2_titulo">2. What YipShare is</string>
+    <string name="terms_2_texto">YipShare is a platform that connects people in the same community so they can share, lend, and use items (tools, bicycles, books, equipment, and others) instead of buying and accumulating them. Our idea is simple: the value lies in use, not in ownership.\n\nYipShare acts solely as an intermediary that facilitates contact between users. It does not own the published items, is not a party to agreements between users, and does not guarantee that a loan will take place.</string>
+    <string name="terms_3_titulo">3. Registration and account</string>
+    <string name="terms_3_texto">• You must provide true, complete, and up-to-date information when signing up.\n• You are responsible for keeping your username and password confidential.\n• Each person may have only one account; impersonating other users is not allowed.\n• You must notify us immediately if you suspect your account was used without your permission.</string>
+    <string name="terms_4_titulo">4. Posting items</string>
+    <string name="terms_4_texto">By posting an item, you declare and accept that:\n• You own the item or are authorized to share it.\n• The description, condition, and photos are real and not misleading.\n• The item is legal, safe, and works properly for its stated use.\n• You will not post prohibited, dangerous, or stolen items, or items that infringe third-party rights.\n\nYipShare may remove any post that violates these terms or that it considers inappropriate, without prior notice.</string>
+    <string name="terms_5_titulo">5. Loans and sharing</string>
+    <string name="terms_5_texto">• The lender and the borrower agree directly on the conditions: duration, place and method of delivery and return, and any specific care the item requires.\n• We recommend checking the item\'s condition together at delivery and at return.\n• The item must be returned on the agreed date and in the same condition in which it was received, except for normal wear from use.\n• Meetings must take place in safe locations. We suggest choosing public places or places known to your community.</string>
+    <string name="terms_6_titulo">6. User responsibilities</string>
+    <string name="terms_6_texto">As a YipShare user, you agree to:\n• Treat other community members with respect.\n• Take care of the items you receive as if they were your own.\n• Honor the agreements you make with other users.\n• Use items only for the agreed purpose, without putting yourself or others at risk.\n• Comply with the laws that apply to your use of the platform.</string>
+    <string name="terms_7_titulo">7. Damage, loss, and disputes</string>
+    <string name="terms_7_texto">Whoever receives an item is responsible for repairing or replacing it if it is damaged, lost, or stolen while in their care, unless the damage results from normal wear or a pre-existing defect. Users must try to resolve any disagreement directly and in good faith.\n\nIf they cannot reach an agreement, they can write to us through the contact page. YipShare may offer the parties guidance, but it is not obligated to resolve the dispute and is not liable for its outcome.</string>
+    <string name="terms_8_titulo">8. Prohibited conduct</string>
+    <string name="terms_8_texto">• Posting false, offensive, or discriminatory content, or content that incites violence.\n• Offering weapons, illegal substances, or any item whose possession or loan is unlawful.\n• Harassing, threatening, or deceiving other users.\n• Using the platform for unauthorized commercial purposes, spam, or fraud.\n• Attempting to access accounts, systems, or data of YipShare or other users without permission.\n• Copying, modifying, or altering the operation of the platform.</string>
+    <string name="terms_9_titulo">9. Privacy and personal data</string>
+    <string name="terms_9_texto">We collect and process your personal data (such as your name, email address, and account information) solely to operate the platform, enable contact between users, improve the service, and maintain security. We do not sell your data to third parties.\n\nYou can request access to, correction of, or deletion of your data, or object to its use, by writing to us through the contact page. Some of your information, such as your username and your posts, will be visible to other community members.</string>
+    <string name="terms_10_titulo">10. Intellectual property</string>
+    <string name="terms_10_texto">The YipShare name, logo, design, and code belong to their creators and may not be used without authorization. By uploading photos or text to the platform, you grant us a limited license to display them within YipShare for the sole purpose of operating the service. You remain the owner of your content.</string>
+    <string name="terms_11_titulo">11. Limitation of liability</string>
+    <string name="terms_11_texto">YipShare is provided “as is”. We do our best to keep it available and secure, but we do not guarantee that it will work without interruptions or errors. To the extent permitted by law, YipShare is not liable for damage, injury, loss, or conflicts arising from the use of shared items or from the conduct of users. Each person assumes responsibility for the agreements they make.</string>
+    <string name="terms_12_titulo">12. Suspension and termination</string>
+    <string name="terms_12_texto">We may suspend or terminate your account if you violate these terms, put other users at risk, or misuse the platform. You may also stop using YipShare and request the deletion of your account at any time.</string>
+    <string name="terms_13_titulo">13. Changes to these terms</string>
+    <string name="terms_13_texto">We may update these terms when necessary. We will publish the current version with its update date. If you keep using YipShare after a change, we understand that you accept it.</string>
+    <string name="terms_14_titulo">14. Governing law</string>
+    <string name="terms_14_texto">These terms are governed by the laws of the United Mexican States. For any dispute, the parties submit to the jurisdiction of the competent courts of Mexico City, waiving any other jurisdiction that may apply to them.</string>
+    <string name="terms_15_titulo">15. Contact</string>
+    <string name="terms_15_texto">Have questions about these terms? Write to us through our contact page and we\'ll be happy to help.</string>
+    <string name="terms_volver">Back</string>
+
+    <!--valores de ejemplo, no se traducen-->
+    <string name="placeholder_codigo" translatable="false">000000</string>
+    <string name="placeholder_calificacion" translatable="false">0.0</string>
+    <string name="placeholder_calificacion_perfil" translatable="false">4.0</string>
 </resources>
-
-
