@@ -197,7 +197,7 @@
                             style="@style/ButtonSecundary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_adjuntar" />
+                            android:text="@string/btn_adjuntar_identificacion" />
 
                         <TextView
                             android:id="@+id/tv_archivo_identificacion"
@@ -208,7 +208,7 @@
                             android:layout_marginStart="10dp"
                             android:maxLines="1"
                             android:ellipsize="middle"
-                            android:text="@string/tv_archivo" />
+                            android:text="@string/tv_archivo_identificacion" />
                     </LinearLayout>
 
                     <Button

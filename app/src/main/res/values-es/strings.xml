@@ -62,8 +62,8 @@
     <string name="direccion_actualizar_perfil">Dirección:</string>
     <string name="et_direccion_edificio">Ej: Edificio 2</string>
     <string name="et_direccion_departamento">Ej: Departamento: 14</string>
-    <string name="btn_adjuntar">Adjuntar PDF</string>
-    <string name="tv_archivo">Ningún archivo seleccionado</string>
+    <string name="btn_adjuntar_identificacion">Adjuntar PDF</string>
+    <string name="tv_archivo_identificacion">Ningún archivo seleccionado</string>
     <string name="btn_actualizar_datos">Actualizar Datos</string>
 
     <!--activity_calificar_usuario-->
@@ -99,7 +99,7 @@
     <string name="et_nombre_articulo">Ej: Tijeras</string>
     <string name="FA_categoria">Categoría</string>
     <string name="FA_descripcion">Descripción</string>
-    <string name="et_descripcionObject">Descripción de objeto</string>
+    <string name="et_descripcion">Descripción de objeto</string>
     <string name="FA_TextTitle">Estado físico</string>
     <string name="tv_tiempo_prestamo">Tiempo de préstamo</string>
     <string name="iv_preview_imagen">Vista previa de la imagen</string>
@@ -145,68 +145,14 @@
     <!--activity_perfil-->
     <string name="pagoMes">Pago del mes:\u0020</string>
     <string name="cbPagoMes">Sí, pagó este mes</string>
-    <string name="AP_contrasena">Contraseña</string>
-    <string name="nombres">Nombre(s)"</string>
-    <string name="id_oficial">Identificación Oficial</string>
-    <string name="miCalificacion">Mi Calificación</string>
     <string name="btn_eliminar_cuenta">Eliminar Cuenta</string>
-    <string name="btn_sacar_habitante">Eliminar Habitante de Condominio</string>
-
-    <!--activity_registrar_condominio-->
-    <string name="ARC_tv_titulo_pantalla">Crear Condominio</string>
-    <string name="nameCondominio">Nombre oficial del condominio</string>
-    <string name="et_nombre_condominio">Ej. Condominio 123</string>
-    <string name="ARC_direccion">Dirección</string>
-    <string name="et_direccion_condominio1">Calle</string>
-    <string name="et_direccion_condominio2">Colonia</string>
-    <string name="et_direccion_condominio3">CP</string>
-    <string name="et_direccion_condominio4">Alcaldía/Municipio</string>
-    <string name="et_direccion_condominio5">Ciudad</string>
-    <string name="cantUnidades">Cantidad de unidades</string>
-    <string name="et_cantidad_unidades">Departamentos o casas</string>
-    <string name="Doc">Documentos (PDF)</string>
-    <string name="RegimenCondominio">Escritura Constitutiva del Régimen de Propiedad en Condominio</string>
-    <string name="tv_archivo_escritura">Ningún archivo seleccionado</string>
-    <string name="nombramientoAdmin">Acta de Asamblea de Nombramiento del Administrador</string>
-    <string name="tv_archivo_acta">Ningún archivo seleccionado</string>
-    <string name="RFCCondo">RFC del Condominio</string>
-    <string name="tv_archivo_rfc">Ningún archivo seleccionado</string>
-    <string name="formatoPermitido">Formato permitido: PDF</string>
 
     <!--activity_registrocuenta1 y 2-->
-    <string name="registrarCuenta">REGISTRAR CUENTA</string>
-    <string name="RC_tv_error">Error de inicio de sesión</string>
     <string name="btn_siguiente">Siguiente</string>
-    <string name="YaTienesCuenta">¿Ya tienes una cuenta?</string>
-    <string name="boton_regresar_Main">Inicia sesión</string>
-    <string name="contrasena_confirmacion">Confirmar Contraseña</string>
-    <string name="btn_crearCuenta">Crear Cuenta</string>
-
-    <!--activity_reporte-->
-<string name="report_vecino">Vecino involucrado</string>
-    <string name="et_nombre_vecino">Ej: Pedro Pérez</string>
-    <string name="descripcion">Descripción</string>
-    <string name="et_descripcion">Hablanos de lo que sucedio</string>
-    <string name="img_objetoAfectado">Imagen del objeto afectado</string>
-    <string name="btn_cambiar_imagen2">Cambiar imagen</string>
-    <string name="btn_enviar_Reporte">Enviar Reporte</string>
-
-    <!--activity_terms_and_conditions-->
-    <string name="termsConditions">Términos y Condiciones</string>
-    <string name="ultimaActualizacion">Última actualización: octubre de 2026</string>
-    <string name="bienvenido">Bienvenido a YipShare. Al crear una cuenta o usar la plataforma aceptas los Términos y Condiciones.</string>
-    <string name="acceptTerms">1. Aceptación de los términos</string>
-    <string name="alRegistrarse">Al registrarte, iniciar sesión o utilizar cualquier función de YipShare, confirmas que has leído, entendido y aceptado estos términos. Si no estás de acuerdo con alguna parte, te pedimos que no uses la plataforma. Debes ser mayor de edad o contar con la autorización de tu madre, padre o tutor legal.</string>
-    <string name="YipshareQueEs">2. Qué es YipShare</string>
-    <string name="YipshareEs">YipShare es una plataforma que conecta a personas de una misma comunidad para compartir, prestar y utilizar objetos (herramientas, bicicletas, libros, equipo, entre otros) en lugar de comprarlos y acumularlos. Nuestra idea es simple: el valor está en el uso, no en la posesión.\n\nYipShare actúa únicamente como intermediario que facilita el contacto entre usuarios. No es propietario de los artículos publicados, no participa como parte en los acuerdos entre usuarios y no garantiza que un préstamo se concrete.</string>
-    <string name="registroYCuenta">3. Registro y cuenta</string>
-    <string name="registroYCuenta_descripcion">• Debes proporcionar información verdadera, completa y actualizada al registrarte.\n• Eres responsable de mantener la confidencialidad de tu usuario y contraseña.\n• Cada persona puede tener una sola cuenta; no está permitido suplantar a otros usuarios.\n• Debes avisarnos de inmediato si sospechas que tu cuenta fue usada sin tu permiso.</string>
-    <string name="publicacionArti">4. Publicación de artículos</string>
 
     <!--registro (nuevo)-->
     <string name="registro_titulo">REGISTRAR CUENTA</string>
     <string name="nombres">Nombre(s)</string>
-    <string name="btn_siguiente">Siguiente</string>
     <string name="ya_tienes_cuenta">¿Ya tienes una cuenta?\u0020</string>
     <string name="link_inicia_sesion">Inicia sesión</string>
     <string name="confirmar_contrasena">Confirmar Contraseña</string>
@@ -216,7 +162,6 @@
     <string name="identificacion_oficial">Identificación Oficial</string>
     <string name="mi_calificacion">Mi Calificación</string>
     <string name="btn_actualizar_perfil">Actualizar Datos</string>
-    <string name="btn_eliminar_cuenta">Eliminar Cuenta</string>
     <string name="btn_eliminar_habitante">Eliminar Habitante de Condominio</string>
 
     <!--activity_pantalla_principal (nuevo)-->
