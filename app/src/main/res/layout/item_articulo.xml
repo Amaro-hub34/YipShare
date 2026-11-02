@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/color_tarjeta">
@@ -15,11 +16,13 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <View
+        <ImageView
             android:id="@+id/iv_imagen_articulo"
             android:layout_width="match_parent"
             android:layout_height="90dp"
-            android:background="@drawable/bg_placeholder_imagen" />
+            android:background="@drawable/bg_placeholder_imagen"
+            android:contentDescription="@string/iv_preview_imagen"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tv_estado_articulo"
@@ -38,9 +41,11 @@
         <TextView
             android:id="@+id/tv_nombre_articulo"
             style="@style/TextTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="15sp"
             android:text="@string/item_objeto" />
 

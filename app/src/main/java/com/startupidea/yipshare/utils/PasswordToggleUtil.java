@@ -5,6 +5,8 @@ import android.text.method.PasswordTransformationMethod;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.startupidea.yipshare.R;
 
 public final class PasswordToggleUtil {
@@ -12,7 +14,7 @@ public final class PasswordToggleUtil {
     private PasswordToggleUtil() {
     }
 
-    public static void attach(EditText input, ImageView toggle) {
+    public static void attach(EditText input, @NonNull ImageView toggle) {
         toggle.setOnClickListener(v -> {
             boolean hidden = input.getTransformationMethod() instanceof PasswordTransformationMethod;
             int cursor = input.getSelectionEnd();

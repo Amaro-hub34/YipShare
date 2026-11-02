@@ -1,23 +1,92 @@
 package com.startupidea.yipshare;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.item.InvalidItem;
+import com.startupidea.yipshare.item.ItemField;
+import com.startupidea.yipshare.item.ItemPayload;
+import com.startupidea.yipshare.item.ItemService;
+import com.startupidea.yipshare.item.LocalItemRepository;
+import com.startupidea.yipshare.utils.ImageFileUtil;
+import com.startupidea.yipshare.utils.ImagePreviewUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class FormularioArticuloActivity extends AppCompatActivity {
+
+    private static final String ITEMS_FILE = "items.dat";
+    private static final String KEY_IMAGE_URI = "image_uri";
+    private static final int DURATION_ID_BASE = 1000;
+    private static final int PREVIEW_MAX_SIZE_PX = 1080;
+
+    private final List<CheckBox> durationBoxes = new ArrayList<>();
+    private final ActivityResultLauncher<PickVisualMediaRequest> imagePicker = registerForActivityResult(
+            new ActivityResultContracts.PickVisualMedia(),
+            uri -> {
+                if (uri != null) showImage(uri);
+            });
+
+    private ItemService itemService;
+    private EditText etName;
+    private EditText etDescription;
+    private Spinner spCategory;
+    private Spinner spPhysicalCondition;
+    private ImageView ivPreview;
+    private TextView tvDurationError;
+    private TextView tvImageError;
+    private Uri imageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_formulario_articulo);
+
+        itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
+        etName = findViewById(R.id.et_nombre_articulo);
+        etDescription = findViewById(R.id.et_descripcion);
+        spCategory = findViewById(R.id.spinner_categoria);
+        spPhysicalCondition = findViewById(R.id.sp_estado_fisico);
+        ivPreview = findViewById(R.id.iv_preview_imagen);
+        tvDurationError = findViewById(R.id.tv_error_duracion);
+        tvImageError = findViewById(R.id.tv_error_imagen);
+
+        addDurationBoxes();
+        findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
+        findViewById(R.id.btn_accion_principal).setOnClickListener(v -> postItem());
+
+        if (savedInstanceState != null) {
+            String savedUri = savedInstanceState.getString(KEY_IMAGE_URI);
+            if (savedUri != null) showImage(Uri.parse(savedUri));
+        }
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         Guideline guidelineStatus = findViewById(R.id.guideline_status);
@@ -49,5 +118,113 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         findViewById(R.id.nav_prestamos).setOnClickListener(v -> {
             startActivity(new Intent(FormularioArticuloActivity.this, PrestamoActivity.class));
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (imageUri != null) outState.putString(KEY_IMAGE_URI, imageUri.toString());
+    }
+
+    private void addDurationBoxes() {
+        GridLayout grid = findViewById(R.id.grid_tiempo_prestamo);
+        String[] durations = getResources().getStringArray(R.array.tiempo_prestamo);
+
+        for (int index = 0; index < durations.length; index++) {
+            CheckBox box = new CheckBox(this);
+            box.setId(DURATION_ID_BASE + index);
+            box.setText(durations[index]);
+            box.setOnCheckedChangeListener((view, checked) -> tvDurationError.setVisibility(View.GONE));
+
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = 0;
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            grid.addView(box, params);
+            durationBoxes.add(box);
+        }
+    }
+
+    private void openGallery() {
+        imagePicker.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
+    }
+
+    private void showImage(Uri uri) {
+        Bitmap preview = ImagePreviewUtil.tryLoad(this, uri, PREVIEW_MAX_SIZE_PX);
+
+        if (preview == null) {
+            imageUri = null;
+            ivPreview.setVisibility(View.GONE);
+            showImageError(R.string.error_imagen_invalida);
+            return;
+        }
+
+        imageUri = uri;
+        ivPreview.setImageBitmap(preview);
+        ivPreview.setVisibility(View.VISIBLE);
+        tvImageError.setVisibility(View.GONE);
+    }
+
+    private void postItem() {
+        etName.setError(null);
+        etDescription.setError(null);
+
+        String pickedImage = imageUri == null ? null : imageUri.toString();
+
+        try {
+            itemService.validate(readPayload(pickedImage));
+
+            Uri storedImage = ImageFileUtil.tryCopy(this, imageUri);
+            if (storedImage == null) {
+                showImageError(R.string.error_imagen_invalida);
+                return;
+            }
+
+            itemService.createItem(readPayload(storedImage.toString()));
+            Toast.makeText(this, R.string.articulo_publicado, Toast.LENGTH_SHORT).show();
+            finish();
+        } catch (InvalidItem e) {
+            showErrors(e.getFields(), e.getMessageRes());
+        } catch (AppException e) {
+            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showImageError(@StringRes int message) {
+        tvImageError.setText(message);
+        tvImageError.setVisibility(View.VISIBLE);
+    }
+
+    private ItemPayload readPayload(String image) {
+        List<String> durations = new ArrayList<>();
+        for (CheckBox box : durationBoxes) {
+            if (box.isChecked()) durations.add(box.getText().toString());
+        }
+
+        return new ItemPayload(
+                etName.getText().toString().trim(),
+                spCategory.getSelectedItem().toString(),
+                etDescription.getText().toString().trim(),
+                spPhysicalCondition.getSelectedItem().toString(),
+                image,
+                durations);
+    }
+
+    private void showErrors(Set<ItemField> fields, @StringRes int requiredMessage) {
+        if (fields.contains(ItemField.DESCRIPTION)) {
+            etDescription.setError(getString(requiredMessage));
+            etDescription.requestFocus();
+        }
+        if (fields.contains(ItemField.NAME)) {
+            etName.setError(getString(requiredMessage));
+            etName.requestFocus();
+        }
+        if (fields.contains(ItemField.IMAGE)) {
+            showImageError(R.string.error_imagen_obligatoria);
+        }
+        if (fields.contains(ItemField.LOAN_DURATIONS)) {
+            tvDurationError.setVisibility(View.VISIBLE);
+        }
     }
 }

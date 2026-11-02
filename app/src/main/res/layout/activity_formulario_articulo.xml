@@ -159,16 +159,22 @@
                         android:layout_marginTop="14dp"
                         android:textSize="14sp"
                         android:text="@string/tv_tiempo_prestamo" />
-                    <Spinner
-                        android:id="@+id/sp_tiempo_prestamo"
+                    <GridLayout
+                        android:id="@+id/grid_tiempo_prestamo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:background="@drawable/bg_input"
-                        android:padding="12dp"
-                        android:entries="@array/tiempo_prestamo"
-                        android:spinnerMode="dropdown" />
+                        android:columnCount="2" />
 
+                    <TextView
+                        android:id="@+id/tv_error_duracion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/error_duracion_obligatoria"
+                        android:textColor="@color/rojo_en_uso"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
 
                     <FrameLayout
@@ -204,6 +210,16 @@
                         android:textStyle="bold"
                         android:textSize="12sp"
                         android:text="@string/FA_formatos" />
+
+                    <TextView
+                        android:id="@+id/tv_error_imagen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:textColor="@color/rojo_en_uso"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

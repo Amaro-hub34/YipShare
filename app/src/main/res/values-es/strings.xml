@@ -139,6 +139,10 @@
     <string name="error_usuario_corto">Mínimo 6 caracteres</string>
     <string name="error_contrasena_formato">Mínimo 8 caracteres, con una mayúscula, un número y un carácter especial</string>
     <string name="error_contrasena_no_coincide">Las contraseñas no coinciden</string>
+    <string name="error_imagen_obligatoria">Elige una imagen</string>
+    <string name="error_imagen_invalida">No se pudo cargar esa imagen</string>
+    <string name="error_duracion_obligatoria">Elige al menos una duración</string>
+    <string name="articulo_publicado">Artículo publicado</string>
 
     <string name="mostrar_contrasena">Mostrar contraseña</string>
     <string name="ocultar_contrasena">Ocultar contraseña</string>

@@ -22,12 +22,22 @@ import android.widget.TextView;
 
 import com.startupidea.yipshare.adapters.CondominioAdapter;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 import com.startupidea.yipshare.adapters.ArticuloAdapter;
+import com.startupidea.yipshare.item.ItemService;
+import com.startupidea.yipshare.item.LocalItemRepository;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class PantallaPrincipalActivity extends AppCompatActivity {
+
+    private static final String ITEMS_FILE = "items.dat";
+    private static final int EXAMPLE_ITEMS = 2;
+
+    private ItemService itemService;
+    private RecyclerView rvMyItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +66,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
-        RecyclerView rvMisArticulos = findViewById(R.id.rv_mis_articulos);
-        rvMisArticulos.setAdapter(new ArticuloAdapter(1));
+        itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
+        rvMyItems = findViewById(R.id.rv_mis_articulos);
 
         RecyclerView rvArticulosDisponibles = findViewById(R.id.rv_articulos_disponibles);
-        rvArticulosDisponibles.setAdapter(new ArticuloAdapter(1));
+        rvArticulosDisponibles.setAdapter(new ArticuloAdapter(Collections.emptyList(), EXAMPLE_ITEMS));
 
         findViewById(R.id.iv_agregar_top).setOnClickListener(v -> mostrarMenuAgregar());
 
@@ -78,6 +88,12 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.logo_yipshare).setOnClickListener(v -> mostrarPanelCondominios());
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(PantallaPrincipalActivity.this, FormularioArticuloActivity.class)));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        rvMyItems.setAdapter(new ArticuloAdapter(itemService.getAllItems(), EXAMPLE_ITEMS));
     }
 
     private void mostrarMenuAgregar() {

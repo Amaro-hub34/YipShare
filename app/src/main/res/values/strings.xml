@@ -139,6 +139,10 @@
     <string name="error_usuario_corto">Minimum 6 characters</string>
     <string name="error_contrasena_formato">At least 8 characters, with one uppercase letter, one number and one special character</string>
     <string name="error_contrasena_no_coincide">Passwords do not match</string>
+    <string name="error_imagen_obligatoria">Choose an image</string>
+    <string name="error_imagen_invalida">Could not load that image</string>
+    <string name="error_duracion_obligatoria">Choose at least one duration</string>
+    <string name="articulo_publicado">Item posted</string>
 
     <string name="mostrar_contrasena">Show password</string>
     <string name="ocultar_contrasena">Hide password</string>
