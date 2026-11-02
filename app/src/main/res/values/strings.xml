@@ -280,4 +280,9 @@
     <string name="placeholder_codigo" translatable="false">000000</string>
     <string name="placeholder_calificacion" translatable="false">0.0</string>
     <string name="placeholder_calificacion_perfil" translatable="false">4.0</string>
+
+
+    <!--Perfil-->
+    <string name="perfil_titulo">Profile</string>
+    <string name="perfil_nombre">Name</string>
 </resources>

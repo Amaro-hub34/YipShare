@@ -277,4 +277,8 @@
     <string name="terms_15_titulo">15. Contacto</string>
     <string name="terms_15_texto">¿Tienes dudas sobre estos términos? Escríbenos desde nuestra página de contacto y con gusto te ayudamos.</string>
     <string name="terms_volver">Volver</string>
+
+    <!--Perfil-->
+    <string name="perfil_titulo">Perfil</string>
+    <string name="perfil_nombre">Nombre</string>
 </resources>

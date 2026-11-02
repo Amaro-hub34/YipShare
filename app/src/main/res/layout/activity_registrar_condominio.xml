@@ -294,6 +294,39 @@
                             android:ellipsize="middle"
                             android:text="@string/tv_archivo_identificacion" />
                     </LinearLayout>
+                    <TextView
+                        style="@style/TextTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:textSize="14sp"
+                        android:text="@string/identificacion_oficial" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:id="@+id/btn_adjuntar_identificacion"
+                            style="@style/ButtonSecundary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_adjuntar_identificacion" />
+
+                        <TextView
+                            android:id="@+id/tv_archivo_identificacion"
+                            style="@style/TextBody"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:maxLines="1"
+                            android:ellipsize="middle"
+                            android:text="@string/tv_archivo_identificacion" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
