@@ -56,6 +56,7 @@
     <string name="pago_mes_actualizar_perfil">Monthly payment:\u0020</string>
     <string name="usuario_actualizar_perfil">User</string>
     <string name="contrasena_actualizar_perfil">Password</string>
+    <string name="phone">Phone number</string>
     <string name="datos_personales">Personal Information</string>
     <string name="apellido_paterno">Paternal Last Name</string>
     <string name="apellido_materno">Maternal Last Name</string>

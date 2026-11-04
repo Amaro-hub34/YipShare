@@ -169,6 +169,15 @@
                     app:tint="@color/texto_secundario" />
             </FrameLayout>
 
+            <EditText
+                android:id="@+id/phone_IS"
+                style="@style/InputBrand"
+                android:autofillHints="phone number"
+                android:hint="@string/phone"
+                android:inputType="textNoSuggestions"
+                android:minHeight="48dp"
+                android:layout_marginBottom="14dp" />
+
             <ProgressBar
                 android:id="@+id/pbSubida"
                 style="?android:attr/progressBarStyleHorizontal"
