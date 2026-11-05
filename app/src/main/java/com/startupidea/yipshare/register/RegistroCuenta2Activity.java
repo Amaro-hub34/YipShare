@@ -43,9 +43,9 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         draft = RegistrationDraft.fromIntent(getIntent());
 
         etUsername = findViewById(R.id.usuario_IS);
-        etPassword = findViewById(R.id.contraseña);
-        etPasswordConfirmation = findViewById(R.id.contraseña_confirmacion);
-        etPhoneNumber = findViewById(R.id.telefono);
+        etPassword = findViewById(R.id.contrasenia);
+        etPasswordConfirmation = findViewById(R.id.contrasenia_confirmacion2);
+        etPhoneNumber = findViewById(R.id.telefono_frame2);
         tvError = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(etPassword, findViewById(R.id.btn_toggle_password));
         PasswordToggleUtil.attach(etPasswordConfirmation, findViewById(R.id.btn_toggle_password_confirmation));

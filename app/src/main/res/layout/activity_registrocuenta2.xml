@@ -119,7 +119,7 @@
                 android:layout_marginBottom="14dp">
 
                 <EditText
-                    android:id="@+id/contraseña"
+                    android:id="@+id/contrasenia"
                     style="@style/InputBrand"
                     android:autofillHints="password"
                     android:hint="@string/contrasena_actualizar_perfil"
@@ -142,12 +142,13 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/fl_contrasenia_confirmacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="14dp">
 
                 <EditText
-                    android:id="@+id/contraseña_confirmacion"
+                    android:id="@+id/contrasenia_confirmacion2"
                     style="@style/InputBrand"
                     android:autofillHints="password"
                     android:hint="@string/confirmar_contrasena"
@@ -167,6 +168,22 @@
                     android:src="@drawable/ic_visibility"
                     android:contentDescription="@string/mostrar_contrasena"
                     app:tint="@color/texto_secundario" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/telefono_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <EditText
+                    android:id="@+id/telefono_frame2"
+                    style="@style/InputBrand"
+                    android:autofillHints="phone"
+                    android:hint="@string/telefono_hint"
+                    android:inputType="phone"
+                    android:minHeight="48dp"
+                    android:paddingEnd="48dp" />
             </FrameLayout>
 
             <ProgressBar
