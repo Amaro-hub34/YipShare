@@ -77,5 +77,6 @@ public class MainActivity extends AppCompatActivity {
             tvError.setText(e.getMessageRes());
             tvError.setVisibility(View.VISIBLE);
         }
+
     }
 }

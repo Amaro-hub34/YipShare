@@ -6,5 +6,7 @@ public interface UserRepository {
 
     boolean existsUsername(String username);
 
+    boolean existsPhoneNumber(String phoneNumber);
+
     User createUser(RegistrationPayload payload);
 }

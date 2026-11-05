@@ -8,6 +8,10 @@ import org.junit.Test;
 public class UserServiceTest {
 
     private static UserService serviceWith(User loginResult, boolean usernameExists) {
+        return serviceWith(loginResult, usernameExists, false);
+    }
+
+    private static UserService serviceWith(User loginResult, boolean usernameExists, boolean phoneExists) {
         return new UserService(new UserRepository() {
             @Override
             public User tryLogin(LoginPayload payload) {
@@ -17,6 +21,11 @@ public class UserServiceTest {
             @Override
             public boolean existsUsername(String username) {
                 return usernameExists;
+            }
+
+            @Override
+            public boolean existsPhoneNumber(String phoneNumber) {
+                return phoneExists;
             }
 
             @Override
@@ -61,7 +70,11 @@ public class UserServiceTest {
     }
 
     private static RegistrationDraft credentials(String username, String password, String confirmation) {
-        return names("Pérez", "De la Cruz", "Ana María").withCredentials(username, password, confirmation);
+        return credentials(username, password, confirmation, "5512345678");
+    }
+
+    private static RegistrationDraft credentials(String username, String password, String confirmation, String phone) {
+        return names("Pérez", "De la Cruz", "Ana María").withCredentials(username, password, confirmation, phone);
     }
 
     private static RegistrationField failingField(Runnable action) {
@@ -112,9 +125,26 @@ public class UserServiceTest {
     }
 
     @Test
+    public void validateCredentialsRequiresTenDigitPhone() {
+        UserService service = serviceWith(null, false);
+        for (String phone : new String[]{"", "551234567", "55123456789", "55-1234567", "55123a5678"}) {
+            assertEquals(phone, RegistrationField.PHONE_NUMBER,
+                    failingField(() -> service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", phone))));
+        }
+        service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", "0512345678"));
+    }
+
+    @Test
     public void registerRejectsDuplicateUsername() {
         UserService service = serviceWith(null, true);
         assertThrows(DuplicateUsername.class,
+                () -> service.register(credentials("anitas", "Secret1!", "Secret1!")));
+    }
+
+    @Test
+    public void registerRejectsDuplicatePhoneNumber() {
+        UserService service = serviceWith(null, false, true);
+        assertThrows(DuplicatePhoneNumber.class,
                 () -> service.register(credentials("anitas", "Secret1!", "Secret1!")));
     }
 

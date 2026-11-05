@@ -44,6 +44,9 @@ public class UserService {
         if (!password.equals(draft.getPasswordConfirmation())) {
             throw new InvalidField(RegistrationField.PASSWORD_CONFIRMATION, R.string.error_contrasena_no_coincide);
         }
+        if (!UserRules.PHONE_NUMBER.matcher(draft.getPhoneNumber().trim()).matches()) {
+            throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
+        }
     }
 
     public User register(RegistrationDraft draft) {
@@ -52,11 +55,16 @@ public class UserService {
 
         RegistrationPayload payload = draft.toPayload();
         ensureUsernameAvailable(payload.getUsername());
+        ensurePhoneNumberAvailable(payload.getPhoneNumber());
         return userRepository.createUser(payload);
     }
 
     public void ensureUsernameAvailable(String username) {
         if (userRepository.existsUsername(username)) throw new DuplicateUsername();
+    }
+
+    public void ensurePhoneNumberAvailable(String phoneNumber) {
+        if (userRepository.existsPhoneNumber(phoneNumber)) throw new DuplicatePhoneNumber();
     }
 
     private void validateName(String value, RegistrationField field) {

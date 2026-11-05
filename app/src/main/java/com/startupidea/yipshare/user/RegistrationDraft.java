@@ -13,12 +13,13 @@ public final class RegistrationDraft implements Parcelable {
 
     private static final String KEY_DRAFT = "com.startupidea.yipshare.extra.REGISTRATION_DRAFT";
 
-    public static final RegistrationDraft EMPTY = new RegistrationDraft("", "", "", "", "", "");
+    public static final RegistrationDraft EMPTY = new RegistrationDraft("", "", "", "", "", "", "");
 
     public static final Creator<RegistrationDraft> CREATOR = new Creator<RegistrationDraft>() {
         @Override
         public RegistrationDraft createFromParcel(Parcel source) {
             return new RegistrationDraft(
+                    source.readString(),
                     source.readString(),
                     source.readString(),
                     source.readString(),
@@ -39,6 +40,7 @@ public final class RegistrationDraft implements Parcelable {
     private final String username;
     private final String password;
     private final String passwordConfirmation;
+    private final String phoneNumber;
 
     private RegistrationDraft(
             String paternalLastName,
@@ -46,13 +48,15 @@ public final class RegistrationDraft implements Parcelable {
             String firstNames,
             String username,
             String password,
-            String passwordConfirmation) {
+            String passwordConfirmation,
+            String phoneNumber) {
         this.paternalLastName = paternalLastName;
         this.maternalLastName = maternalLastName;
         this.firstNames = firstNames;
         this.username = username;
         this.password = password;
         this.passwordConfirmation = passwordConfirmation;
+        this.phoneNumber = phoneNumber;
     }
 
     public static RegistrationDraft fromIntent(Intent intent) {
@@ -78,17 +82,19 @@ public final class RegistrationDraft implements Parcelable {
                 firstNames,
                 username,
                 password,
-                passwordConfirmation);
+                passwordConfirmation,
+                phoneNumber);
     }
 
-    public RegistrationDraft withCredentials(String username, String password, String passwordConfirmation) {
+    public RegistrationDraft withCredentials(String username, String password, String passwordConfirmation, String phoneNumber) {
         return new RegistrationDraft(
                 paternalLastName,
                 maternalLastName,
                 firstNames,
                 username,
                 password,
-                passwordConfirmation);
+                passwordConfirmation,
+                phoneNumber);
     }
 
     public RegistrationPayload toPayload() {
@@ -97,7 +103,8 @@ public final class RegistrationDraft implements Parcelable {
                 maternalLastName.trim(),
                 firstNames.trim(),
                 username.trim(),
-                password);
+                password,
+                phoneNumber.trim());
     }
 
     public String getPaternalLastName() {
@@ -124,6 +131,10 @@ public final class RegistrationDraft implements Parcelable {
         return passwordConfirmation;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,5 +148,6 @@ public final class RegistrationDraft implements Parcelable {
         dest.writeString(username);
         dest.writeString(password);
         dest.writeString(passwordConfirmation);
+        dest.writeString(phoneNumber);
     }
 }

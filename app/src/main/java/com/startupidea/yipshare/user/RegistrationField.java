@@ -6,5 +6,6 @@ public enum RegistrationField {
     FIRST_NAMES,
     USERNAME,
     PASSWORD,
-    PASSWORD_CONFIRMATION
+    PASSWORD_CONFIRMATION,
+    PHONE_NUMBER
 }

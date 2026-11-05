@@ -11,18 +11,21 @@ public final class RegistrationPayload implements Serializable {
     private final String firstNames;
     private final String username;
     private final String password;
+    private final String phoneNumber;
 
     public RegistrationPayload(
             String paternalLastName,
             String maternalLastName,
             String firstNames,
             String username,
-            String password) {
+            String password,
+            String phoneNumber) {
         this.paternalLastName = paternalLastName;
         this.maternalLastName = maternalLastName;
         this.firstNames = firstNames;
         this.username = username;
         this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getPaternalLastName() {
@@ -43,5 +46,9 @@ public final class RegistrationPayload implements Serializable {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }

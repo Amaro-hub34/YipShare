@@ -14,6 +14,7 @@ import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.user.DuplicatePhoneNumber;
 import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.PendingUserRepository;
@@ -31,6 +32,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
     private EditText etPasswordConfirmation;
+    private EditText etPhoneNumber;
     private TextView tvError;
 
     @Override
@@ -43,6 +45,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         etUsername = findViewById(R.id.usuario_IS);
         etPassword = findViewById(R.id.contraseña);
         etPasswordConfirmation = findViewById(R.id.contraseña_confirmacion);
+        etPhoneNumber = findViewById(R.id.telefono);
         tvError = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(etPassword, findViewById(R.id.btn_toggle_password));
         PasswordToggleUtil.attach(etPasswordConfirmation, findViewById(R.id.btn_toggle_password_confirmation));
@@ -51,6 +54,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             etUsername.setText(draft.getUsername());
             etPassword.setText(draft.getPassword());
             etPasswordConfirmation.setText(draft.getPasswordConfirmation());
+            etPhoneNumber.setText(draft.getPhoneNumber());
         }
 
         findViewById(R.id.btn_siguiente).setOnClickListener(v -> register());
@@ -73,7 +77,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         return draft.withCredentials(
                 etUsername.getText().toString(),
                 etPassword.getText().toString(),
-                etPasswordConfirmation.getText().toString());
+                etPasswordConfirmation.getText().toString(),
+                etPhoneNumber.getText().toString());
     }
 
     private void returnToNames() {
@@ -96,6 +101,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             showInputError(inputFor(e.getField()), e);
         } catch (DuplicateUsername e) {
             showInputError(etUsername, e);
+        } catch (DuplicatePhoneNumber e) {
+            showInputError(etPhoneNumber, e);
         } catch (AppException e) {
             tvError.setText(e.getMessageRes());
             tvError.setVisibility(View.VISIBLE);
@@ -113,6 +120,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
                 return etUsername;
             case PASSWORD:
                 return etPassword;
+            case PHONE_NUMBER:
+                return etPhoneNumber;
             default:
                 return etPasswordConfirmation;
         }

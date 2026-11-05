@@ -17,6 +17,11 @@ public class PendingUserRepository implements UserRepository {
     }
 
     @Override
+    public boolean existsPhoneNumber(String phoneNumber) {
+        return false;
+    }
+
+    @Override
     public User createUser(RegistrationPayload payload) {
         return new User(UUID.randomUUID().toString(), payload.getUsername());
     }

@@ -34,7 +34,7 @@ public class UserParcelTest {
     public void draftSurvivesIntentParceling() {
         RegistrationDraft draft = RegistrationDraft.EMPTY
                 .withNames("Pérez", "López", "Ana")
-                .withCredentials("anitas", "Secret1!", "Secret1!");
+                .withCredentials("anitas", "Secret1!", "Secret1!", "5512345678");
         Intent intent = new Intent();
         draft.putInto(intent);
 

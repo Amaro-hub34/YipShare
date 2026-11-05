@@ -285,4 +285,7 @@
     <!--Perfil-->
     <string name="perfil_titulo">Profile</string>
     <string name="perfil_nombre">Name</string>
+    <string name="error_telefono_duplicado">Phone number already exists</string>
+    <string name="error_telefono_formato">Phone number must have exactly 10 digits</string>
+    <string name="telefono_hint">Phone number (10 digits)</string>
 </resources>
