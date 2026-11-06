@@ -25,6 +25,7 @@ import com.startupidea.yipshare.adapters.CondominioAdapter;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import com.startupidea.yipshare.adapters.ArticuloAdapter;
 import com.startupidea.yipshare.item.ItemService;
@@ -36,8 +37,12 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     private static final String ITEMS_FILE = "items.dat";
     private static final int EXAMPLE_ITEMS = 2;
 
+    private static final List<String> CONDOMINIOS =
+            Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma");
+
     private ItemService itemService;
     private RecyclerView rvMyItems;
+    private int condominioSeleccionado = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,11 +130,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         panel.findViewById(R.id.btn_cerrar_sesion).setOnClickListener(v -> confirmarCerrarSesion());
 
         RecyclerView rv = panel.findViewById(R.id.rv_condominios);
-        rv.setAdapter(new CondominioAdapter(
-                Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma"),
-                nombre -> {
-                    ((TextView) findViewById(R.id.tv_condominio)).setText(nombre);
-                    dialog.dismiss();
+        rv.setAdapter(new CondominioAdapter(CONDOMINIOS, condominioSeleccionado,
+                panel.findViewById(R.id.resaltado_condominio),
+                posicion -> {
+                    condominioSeleccionado = posicion;
+                    ((TextView) findViewById(R.id.tv_condominio)).setText(CONDOMINIOS.get(posicion));
                 }));
 
         Window window = dialog.getWindow();

@@ -4,11 +4,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.PantallaPrincipalActivity;
@@ -24,8 +33,17 @@ import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.PasswordToggleUtil;
 
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
 public class RegistroCuenta2Activity extends AppCompatActivity {
 
+    private static final String DEFAULT_REGION = "MX";
+
+    private final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
     private final UserService userService = new UserService(new PendingUserRepository());
 
     private RegistrationDraft draft;
@@ -33,6 +51,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private EditText etPassword;
     private EditText etPasswordConfirmation;
     private EditText etPhoneNumber;
+    private Spinner spCountryCode;
+    private List<String> regions;
     private TextView tvError;
 
     @Override
@@ -46,6 +66,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         etPassword = findViewById(R.id.contrasenia);
         etPasswordConfirmation = findViewById(R.id.contrasenia_confirmacion2);
         etPhoneNumber = findViewById(R.id.telefono_frame2);
+        spCountryCode = findViewById(R.id.spinner_codigo_pais);
+        setUpCountryCodes();
         tvError = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(etPassword, findViewById(R.id.btn_toggle_password));
         PasswordToggleUtil.attach(etPasswordConfirmation, findViewById(R.id.btn_toggle_password_confirmation));
@@ -54,7 +76,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             etUsername.setText(draft.getUsername());
             etPassword.setText(draft.getPassword());
             etPasswordConfirmation.setText(draft.getPasswordConfirmation());
-            etPhoneNumber.setText(draft.getPhoneNumber());
+            showPhoneNumber(draft.getPhoneNumber());
         }
 
         findViewById(R.id.btn_siguiente).setOnClickListener(v -> register());
@@ -78,7 +100,71 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
                 etUsername.getText().toString(),
                 etPassword.getText().toString(),
                 etPasswordConfirmation.getText().toString(),
-                etPhoneNumber.getText().toString());
+                phoneNumberWithCountryCode());
+    }
+
+    private String phoneNumberWithCountryCode() {
+        String localNumber = etPhoneNumber.getText().toString().trim();
+        if (localNumber.isEmpty()) return "";
+        return "+" + countryCodeOf(regions.get(spCountryCode.getSelectedItemPosition())) + localNumber;
+    }
+
+    private void setUpCountryCodes() {
+        regions = new ArrayList<>(phoneUtil.getSupportedRegions());
+        regions.sort(Comparator.comparing(this::countryName, Collator.getInstance()));
+
+        List<String> labels = new ArrayList<>();
+        for (String region : regions) {
+            labels.add(flagOf(region) + " " + countryName(region) + " (+" + countryCodeOf(region) + ")");
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labels) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                // Closed spinner shows only flag and code so it doesn't squeeze the phone field.
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                String region = regions.get(position);
+                view.setText(flagOf(region) + " +" + countryCodeOf(region));
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCountryCode.setAdapter(adapter);
+
+        String deviceRegion = Locale.getDefault().getCountry();
+        selectRegion(regions.contains(deviceRegion) ? deviceRegion : DEFAULT_REGION);
+    }
+
+    /** Splits a stored "+<code><number>" back into the country picker and the local number. */
+    private void showPhoneNumber(String phoneNumber) {
+        if (phoneNumber.isEmpty()) return;
+        try {
+            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, null);
+            selectRegion(phoneUtil.getRegionCodeForCountryCode(number.getCountryCode()));
+            etPhoneNumber.setText(phoneUtil.getNationalSignificantNumber(number));
+        } catch (NumberParseException e) {
+            // Too short to parse: keep only the digits the user typed after the country code.
+            etPhoneNumber.setText(phoneNumber.replaceFirst("^\\+" + countryCodeOf(regions.get(spCountryCode.getSelectedItemPosition())), ""));
+        }
+    }
+
+    private void selectRegion(String region) {
+        int position = regions.indexOf(region);
+        if (position >= 0) spCountryCode.setSelection(position);
+    }
+
+    private int countryCodeOf(String region) {
+        return phoneUtil.getCountryCodeForRegion(region);
+    }
+
+    private String countryName(String region) {
+        return new Locale("", region).getDisplayCountry();
+    }
+
+    private static String flagOf(String region) {
+        int base = 0x1F1E6 - 'A';
+        return new String(Character.toChars(base + region.charAt(0)))
+                + new String(Character.toChars(base + region.charAt(1)));
     }
 
     private void returnToNames() {

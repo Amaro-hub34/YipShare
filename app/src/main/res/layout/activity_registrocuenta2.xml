@@ -170,21 +170,32 @@
                     app:tint="@color/texto_secundario" />
             </FrameLayout>
 
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/telefono_frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="14dp">
+                android:layout_marginBottom="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinner_codigo_pais"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/codigo_pais"
+                    android:minHeight="48dp" />
 
                 <EditText
                     android:id="@+id/telefono_frame2"
                     style="@style/InputBrand"
-                    android:autofillHints="phone"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:autofillHints="phoneNational"
                     android:hint="@string/telefono_hint"
                     android:inputType="phone"
-                    android:minHeight="48dp"
-                    android:paddingEnd="48dp" />
-            </FrameLayout>
+                    android:minHeight="48dp" />
+            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/pbSubida"

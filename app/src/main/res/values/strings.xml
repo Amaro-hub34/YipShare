@@ -130,7 +130,7 @@
 
     <string name="error_usuario_vacio">Enter your username</string>
     <string name="error_contrasena_vacia">Enter your password</string>
-    <string name="error_credenciales">Incorrect username or password</string>
+    <string name="error_cuenta_no_existe">Account does not exist</string>
     <string name="error_usuario_duplicado">That username is already taken</string>
     <string name="error_bd_no_disponible">Could not connect. Try again later</string>
 
@@ -287,6 +287,7 @@
     <string name="perfil_titulo">Profile</string>
     <string name="perfil_nombre">Name</string>
     <string name="error_telefono_duplicado">Phone number already exists</string>
-    <string name="error_telefono_formato">Phone number must have exactly 10 digits</string>
-    <string name="telefono_hint">Phone number (10 digits)</string>
+    <string name="error_telefono_formato">Invalid phone number for the selected country</string>
+    <string name="telefono_hint">Phone number</string>
+    <string name="codigo_pais">Country code</string>
 </resources>

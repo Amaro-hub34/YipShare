@@ -50,13 +50,20 @@ public class UserServiceTest {
     @Test
     public void loginRejectsUnknownCredentials() {
         UserService service = serviceWith(null, false);
-        assertThrows(InvalidCredentials.class, () -> service.login(new LoginPayload("ana", "secret")));
+        assertThrows(AccountNotFound.class, () -> service.login(new LoginPayload("anitas", "Secret1!")));
+    }
+
+    @Test
+    public void loginRejectsMalformedCredentialsAsAccountNotFound() {
+        UserService service = serviceWith(new User("1", "anitas"), false);
+        assertThrows(AccountNotFound.class, () -> service.login(new LoginPayload("anita", "Secret1!")));
+        assertThrows(AccountNotFound.class, () -> service.login(new LoginPayload("anitas", "secret")));
     }
 
     @Test
     public void loginReturnsUser() {
         User user = new User("1", "ana");
-        assertEquals(user, serviceWith(user, false).login(new LoginPayload("ana", "secret")));
+        assertEquals(user, serviceWith(user, false).login(new LoginPayload("anitas", "Secret1!")));
     }
 
     @Test
@@ -70,7 +77,7 @@ public class UserServiceTest {
     }
 
     private static RegistrationDraft credentials(String username, String password, String confirmation) {
-        return credentials(username, password, confirmation, "5512345678");
+        return credentials(username, password, confirmation, "+525512345678");
     }
 
     private static RegistrationDraft credentials(String username, String password, String confirmation, String phone) {
@@ -125,13 +132,20 @@ public class UserServiceTest {
     }
 
     @Test
-    public void validateCredentialsRequiresTenDigitPhone() {
+    public void validateCredentialsRequiresValidPhoneForCountry() {
         UserService service = serviceWith(null, false);
-        for (String phone : new String[]{"", "551234567", "55123456789", "55-1234567", "55123a5678"}) {
+        for (String phone : new String[]{"", "+52", "+52551234567", "+5255123456789", "5512345678", "+52 55123a"}) {
             assertEquals(phone, RegistrationField.PHONE_NUMBER,
                     failingField(() -> service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", phone))));
         }
-        service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", "0512345678"));
+        service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", "+52 55 1234 5678"));
+        service.validateCredentials(credentials("anitas", "Secret1!", "Secret1!", "+14155552671"));
+    }
+
+    @Test
+    public void toPayloadStoresPhoneInE164() {
+        assertEquals("+525512345678",
+                credentials("anitas", "Secret1!", "Secret1!", "+52 55-1234-5678").toPayload().getPhoneNumber());
     }
 
     @Test

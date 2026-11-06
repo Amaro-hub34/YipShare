@@ -40,12 +40,27 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_condominios"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        xmlns:app="http://schemas.android.com/apk/res-auto" />
+        android:layout_weight="1">
+
+        <!-- Highlight that slides behind the selected condominium -->
+        <View
+            android:id="@+id/resaltado_condominio"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_item_condominio"
+            android:visibility="invisible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_condominios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+    </FrameLayout>
 
 </LinearLayout>

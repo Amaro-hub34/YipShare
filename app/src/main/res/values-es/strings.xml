@@ -130,7 +130,7 @@
 
     <string name="error_usuario_vacio">Ingresa tu usuario</string>
     <string name="error_contrasena_vacia">Ingresa tu contraseña</string>
-    <string name="error_credenciales">Usuario o contraseña incorrectos</string>
+    <string name="error_cuenta_no_existe">La cuenta no existe</string>
     <string name="error_usuario_duplicado">Ese usuario ya existe</string>
     <string name="error_bd_no_disponible">No se pudo conectar. Inténtalo más tarde</string>
 
@@ -283,6 +283,7 @@
     <string name="perfil_titulo">Perfil</string>
     <string name="perfil_nombre">Nombre</string>
     <string name="error_telefono_duplicado">Número de teléfono ya existe</string>
-    <string name="error_telefono_formato">El teléfono debe tener exactamente 10 dígitos</string>
-    <string name="telefono_hint">Teléfono (10 dígitos)</string>
+    <string name="error_telefono_formato">Número no válido para el país seleccionado</string>
+    <string name="telefono_hint">Teléfono</string>
+    <string name="codigo_pais">Código de país</string>
 </resources>

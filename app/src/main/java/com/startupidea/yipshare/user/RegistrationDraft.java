@@ -104,7 +104,7 @@ public final class RegistrationDraft implements Parcelable {
                 firstNames.trim(),
                 username.trim(),
                 password,
-                phoneNumber.trim());
+                UserRules.normalizePhoneNumber(phoneNumber));
     }
 
     public String getPaternalLastName() {

@@ -13,9 +13,14 @@ public class UserService {
     public User login(LoginPayload payload) {
         if (payload.getUsername().trim().isEmpty()) throw new EmptyUsername();
         if (payload.getPassword().trim().isEmpty()) throw new EmptyPassword();
+        // An account that breaks the registration rules can't exist; skip the DB lookup.
+        if (payload.getUsername().trim().length() < UserRules.USERNAME_MIN_LENGTH
+                || !UserRules.PASSWORD.matcher(payload.getPassword()).matches()) {
+            throw new AccountNotFound();
+        }
 
         User user = userRepository.tryLogin(payload);
-        if (user == null) throw new InvalidCredentials();
+        if (user == null) throw new AccountNotFound();
         return user;
     }
 
@@ -44,7 +49,7 @@ public class UserService {
         if (!password.equals(draft.getPasswordConfirmation())) {
             throw new InvalidField(RegistrationField.PASSWORD_CONFIRMATION, R.string.error_contrasena_no_coincide);
         }
-        if (!UserRules.PHONE_NUMBER.matcher(draft.getPhoneNumber().trim()).matches()) {
+        if (UserRules.normalizePhoneNumber(draft.getPhoneNumber()) == null) {
             throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
         }
     }
