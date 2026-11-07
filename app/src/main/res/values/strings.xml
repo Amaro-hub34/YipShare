@@ -291,4 +291,8 @@
     <string name="error_telefono_formato">Invalid phone number for the selected country</string>
     <string name="telefono_hint">Phone number</string>
     <string name="codigo_pais">Country code</string>
+    <string name="error_cp_formato">Enter a 5-digit ZIP code</string>
+    <string name="error_documento_pdf">Only PDF files are allowed</string>
+    <string name="error_documento_obligatorio">Attach this document as PDF</string>
+    <string name="solicitud_condominio_enviada">Request sent. The global administrator will review it</string>
 </resources>

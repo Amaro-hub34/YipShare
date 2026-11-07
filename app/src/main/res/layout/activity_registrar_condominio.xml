@@ -137,7 +137,8 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
-                        android:inputType="textPostalAddress"
+                        android:inputType="number"
+                        android:maxLength="5"
                         android:hint="@string/rc_cp" />
                     <EditText
                         android:id="@+id/et_direccion_condominio4"

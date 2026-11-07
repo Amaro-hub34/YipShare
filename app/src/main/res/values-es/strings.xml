@@ -287,4 +287,8 @@
     <string name="error_telefono_formato">Número no válido para el país seleccionado</string>
     <string name="telefono_hint">Teléfono</string>
     <string name="codigo_pais">Código de país</string>
+    <string name="error_cp_formato">Ingresa un CP de 5 dígitos</string>
+    <string name="error_documento_pdf">Solo se permiten archivos PDF</string>
+    <string name="error_documento_obligatorio">Adjunta este documento en PDF</string>
+    <string name="solicitud_condominio_enviada">Solicitud enviada. El administrador global la revisará</string>
 </resources>

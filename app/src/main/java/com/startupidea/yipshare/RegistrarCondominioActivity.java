@@ -1,18 +1,67 @@
 package com.startupidea.yipshare;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.startupidea.yipshare.condominium.CondominiumField;
+import com.startupidea.yipshare.condominium.CondominiumPayload;
+import com.startupidea.yipshare.condominium.CondominiumService;
+import com.startupidea.yipshare.condominium.InvalidCondominium;
+import com.startupidea.yipshare.condominium.PendingCondominiumRepository;
+import com.startupidea.yipshare.error.AppException;
+
+import java.util.Set;
+
 public class RegistrarCondominioActivity extends AppCompatActivity {
+
+    private static final String PDF_MIME = "application/pdf";
+    private static final String KEY_DOCUMENTS = "documents";
+    private static final String KEY_PENDING_DOCUMENT = "pending_document";
+    private static final int[] DOCUMENT_BUTTONS = {
+            R.id.btn_adjuntar_escritura, R.id.btn_adjuntar_acta,
+            R.id.btn_adjuntar_rfc, R.id.btn_adjuntar_identificacion};
+    private static final int[] DOCUMENT_LABELS = {
+            R.id.tv_archivo_escritura, R.id.tv_archivo_acta,
+            R.id.tv_archivo_rfc, R.id.tv_archivo_identificacion};
+    private static final CondominiumField[] DOCUMENT_FIELDS = {
+            CondominiumField.DEED, CondominiumField.MINUTES,
+            CondominiumField.TAX_ID, CondominiumField.IDENTIFICATION};
+
+    private final String[] documents = new String[DOCUMENT_FIELDS.length];
+    private final TextView[] documentLabels = new TextView[DOCUMENT_FIELDS.length];
+    private final ActivityResultLauncher<String[]> pdfPicker = registerForActivityResult(
+            new ActivityResultContracts.OpenDocument(),
+            uri -> {
+                if (uri != null) attachDocument(this.pendingDocument, uri);
+            });
+
+    private CondominiumService condominiumService;
+    private EditText etName;
+    private EditText etStreet;
+    private EditText etNeighborhood;
+    private EditText etZipCode;
+    private EditText etMunicipality;
+    private EditText etCity;
+    private EditText etUnits;
+    private int pendingDocument;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +69,33 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registrar_condominio);
 
-        findViewById(R.id.btn_regresar).setOnClickListener(v -> {
-            startActivity(new Intent(RegistrarCondominioActivity.this, PantallaPrincipalActivity.class));
-        });
-        findViewById(R.id.btn_crear_condominio).setOnClickListener(v -> {
-            startActivity(new Intent(RegistrarCondominioActivity.this, PantallaPrincipalActivity.class));
-        });
+        condominiumService = new CondominiumService(new PendingCondominiumRepository());
+        etName = findViewById(R.id.et_nombre_condominio);
+        etStreet = findViewById(R.id.et_direccion_condominio1);
+        etNeighborhood = findViewById(R.id.et_direccion_condominio2);
+        etZipCode = findViewById(R.id.et_direccion_condominio3);
+        etMunicipality = findViewById(R.id.et_direccion_condominio4);
+        etCity = findViewById(R.id.et_direccion_condominio5);
+        etUnits = findViewById(R.id.et_cantidad_unidades);
+
+        for (int index = 0; index < DOCUMENT_FIELDS.length; index++) {
+            int document = index;
+            documentLabels[index] = findViewById(DOCUMENT_LABELS[index]);
+            findViewById(DOCUMENT_BUTTONS[index]).setOnClickListener(v -> {
+                pendingDocument = document;
+                pdfPicker.launch(new String[]{PDF_MIME});
+            });
+        }
+
+        if (savedInstanceState != null) {
+            pendingDocument = savedInstanceState.getInt(KEY_PENDING_DOCUMENT);
+            String[] saved = savedInstanceState.getStringArray(KEY_DOCUMENTS);
+            for (int index = 0; saved != null && index < saved.length; index++) {
+                if (saved[index] != null) attachDocument(index, Uri.parse(saved[index]));
+            }
+        }
+
+        findViewById(R.id.btn_crear_condominio).setOnClickListener(v -> requestCondominium());
         Guideline lineaGuiaCabeza = findViewById(R.id.guideline_header);
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
@@ -58,5 +128,93 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         });
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(RegistrarCondominioActivity.this, FormularioArticuloActivity.class)));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_PENDING_DOCUMENT, pendingDocument);
+        outState.putStringArray(KEY_DOCUMENTS, documents);
+    }
+
+    private void attachDocument(int index, Uri uri) {
+        TextView label = documentLabels[index];
+
+        // Some providers ignore the MIME filter, so the picked file is checked again.
+        if (!PDF_MIME.equals(getContentResolver().getType(uri))) {
+            documents[index] = null;
+            label.setText(R.string.tv_archivo_identificacion);
+            label.setError(getString(R.string.error_documento_pdf));
+            Toast.makeText(this, R.string.error_documento_pdf, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } catch (SecurityException ignored) {
+            // Restored URIs may already hold the permission or not offer a persistable one.
+        }
+        documents[index] = uri.toString();
+        label.setText(displayName(uri));
+        label.setError(null);
+    }
+
+    private String displayName(Uri uri) {
+        try (Cursor cursor = getContentResolver().query(
+                uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) return cursor.getString(0);
+        }
+        return uri.getLastPathSegment();
+    }
+
+    private void requestCondominium() {
+        try {
+            condominiumService.createCondominiumRequest(readPayload());
+            Toast.makeText(this, R.string.solicitud_condominio_enviada, Toast.LENGTH_LONG).show();
+            finish();
+        } catch (InvalidCondominium e) {
+            showErrors(e.getFields(), getString(e.getMessageRes()));
+        } catch (AppException e) {
+            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private CondominiumPayload readPayload() {
+        String units = etUnits.getText().toString().trim();
+
+        return new CondominiumPayload(
+                etName.getText().toString().trim(),
+                etStreet.getText().toString().trim(),
+                etNeighborhood.getText().toString().trim(),
+                etZipCode.getText().toString().trim(),
+                etMunicipality.getText().toString().trim(),
+                etCity.getText().toString().trim(),
+                units.isEmpty() ? 0 : Integer.parseInt(units),
+                documents[0],
+                documents[1],
+                documents[2],
+                documents[3]);
+    }
+
+    private void showErrors(Set<CondominiumField> fields, String requiredMessage) {
+        for (int index = 0; index < DOCUMENT_FIELDS.length; index++) {
+            if (fields.contains(DOCUMENT_FIELDS[index])) {
+                documentLabels[index].setError(getString(R.string.error_documento_obligatorio));
+            }
+        }
+        // Reverse screen order so the topmost invalid input keeps the focus.
+        showInputError(fields, CondominiumField.UNITS, etUnits, requiredMessage);
+        showInputError(fields, CondominiumField.CITY, etCity, requiredMessage);
+        showInputError(fields, CondominiumField.MUNICIPALITY, etMunicipality, requiredMessage);
+        showInputError(fields, CondominiumField.ZIP_CODE, etZipCode, getString(R.string.error_cp_formato));
+        showInputError(fields, CondominiumField.NEIGHBORHOOD, etNeighborhood, requiredMessage);
+        showInputError(fields, CondominiumField.STREET, etStreet, requiredMessage);
+        showInputError(fields, CondominiumField.NAME, etName, requiredMessage);
+    }
+
+    private void showInputError(Set<CondominiumField> fields, CondominiumField field, EditText input, String message) {
+        if (!fields.contains(field)) return;
+        input.setError(message);
+        input.requestFocus();
     }
 }
