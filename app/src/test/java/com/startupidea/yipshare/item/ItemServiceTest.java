@@ -94,4 +94,25 @@ public class ItemServiceTest {
 
         assertEquals(2, item.getPayload().getLoanDurations().size());
     }
+
+    @Test
+    public void searchesByNameIgnoringCase() {
+        List<Item> items = Arrays.asList(
+                new Item("1", payload("Power Drill", DESCRIPTION, IMAGE, DURATIONS)),
+                new Item("2", payload("Ladder", DESCRIPTION, IMAGE, DURATIONS)));
+        ItemService searchable = new ItemService(new ItemRepository() {
+            @Override
+            public List<Item> getAllItems() {
+                return items;
+            }
+
+            @Override
+            public Item createItem(ItemPayload payload) {
+                return null;
+            }
+        });
+
+        assertEquals(Collections.singletonList(items.get(0)), searchable.searchItems(" dRi "));
+        assertEquals(items, searchable.searchItems(""));
+    }
 }

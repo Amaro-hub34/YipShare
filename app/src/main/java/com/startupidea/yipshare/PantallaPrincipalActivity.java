@@ -1,8 +1,12 @@
 package com.startupidea.yipshare;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -42,6 +46,8 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
 
     private ItemService itemService;
     private RecyclerView rvMyItems;
+    private RecyclerView rvAvailableItems;
+    private EditText etSearch;
     private int condominioSeleccionado = 0;
 
     @Override
@@ -67,6 +73,13 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             return insets;
         });
 
+        // The activity is recreated on rotation, so checking once here is enough.
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bottomNav.setVisibility(View.GONE);
+            findViewById(R.id.tv_condominio).setVisibility(View.GONE);
+            findViewById(R.id.tv_saludo).setVisibility(View.GONE);
+        }
+
         boolean articlesExist = true;
         findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
@@ -74,8 +87,22 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
         rvMyItems = findViewById(R.id.rv_mis_articulos);
 
-        RecyclerView rvArticulosDisponibles = findViewById(R.id.rv_articulos_disponibles);
-        rvArticulosDisponibles.setAdapter(new ArticuloAdapter(Collections.emptyList(), EXAMPLE_ITEMS));
+        rvAvailableItems = findViewById(R.id.rv_articulos_disponibles);
+        etSearch = findViewById(R.id.et_buscar);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                showItems();
+            }
+        });
 
         findViewById(R.id.iv_agregar_top).setOnClickListener(v -> mostrarMenuAgregar());
 
@@ -98,7 +125,15 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        rvMyItems.setAdapter(new ArticuloAdapter(itemService.getAllItems(), EXAMPLE_ITEMS));
+        showItems();
+    }
+
+    private void showItems() {
+        String query = etSearch.getText().toString();
+        // Example cards have no real data, so they only show while not searching.
+        int examples = query.trim().isEmpty() ? EXAMPLE_ITEMS : 0;
+        rvMyItems.setAdapter(new ArticuloAdapter(itemService.searchItems(query), examples));
+        rvAvailableItems.setAdapter(new ArticuloAdapter(Collections.emptyList(), examples));
     }
 
     private void mostrarMenuAgregar() {

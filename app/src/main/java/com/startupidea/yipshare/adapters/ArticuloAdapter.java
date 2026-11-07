@@ -50,7 +50,12 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
 
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
-            context.startActivity(new Intent(context, DetalleArticuloActivity.class));
+            Intent intent = new Intent(context, DetalleArticuloActivity.class);
+            int current = holder.getBindingAdapterPosition();
+            if (current != RecyclerView.NO_POSITION && current < items.size()) {
+                items.get(current).putInto(intent);
+            }
+            context.startActivity(intent);
         });
     }
 

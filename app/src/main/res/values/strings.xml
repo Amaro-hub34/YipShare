@@ -89,6 +89,7 @@
     <string name="tv_estado_articulo">Available</string>
     <string name="tv_nombre_articulo">[FULL ITEM NAME]</string>
     <string name="tv_categoria">(Category)</string>
+    <string name="DA_categoria_estado">(%1$s · %2$s)</string>
     <string name="tv_descripcion">This is a test description</string>
     <string name="DA_TextTitle">Loan period</string>
     <string name="tv_prestamista">Username</string>

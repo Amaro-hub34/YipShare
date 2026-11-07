@@ -121,7 +121,6 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             @NonNull
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                // Closed spinner shows only flag and code so it doesn't squeeze the phone field.
                 TextView view = (TextView) super.getView(position, convertView, parent);
                 String region = regions.get(position);
                 view.setText(flagOf(region) + " +" + countryCodeOf(region));
@@ -135,7 +134,6 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         selectRegion(regions.contains(deviceRegion) ? deviceRegion : DEFAULT_REGION);
     }
 
-    /** Splits a stored "+<code><number>" back into the country picker and the local number. */
     private void showPhoneNumber(String phoneNumber) {
         if (phoneNumber.isEmpty()) return;
         try {

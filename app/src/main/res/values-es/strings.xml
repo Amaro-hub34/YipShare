@@ -89,6 +89,7 @@
     <string name="tv_estado_articulo">Disponible</string>
     <string name="tv_nombre_articulo">[NOMBRE COMPLETO DEL OBJETO]</string>
     <string name="tv_categoria">(Categoría)</string>
+    <string name="DA_categoria_estado">(%1$s · %2$s)</string>
     <string name="tv_descripcion">Esta es una descripción de prueba</string>
     <string name="DA_TextTitle">Tiempo préstamo</string>
     <string name="tv_prestamista">Nombre de usuario</string>
