@@ -54,13 +54,13 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
             });
 
     private CondominiumService condominiumService;
-    private EditText etName;
-    private EditText etStreet;
-    private EditText etNeighborhood;
-    private EditText etZipCode;
-    private EditText etMunicipality;
-    private EditText etCity;
-    private EditText etUnits;
+    private EditText nameField;
+    private EditText streetField;
+    private EditText neighborhoodField;
+    private EditText zipCodeField;
+    private EditText municipalityField;
+    private EditText cityField;
+    private EditText unitsField;
     private int pendingDocument;
 
     @Override
@@ -70,13 +70,13 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registrar_condominio);
 
         condominiumService = new CondominiumService(new PendingCondominiumRepository());
-        etName = findViewById(R.id.et_nombre_condominio);
-        etStreet = findViewById(R.id.et_direccion_condominio1);
-        etNeighborhood = findViewById(R.id.et_direccion_condominio2);
-        etZipCode = findViewById(R.id.et_direccion_condominio3);
-        etMunicipality = findViewById(R.id.et_direccion_condominio4);
-        etCity = findViewById(R.id.et_direccion_condominio5);
-        etUnits = findViewById(R.id.et_cantidad_unidades);
+        nameField = findViewById(R.id.et_nombre_condominio);
+        streetField = findViewById(R.id.et_direccion_condominio1);
+        neighborhoodField = findViewById(R.id.et_direccion_condominio2);
+        zipCodeField = findViewById(R.id.et_direccion_condominio3);
+        municipalityField = findViewById(R.id.et_direccion_condominio4);
+        cityField = findViewById(R.id.et_direccion_condominio5);
+        unitsField = findViewById(R.id.et_cantidad_unidades);
 
         for (int index = 0; index < DOCUMENT_FIELDS.length; index++) {
             int document = index;
@@ -95,8 +95,8 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
             }
         }
 
-        findViewById(R.id.btn_crear_condominio).setOnClickListener(v -> requestCondominium());
-        Guideline lineaGuiaCabeza = findViewById(R.id.guideline_header);
+        findViewById(R.id.btn_crear_condominio).setOnClickListener(v -> tryRequestCondominium());
+        Guideline guidelineHeader = findViewById(R.id.guideline_header);
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -104,7 +104,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-            lineaGuiaCabeza.setGuidelineBegin(headerBase + bars.top);
+            guidelineHeader.setGuidelineBegin(headerBase + bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
             ViewGroup.LayoutParams lp = bottomNav.getLayoutParams();
@@ -167,7 +167,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         return uri.getLastPathSegment();
     }
 
-    private void requestCondominium() {
+    private void tryRequestCondominium() {
         try {
             condominiumService.createCondominiumRequest(readPayload());
             Toast.makeText(this, R.string.solicitud_condominio_enviada, Toast.LENGTH_LONG).show();
@@ -180,15 +180,15 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
     }
 
     private CondominiumPayload readPayload() {
-        String units = etUnits.getText().toString().trim();
+        String units = unitsField.getText().toString().trim();
 
         return new CondominiumPayload(
-                etName.getText().toString().trim(),
-                etStreet.getText().toString().trim(),
-                etNeighborhood.getText().toString().trim(),
-                etZipCode.getText().toString().trim(),
-                etMunicipality.getText().toString().trim(),
-                etCity.getText().toString().trim(),
+                nameField.getText().toString().trim(),
+                streetField.getText().toString().trim(),
+                neighborhoodField.getText().toString().trim(),
+                zipCodeField.getText().toString().trim(),
+                municipalityField.getText().toString().trim(),
+                cityField.getText().toString().trim(),
                 units.isEmpty() ? 0 : Integer.parseInt(units),
                 documents[0],
                 documents[1],
@@ -203,13 +203,13 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
             }
         }
         // Reverse screen order so the topmost invalid input keeps the focus.
-        showInputError(fields, CondominiumField.UNITS, etUnits, requiredMessage);
-        showInputError(fields, CondominiumField.CITY, etCity, requiredMessage);
-        showInputError(fields, CondominiumField.MUNICIPALITY, etMunicipality, requiredMessage);
-        showInputError(fields, CondominiumField.ZIP_CODE, etZipCode, getString(R.string.error_cp_formato));
-        showInputError(fields, CondominiumField.NEIGHBORHOOD, etNeighborhood, requiredMessage);
-        showInputError(fields, CondominiumField.STREET, etStreet, requiredMessage);
-        showInputError(fields, CondominiumField.NAME, etName, requiredMessage);
+        showInputError(fields, CondominiumField.UNITS, unitsField, requiredMessage);
+        showInputError(fields, CondominiumField.CITY, cityField, requiredMessage);
+        showInputError(fields, CondominiumField.MUNICIPALITY, municipalityField, requiredMessage);
+        showInputError(fields, CondominiumField.ZIP_CODE, zipCodeField, getString(R.string.error_cp_formato));
+        showInputError(fields, CondominiumField.NEIGHBORHOOD, neighborhoodField, requiredMessage);
+        showInputError(fields, CondominiumField.STREET, streetField, requiredMessage);
+        showInputError(fields, CondominiumField.NAME, nameField, requiredMessage);
     }
 
     private void showInputError(Set<CondominiumField> fields, CondominiumField field, EditText input, String message) {

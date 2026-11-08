@@ -16,22 +16,22 @@ import java.util.List;
 public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.CondominioViewHolder> {
 
     public interface OnCondominioClick {
-        void onClick(int posicion);
+        void onClick(int position);
     }
 
-    private static final long DURACION_DESLIZAR_MS = 250;
-    private static final long DURACION_CHECK_MS = 300;
+    private static final long SLIDE_DURATION_MS = 250;
+    private static final long CHECK_DURATION_MS = 300;
 
-    private final List<String> nombres;
-    private final View resaltado;
+    private final List<String> names;
+    private final View highlight;
     private final OnCondominioClick listener;
     private RecyclerView recyclerView;
-    private int seleccionado;
+    private int selected;
 
-    public CondominioAdapter(List<String> nombres, int seleccionado, View resaltado, OnCondominioClick listener) {
-        this.nombres = nombres;
-        this.seleccionado = seleccionado;
-        this.resaltado = resaltado;
+    public CondominioAdapter(List<String> names, int selected, View highlight, OnCondominioClick listener) {
+        this.names = names;
+        this.selected = selected;
+        this.highlight = highlight;
         this.listener = listener;
     }
 
@@ -42,7 +42,7 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
-                resaltado.setTranslationY(resaltado.getTranslationY() - dy);
+                highlight.setTranslationY(highlight.getTranslationY() - dy);
             }
         });
     }
@@ -57,75 +57,75 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
 
     @Override
     public void onBindViewHolder(@NonNull CondominioViewHolder holder, int position) {
-        boolean activo = position == seleccionado;
-        holder.nombre.setText(nombres.get(position));
-        holder.detalle.setText(R.string.residente);
-        holder.check.animate().cancel();
-        holder.check.setScaleX(1f);
-        holder.check.setScaleY(1f);
-        holder.check.setAlpha(1f);
-        holder.check.setVisibility(activo ? View.VISIBLE : View.GONE);
-        holder.itemView.setActivated(activo);
-        if (activo) holder.itemView.post(() -> moverResaltado(holder.itemView, false));
+        boolean active = position == selected;
+        holder.nameLabel.setText(names.get(position));
+        holder.detailLabel.setText(R.string.residente);
+        holder.checkImage.animate().cancel();
+        holder.checkImage.setScaleX(1f);
+        holder.checkImage.setScaleY(1f);
+        holder.checkImage.setAlpha(1f);
+        holder.checkImage.setVisibility(active ? View.VISIBLE : View.GONE);
+        holder.itemView.setActivated(active);
+        if (active) holder.itemView.post(() -> moveHighlight(holder.itemView, false));
 
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getBindingAdapterPosition();
             if (pos == RecyclerView.NO_POSITION) return;
-            if (pos != seleccionado) seleccionar(holder, pos);
+            if (pos != selected) select(holder, pos);
             listener.onClick(pos);
         });
     }
 
-    private void seleccionar(CondominioViewHolder nuevo, int pos) {
-        RecyclerView.ViewHolder anterior = recyclerView.findViewHolderForAdapterPosition(seleccionado);
-        if (anterior instanceof CondominioViewHolder) {
-            View check = ((CondominioViewHolder) anterior).check;
-            anterior.itemView.setActivated(false);
-            check.animate().scaleX(0f).scaleY(0f).alpha(0f).setDuration(DURACION_CHECK_MS / 2)
-                    .withEndAction(() -> check.setVisibility(View.GONE));
+    private void select(CondominioViewHolder newHolder, int pos) {
+        RecyclerView.ViewHolder previousHolder = recyclerView.findViewHolderForAdapterPosition(selected);
+        if (previousHolder instanceof CondominioViewHolder) {
+            View checkImage = ((CondominioViewHolder) previousHolder).checkImage;
+            previousHolder.itemView.setActivated(false);
+            checkImage.animate().scaleX(0f).scaleY(0f).alpha(0f).setDuration(CHECK_DURATION_MS / 2)
+                    .withEndAction(() -> checkImage.setVisibility(View.GONE));
         }
-        seleccionado = pos;
+        selected = pos;
 
-        nuevo.itemView.setActivated(true);
-        moverResaltado(nuevo.itemView, true);
-        nuevo.check.setVisibility(View.VISIBLE);
-        nuevo.check.setScaleX(0f);
-        nuevo.check.setScaleY(0f);
-        nuevo.check.setAlpha(0f);
-        nuevo.check.animate().scaleX(1f).scaleY(1f).alpha(1f)
-                .setStartDelay(DURACION_DESLIZAR_MS / 2).setDuration(DURACION_CHECK_MS)
+        newHolder.itemView.setActivated(true);
+        moveHighlight(newHolder.itemView, true);
+        newHolder.checkImage.setVisibility(View.VISIBLE);
+        newHolder.checkImage.setScaleX(0f);
+        newHolder.checkImage.setScaleY(0f);
+        newHolder.checkImage.setAlpha(0f);
+        newHolder.checkImage.animate().scaleX(1f).scaleY(1f).alpha(1f)
+                .setStartDelay(SLIDE_DURATION_MS / 2).setDuration(CHECK_DURATION_MS)
                 .setInterpolator(new OvershootInterpolator(3f));
     }
 
-    private void moverResaltado(View item, boolean animar) {
-        if (resaltado.getLayoutParams().height != item.getHeight()) {
-            resaltado.getLayoutParams().height = item.getHeight();
-            resaltado.requestLayout();
+    private void moveHighlight(View item, boolean animated) {
+        if (highlight.getLayoutParams().height != item.getHeight()) {
+            highlight.getLayoutParams().height = item.getHeight();
+            highlight.requestLayout();
         }
-        float destino = recyclerView.getTop() + item.getTop();
-        if (animar && resaltado.getVisibility() == View.VISIBLE) {
-            resaltado.animate().translationY(destino).setDuration(DURACION_DESLIZAR_MS);
+        float target = recyclerView.getTop() + item.getTop();
+        if (animated && highlight.getVisibility() == View.VISIBLE) {
+            highlight.animate().translationY(target).setDuration(SLIDE_DURATION_MS);
         } else {
-            resaltado.animate().cancel();
-            resaltado.setTranslationY(destino);
-            resaltado.setVisibility(View.VISIBLE);
+            highlight.animate().cancel();
+            highlight.setTranslationY(target);
+            highlight.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public int getItemCount() {
-        return nombres.size();
+        return names.size();
     }
 
     static class CondominioViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre, detalle;
-        View check;
+        TextView nameLabel, detailLabel;
+        View checkImage;
 
         CondominioViewHolder(@NonNull View itemView) {
             super(itemView);
-            nombre = itemView.findViewById(R.id.tv_nombre_condominio);
-            detalle = itemView.findViewById(R.id.tv_detalle_condominio);
-            check = itemView.findViewById(R.id.iv_seleccionado);
+            nameLabel = itemView.findViewById(R.id.tv_nombre_condominio);
+            detailLabel = itemView.findViewById(R.id.tv_detalle_condominio);
+            checkImage = itemView.findViewById(R.id.iv_seleccionado);
         }
     }
 }

@@ -32,9 +32,9 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
             });
 
     private RegistrationDraft draft = RegistrationDraft.EMPTY;
-    private EditText etPaternalLastName;
-    private EditText etMaternalLastName;
-    private EditText etFirstNames;
+    private EditText paternalLastNameField;
+    private EditText maternalLastNameField;
+    private EditText firstNamesField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +45,11 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
             draft = RegistrationDraft.fromBundle(savedInstanceState);
         }
 
-        etPaternalLastName = findViewById(R.id.apellido_paterno);
-        etMaternalLastName = findViewById(R.id.apellido_materno);
-        etFirstNames = findViewById(R.id.nombres);
+        paternalLastNameField = findViewById(R.id.apellido_paterno);
+        maternalLastNameField = findViewById(R.id.apellido_materno);
+        firstNamesField = findViewById(R.id.nombres);
 
-        findViewById(R.id.btn_siguiente).setOnClickListener(v -> goToCredentials());
+        findViewById(R.id.btn_siguiente).setOnClickListener(v -> tryNext());
         findViewById(R.id.boton_regresar_Main).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -65,11 +65,11 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
         draft.putInto(outState);
     }
 
-    private void goToCredentials() {
+    private void tryNext() {
         draft = draft.withNames(
-                etPaternalLastName.getText().toString(),
-                etMaternalLastName.getText().toString(),
-                etFirstNames.getText().toString());
+                paternalLastNameField.getText().toString(),
+                maternalLastNameField.getText().toString(),
+                firstNamesField.getText().toString());
 
         try {
             userService.validateNames(draft);
@@ -86,11 +86,11 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
     private EditText inputFor(RegistrationField field) {
         switch (field) {
             case PATERNAL_LAST_NAME:
-                return etPaternalLastName;
+                return paternalLastNameField;
             case MATERNAL_LAST_NAME:
-                return etMaternalLastName;
+                return maternalLastNameField;
             default:
-                return etFirstNames;
+                return firstNamesField;
         }
     }
 }

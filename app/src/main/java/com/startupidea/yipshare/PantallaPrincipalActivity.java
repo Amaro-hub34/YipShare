@@ -41,14 +41,14 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     private static final String ITEMS_FILE = "items.dat";
     private static final int EXAMPLE_ITEMS = 2;
 
-    private static final List<String> CONDOMINIOS =
+    private static final List<String> CONDOMINIUMS =
             Arrays.asList("Torres del Valle", "Residencial Los Pinos", "Condominio Reforma");
 
     private ItemService itemService;
-    private RecyclerView rvMyItems;
-    private RecyclerView rvAvailableItems;
-    private EditText etSearch;
-    private int condominioSeleccionado = 0;
+    private RecyclerView myItemsList;
+    private RecyclerView availableItemsList;
+    private EditText searchField;
+    private int selectedCondominium = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +85,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
         itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
-        rvMyItems = findViewById(R.id.rv_mis_articulos);
+        myItemsList = findViewById(R.id.rv_mis_articulos);
 
-        rvAvailableItems = findViewById(R.id.rv_articulos_disponibles);
-        etSearch = findViewById(R.id.et_buscar);
-        etSearch.addTextChangedListener(new TextWatcher() {
+        availableItemsList = findViewById(R.id.rv_articulos_disponibles);
+        searchField = findViewById(R.id.et_buscar);
+        searchField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -104,7 +104,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.iv_agregar_top).setOnClickListener(v -> mostrarMenuAgregar());
+        findViewById(R.id.iv_agregar_top).setOnClickListener(v -> showAddMenu());
 
         findViewById(R.id.iv_notificaciones).setOnClickListener(v ->
                 startActivity(new Intent(PantallaPrincipalActivity.this, NotificacionActivity.class)));
@@ -117,7 +117,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
 
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
                 startActivity(new Intent(PantallaPrincipalActivity.this, PerfilActivity.class)));
-        findViewById(R.id.logo_yipshare).setOnClickListener(v -> mostrarPanelCondominios());
+        findViewById(R.id.logo_yipshare).setOnClickListener(v -> showCondominiumPanel());
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(PantallaPrincipalActivity.this, FormularioArticuloActivity.class)));
     }
@@ -129,14 +129,14 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void showItems() {
-        String query = etSearch.getText().toString();
+        String query = searchField.getText().toString();
         // Example cards have no real data, so they only show while not searching.
         int examples = query.trim().isEmpty() ? EXAMPLE_ITEMS : 0;
-        rvMyItems.setAdapter(new ArticuloAdapter(itemService.searchItems(query), examples));
-        rvAvailableItems.setAdapter(new ArticuloAdapter(Collections.emptyList(), examples));
+        myItemsList.setAdapter(new ArticuloAdapter(itemService.searchItems(query), examples));
+        availableItemsList.setAdapter(new ArticuloAdapter(Collections.emptyList(), examples));
     }
 
-    private void mostrarMenuAgregar() {
+    private void showAddMenu() {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View sheet = getLayoutInflater().inflate(R.layout.boton_agregar_sobreposicion, null);
         dialog.setContentView(sheet);
@@ -155,21 +155,21 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
 
         dialog.show();
     }
-    private void mostrarPanelCondominios() {
+    private void showCondominiumPanel() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         View panel = getLayoutInflater().inflate(R.layout.activity_panel_condominios, null);
         dialog.setContentView(panel);
 
-        panel.findViewById(R.id.btn_cerrar_sesion).setOnClickListener(v -> confirmarCerrarSesion());
+        panel.findViewById(R.id.btn_cerrar_sesion).setOnClickListener(v -> confirmLogout());
 
-        RecyclerView rv = panel.findViewById(R.id.rv_condominios);
-        rv.setAdapter(new CondominioAdapter(CONDOMINIOS, condominioSeleccionado,
+        RecyclerView condominiumList = panel.findViewById(R.id.rv_condominios);
+        condominiumList.setAdapter(new CondominioAdapter(CONDOMINIUMS, selectedCondominium,
                 panel.findViewById(R.id.resaltado_condominio),
-                posicion -> {
-                    condominioSeleccionado = posicion;
-                    ((TextView) findViewById(R.id.tv_condominio)).setText(CONDOMINIOS.get(posicion));
+                position -> {
+                    selectedCondominium = position;
+                    ((TextView) findViewById(R.id.tv_condominio)).setText(CONDOMINIUMS.get(position));
                 }));
 
         Window window = dialog.getWindow();
@@ -183,7 +183,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void confirmarCerrarSesion() {
+    private void confirmLogout() {
         new AlertDialog.Builder(this)
                 .setMessage(R.string.confirmar_cerrar_sesion)
                 .setPositiveButton(R.string.opcion_si, (d, which) -> {

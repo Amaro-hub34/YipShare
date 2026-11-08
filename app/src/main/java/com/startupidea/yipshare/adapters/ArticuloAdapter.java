@@ -66,34 +66,34 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
 
     static class ArticuloViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView ivImage;
-        private final TextView tvName;
-        private final View tvLender;
-        private final View rbRating;
+        private final ImageView itemImage;
+        private final TextView nameLabel;
+        private final View lenderLabel;
+        private final View ratingLabel;
 
         ArticuloViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivImage = itemView.findViewById(R.id.iv_imagen_articulo);
-            tvName = itemView.findViewById(R.id.tv_nombre_articulo);
-            tvLender = itemView.findViewById(R.id.tv_prestamista);
-            rbRating = itemView.findViewById(R.id.tv_calificacion);
+            itemImage = itemView.findViewById(R.id.iv_imagen_articulo);
+            nameLabel = itemView.findViewById(R.id.tv_nombre_articulo);
+            lenderLabel = itemView.findViewById(R.id.tv_prestamista);
+            ratingLabel = itemView.findViewById(R.id.tv_calificacion);
         }
 
         void bind(Item item) {
             Uri imageUri = Uri.parse(item.getPayload().getImageUri());
             Bitmap image = ImagePreviewUtil.tryLoad(itemView.getContext(), imageUri, CARD_IMAGE_MAX_SIZE_PX);
 
-            ivImage.setImageBitmap(image);
-            tvName.setText(item.getPayload().getName());
-            tvLender.setVisibility(View.GONE);
-            rbRating.setVisibility(View.GONE);
+            itemImage.setImageBitmap(image);
+            nameLabel.setText(item.getPayload().getName());
+            lenderLabel.setVisibility(View.GONE);
+            ratingLabel.setVisibility(View.GONE);
         }
 
         void bindExample() {
-            ivImage.setImageDrawable(null);
-            tvName.setText(R.string.item_objeto);
-            tvLender.setVisibility(View.VISIBLE);
-            rbRating.setVisibility(View.VISIBLE);
+            itemImage.setImageDrawable(null);
+            nameLabel.setText(R.string.item_objeto);
+            lenderLabel.setVisibility(View.VISIBLE);
+            ratingLabel.setVisibility(View.VISIBLE);
         }
     }
 }

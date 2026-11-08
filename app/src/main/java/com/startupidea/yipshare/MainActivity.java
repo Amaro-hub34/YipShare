@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final UserService userService = new UserService(new PendingUserRepository());
 
-    private EditText etUsername;
-    private EditText etPassword;
-    private TextView tvError;
+    private EditText usernameField;
+    private EditText passwordField;
+    private TextView errorLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        etUsername = findViewById(R.id.usuario_IS);
-        etPassword = findViewById(R.id.et_password);
-        tvError = findViewById(R.id.tv_error);
-        PasswordToggleUtil.attach(etPassword, findViewById(R.id.btn_toggle_password));
+        usernameField = findViewById(R.id.usuario_IS);
+        passwordField = findViewById(R.id.et_password);
+        errorLabel = findViewById(R.id.tv_error);
+        PasswordToggleUtil.attach(passwordField, findViewById(R.id.btn_toggle_password));
 
-        findViewById(R.id.btn_entrar).setOnClickListener(v -> login());
+        findViewById(R.id.btn_entrar).setOnClickListener(v -> sendLoginRequest());
 
         findViewById(R.id.boton_registrate).setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RegistroCuenta1Activity.class)));
@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, TermsAndConditionsActivity.class)));
     }
 
-    private void login() {
-        tvError.setVisibility(View.GONE);
+    private void sendLoginRequest() {
+        errorLabel.setVisibility(View.GONE);
         LoginPayload payload = new LoginPayload(
-                etUsername.getText().toString().trim(),
-                etPassword.getText().toString());
+                usernameField.getText().toString().trim(),
+                passwordField.getText().toString());
 
         try {
             User user = userService.login(payload);
@@ -68,14 +68,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } catch (EmptyUsername e) {
-            etUsername.setError(getString(e.getMessageRes()));
-            etUsername.requestFocus();
+            usernameField.setError(getString(e.getMessageRes()));
+            usernameField.requestFocus();
         } catch (EmptyPassword e) {
-            etPassword.setError(getString(e.getMessageRes()));
-            etPassword.requestFocus();
+            passwordField.setError(getString(e.getMessageRes()));
+            passwordField.requestFocus();
         } catch (AppException e) {
-            tvError.setText(e.getMessageRes());
-            tvError.setVisibility(View.VISIBLE);
+            errorLabel.setText(e.getMessageRes());
+            errorLabel.setVisibility(View.VISIBLE);
         }
 
     }

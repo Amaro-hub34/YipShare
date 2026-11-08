@@ -28,25 +28,25 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        TextView tvArticulo = findViewById(R.id.tv_articulo_codigo);
-        TextView tvCodigo = findViewById(R.id.tv_codigo_generado);
-        EditText etCodigo = findViewById(R.id.et_codigo);
+        TextView itemLabel = findViewById(R.id.tv_articulo_codigo);
+        TextView codeLabel = findViewById(R.id.tv_codigo_generado);
+        EditText codeField = findViewById(R.id.et_codigo);
 
-        String articulo = getIntent().getStringExtra("articulo");
-        if (articulo != null) {
-            tvArticulo.setText(articulo);
+        String item = getIntent().getStringExtra("item_name");
+        if (item != null) {
+            itemLabel.setText(item);
         }
 
         findViewById(R.id.btn_generar_codigo).setOnClickListener(v -> {
-            String codigo = String.format("%06d", new Random().nextInt(1000000));
-            tvCodigo.setText(codigo);
-            tvCodigo.setVisibility(TextView.VISIBLE);
+            String code = String.format("%06d", new Random().nextInt(1000000));
+            codeLabel.setText(code);
+            codeLabel.setVisibility(TextView.VISIBLE);
         });
 
         findViewById(R.id.btn_confirmar_codigo).setOnClickListener(v -> {
-            String codigo = etCodigo.getText().toString().trim();
-            if (codigo.length() != 6) {
-                etCodigo.setError(getString(R.string.error_codigo_longitud));
+            String code = codeField.getText().toString().trim();
+            if (code.length() != 6) {
+                codeField.setError(getString(R.string.error_codigo_longitud));
             } else {
                 Toast.makeText(CodigoPrestamoActivity.this, R.string.codigo_confirmado, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(CodigoPrestamoActivity.this, CalificarUsuarioActivity.class));

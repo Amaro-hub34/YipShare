@@ -55,13 +55,13 @@ public class FormularioArticuloActivity extends AppCompatActivity {
             });
 
     private ItemService itemService;
-    private EditText etName;
-    private EditText etDescription;
-    private Spinner spCategory;
-    private Spinner spPhysicalCondition;
-    private ImageView ivPreview;
-    private TextView tvDurationError;
-    private TextView tvImageError;
+    private EditText nameField;
+    private EditText descriptionField;
+    private Spinner categorySpinner;
+    private Spinner physicalConditionSpinner;
+    private ImageView previewImage;
+    private TextView durationErrorLabel;
+    private TextView imageErrorLabel;
     private Uri imageUri;
 
     @Override
@@ -71,17 +71,17 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         setContentView(R.layout.activity_formulario_articulo);
 
         itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
-        etName = findViewById(R.id.et_nombre_articulo);
-        etDescription = findViewById(R.id.et_descripcion);
-        spCategory = findViewById(R.id.spinner_categoria);
-        spPhysicalCondition = findViewById(R.id.sp_estado_fisico);
-        ivPreview = findViewById(R.id.iv_preview_imagen);
-        tvDurationError = findViewById(R.id.tv_error_duracion);
-        tvImageError = findViewById(R.id.tv_error_imagen);
+        nameField = findViewById(R.id.et_nombre_articulo);
+        descriptionField = findViewById(R.id.et_descripcion);
+        categorySpinner = findViewById(R.id.spinner_categoria);
+        physicalConditionSpinner = findViewById(R.id.sp_estado_fisico);
+        previewImage = findViewById(R.id.iv_preview_imagen);
+        durationErrorLabel = findViewById(R.id.tv_error_duracion);
+        imageErrorLabel = findViewById(R.id.tv_error_imagen);
 
         addDurationBoxes();
         findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
-        findViewById(R.id.btn_accion_principal).setOnClickListener(v -> postItem());
+        findViewById(R.id.btn_accion_principal).setOnClickListener(v -> tryPostItem());
 
         if (savedInstanceState != null) {
             String savedUri = savedInstanceState.getString(KEY_IMAGE_URI);
@@ -134,7 +134,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
             CheckBox box = new CheckBox(this);
             box.setId(DURATION_ID_BASE + index);
             box.setText(durations[index]);
-            box.setOnCheckedChangeListener((view, checked) -> tvDurationError.setVisibility(View.GONE));
+            box.setOnCheckedChangeListener((view, checked) -> durationErrorLabel.setVisibility(View.GONE));
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
@@ -155,20 +155,19 @@ public class FormularioArticuloActivity extends AppCompatActivity {
 
         if (preview == null) {
             imageUri = null;
-            ivPreview.setVisibility(View.GONE);
+            previewImage.setVisibility(View.GONE);
             showImageError(R.string.error_imagen_invalida);
             return;
         }
 
         imageUri = uri;
-        ivPreview.setImageBitmap(preview);
-        ivPreview.setVisibility(View.VISIBLE);
-        tvImageError.setVisibility(View.GONE);
+        previewImage.setImageBitmap(preview);
+        previewImage.setVisibility(View.VISIBLE);
+        imageErrorLabel.setVisibility(View.GONE);
     }
 
-    private void postItem() {
-        etName.setError(null);
-        etDescription.setError(null);
+    private void tryPostItem() {
+        cleanGUI();
 
         String pickedImage = imageUri == null ? null : imageUri.toString();
 
@@ -191,9 +190,14 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         }
     }
 
+    private void cleanGUI() {
+        nameField.setError(null);
+        descriptionField.setError(null);
+    }
+
     private void showImageError(@StringRes int message) {
-        tvImageError.setText(message);
-        tvImageError.setVisibility(View.VISIBLE);
+        imageErrorLabel.setText(message);
+        imageErrorLabel.setVisibility(View.VISIBLE);
     }
 
     private ItemPayload readPayload(String image) {
@@ -203,28 +207,28 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         }
 
         return new ItemPayload(
-                etName.getText().toString().trim(),
-                spCategory.getSelectedItem().toString(),
-                etDescription.getText().toString().trim(),
-                spPhysicalCondition.getSelectedItem().toString(),
+                nameField.getText().toString().trim(),
+                categorySpinner.getSelectedItem().toString(),
+                descriptionField.getText().toString().trim(),
+                physicalConditionSpinner.getSelectedItem().toString(),
                 image,
                 durations);
     }
 
     private void showErrors(Set<ItemField> fields, @StringRes int requiredMessage) {
         if (fields.contains(ItemField.DESCRIPTION)) {
-            etDescription.setError(getString(requiredMessage));
-            etDescription.requestFocus();
+            descriptionField.setError(getString(requiredMessage));
+            descriptionField.requestFocus();
         }
         if (fields.contains(ItemField.NAME)) {
-            etName.setError(getString(requiredMessage));
-            etName.requestFocus();
+            nameField.setError(getString(requiredMessage));
+            nameField.requestFocus();
         }
         if (fields.contains(ItemField.IMAGE)) {
             showImageError(R.string.error_imagen_obligatoria);
         }
         if (fields.contains(ItemField.LOAN_DURATIONS)) {
-            tvDurationError.setVisibility(View.VISIBLE);
+            durationErrorLabel.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -43,8 +43,8 @@ public class PrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        RecyclerView rvPrestamos = findViewById(R.id.rv_prestamos);
-        rvPrestamos.setAdapter(new PrestamoAdapter());
+        RecyclerView loanList = findViewById(R.id.rv_prestamos);
+        loanList.setAdapter(new PrestamoAdapter());
 
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(PrestamoActivity.this, PantallaPrincipalActivity.class)));

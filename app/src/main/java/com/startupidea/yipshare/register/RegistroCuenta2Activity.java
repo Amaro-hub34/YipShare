@@ -47,13 +47,13 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private final UserService userService = new UserService(new PendingUserRepository());
 
     private RegistrationDraft draft;
-    private EditText etUsername;
-    private EditText etPassword;
-    private EditText etPasswordConfirmation;
-    private EditText etPhoneNumber;
-    private Spinner spCountryCode;
+    private EditText usernameField;
+    private EditText passwordField;
+    private EditText passwordConfirmationField;
+    private EditText phoneNumberField;
+    private Spinner countryCodeSpinner;
     private List<String> regions;
-    private TextView tvError;
+    private TextView errorLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,25 +62,25 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
 
         draft = RegistrationDraft.fromIntent(getIntent());
 
-        etUsername = findViewById(R.id.usuario_IS);
-        etPassword = findViewById(R.id.contrasenia);
-        etPasswordConfirmation = findViewById(R.id.contrasenia_confirmacion2);
-        etPhoneNumber = findViewById(R.id.telefono_frame2);
-        spCountryCode = findViewById(R.id.spinner_codigo_pais);
+        usernameField = findViewById(R.id.usuario_IS);
+        passwordField = findViewById(R.id.contrasenia);
+        passwordConfirmationField = findViewById(R.id.contrasenia_confirmacion2);
+        phoneNumberField = findViewById(R.id.telefono_frame2);
+        countryCodeSpinner = findViewById(R.id.spinner_codigo_pais);
         setUpCountryCodes();
-        tvError = findViewById(R.id.tv_error);
-        PasswordToggleUtil.attach(etPassword, findViewById(R.id.btn_toggle_password));
-        PasswordToggleUtil.attach(etPasswordConfirmation, findViewById(R.id.btn_toggle_password_confirmation));
+        errorLabel = findViewById(R.id.tv_error);
+        PasswordToggleUtil.attach(passwordField, findViewById(R.id.btn_toggle_password));
+        PasswordToggleUtil.attach(passwordConfirmationField, findViewById(R.id.btn_toggle_password_confirmation));
 
         if (savedInstanceState == null) {
-            etUsername.setText(draft.getUsername());
-            etPassword.setText(draft.getPassword());
-            etPasswordConfirmation.setText(draft.getPasswordConfirmation());
+            usernameField.setText(draft.getUsername());
+            passwordField.setText(draft.getPassword());
+            passwordConfirmationField.setText(draft.getPasswordConfirmation());
             showPhoneNumber(draft.getPhoneNumber());
         }
 
-        findViewById(R.id.btn_siguiente).setOnClickListener(v -> register());
-        findViewById(R.id.btn_regresar_registro2).setOnClickListener(v -> returnToNames());
+        findViewById(R.id.btn_siguiente).setOnClickListener(v -> tryRegister());
+        findViewById(R.id.btn_regresar_registro2).setOnClickListener(v -> returnToPrevious());
         findViewById(R.id.btn_regresar_main).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -90,23 +90,23 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                returnToNames();
+                returnToPrevious();
             }
         });
     }
 
     private RegistrationDraft currentDraft() {
         return draft.withCredentials(
-                etUsername.getText().toString(),
-                etPassword.getText().toString(),
-                etPasswordConfirmation.getText().toString(),
+                usernameField.getText().toString(),
+                passwordField.getText().toString(),
+                passwordConfirmationField.getText().toString(),
                 phoneNumberWithCountryCode());
     }
 
     private String phoneNumberWithCountryCode() {
-        String localNumber = etPhoneNumber.getText().toString().trim();
+        String localNumber = phoneNumberField.getText().toString().trim();
         if (localNumber.isEmpty()) return "";
-        return "+" + countryCodeOf(regions.get(spCountryCode.getSelectedItemPosition())) + localNumber;
+        return "+" + countryCodeOf(regions.get(countryCodeSpinner.getSelectedItemPosition())) + localNumber;
     }
 
     private void setUpCountryCodes() {
@@ -128,7 +128,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             }
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCountryCode.setAdapter(adapter);
+        countryCodeSpinner.setAdapter(adapter);
 
         String deviceRegion = Locale.getDefault().getCountry();
         selectRegion(regions.contains(deviceRegion) ? deviceRegion : DEFAULT_REGION);
@@ -139,16 +139,16 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         try {
             Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, null);
             selectRegion(phoneUtil.getRegionCodeForCountryCode(number.getCountryCode()));
-            etPhoneNumber.setText(phoneUtil.getNationalSignificantNumber(number));
+            phoneNumberField.setText(phoneUtil.getNationalSignificantNumber(number));
         } catch (NumberParseException e) {
             // Too short to parse: keep only the digits the user typed after the country code.
-            etPhoneNumber.setText(phoneNumber.replaceFirst("^\\+" + countryCodeOf(regions.get(spCountryCode.getSelectedItemPosition())), ""));
+            phoneNumberField.setText(phoneNumber.replaceFirst("^\\+" + countryCodeOf(regions.get(countryCodeSpinner.getSelectedItemPosition())), ""));
         }
     }
 
     private void selectRegion(String region) {
         int position = regions.indexOf(region);
-        if (position >= 0) spCountryCode.setSelection(position);
+        if (position >= 0) countryCodeSpinner.setSelection(position);
     }
 
     private int countryCodeOf(String region) {
@@ -165,15 +165,15 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
                 + new String(Character.toChars(base + region.charAt(1)));
     }
 
-    private void returnToNames() {
+    private void returnToPrevious() {
         Intent result = new Intent();
         currentDraft().putInto(result);
         setResult(Activity.RESULT_OK, result);
         finish();
     }
 
-    private void register() {
-        tvError.setVisibility(View.GONE);
+    private void tryRegister() {
+        errorLabel.setVisibility(View.GONE);
 
         try {
             User user = userService.register(currentDraft());
@@ -184,12 +184,12 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         } catch (InvalidField e) {
             showInputError(inputFor(e.getField()), e);
         } catch (DuplicateUsername e) {
-            showInputError(etUsername, e);
+            showInputError(usernameField, e);
         } catch (DuplicatePhoneNumber e) {
-            showInputError(etPhoneNumber, e);
+            showInputError(phoneNumberField, e);
         } catch (AppException e) {
-            tvError.setText(e.getMessageRes());
-            tvError.setVisibility(View.VISIBLE);
+            errorLabel.setText(e.getMessageRes());
+            errorLabel.setVisibility(View.VISIBLE);
         }
     }
 
@@ -201,13 +201,13 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private EditText inputFor(RegistrationField field) {
         switch (field) {
             case USERNAME:
-                return etUsername;
+                return usernameField;
             case PASSWORD:
-                return etPassword;
+                return passwordField;
             case PHONE_NUMBER:
-                return etPhoneNumber;
+                return phoneNumberField;
             default:
-                return etPasswordConfirmation;
+                return passwordConfirmationField;
         }
     }
 }

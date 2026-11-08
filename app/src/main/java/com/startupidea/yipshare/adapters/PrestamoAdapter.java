@@ -15,9 +15,9 @@ import com.startupidea.yipshare.CodigoPrestamoActivity;
 
 public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
 
-    private final int[] articulos = {R.string.demo_taladro, R.string.demo_escalera, R.string.demo_bocina};
-    private final String[] personas = {"Carlos Ramírez", "Ana López", "Luis Torres"};
-    private final int[] tipos = {R.string.prestaste_a, R.string.te_prestaron, R.string.prestaste_a};
+    private final int[] items = {R.string.demo_taladro, R.string.demo_escalera, R.string.demo_bocina};
+    private final String[] people = {"Carlos Ramírez", "Ana López", "Luis Torres"};
+    private final int[] types = {R.string.prestaste_a, R.string.te_prestaron, R.string.prestaste_a};
 
     @NonNull
     @Override
@@ -29,31 +29,31 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
 
     @Override
     public void onBindViewHolder(@NonNull PrestamoViewHolder holder, int position) {
-        holder.tipo.setText(tipos[position]);
-        holder.articulo.setText(articulos[position]);
-        holder.persona.setText(personas[position]);
+        holder.typeLabel.setText(types[position]);
+        holder.itemLabel.setText(items[position]);
+        holder.personLabel.setText(people[position]);
 
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, CodigoPrestamoActivity.class);
-            intent.putExtra("articulo", context.getString(articulos[holder.getAdapterPosition()]));
+            intent.putExtra("item_name", context.getString(items[holder.getAdapterPosition()]));
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return articulos.length;
+        return items.length;
     }
 
     static class PrestamoViewHolder extends RecyclerView.ViewHolder {
-        TextView tipo, articulo, persona;
+        TextView typeLabel, itemLabel, personLabel;
 
         PrestamoViewHolder(@NonNull View itemView) {
             super(itemView);
-            tipo = itemView.findViewById(R.id.tv_tipo_prestamo);
-            articulo = itemView.findViewById(R.id.tv_articulo_prestamo);
-            persona = itemView.findViewById(R.id.tv_persona_prestamo);
+            typeLabel = itemView.findViewById(R.id.tv_tipo_prestamo);
+            itemLabel = itemView.findViewById(R.id.tv_articulo_prestamo);
+            personLabel = itemView.findViewById(R.id.tv_persona_prestamo);
         }
     }
 }

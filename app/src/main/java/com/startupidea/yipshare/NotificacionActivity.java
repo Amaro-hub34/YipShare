@@ -23,8 +23,8 @@ public class NotificacionActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_notificacion);
 
-        Guideline lineaGuiaCabeza = findViewById(R.id.guideline_header);
-        Guideline lineaGuiaEstado = findViewById(R.id.guideline_status);
+        Guideline guidelineHeader = findViewById(R.id.guideline_header);
+        Guideline guidelineStatus = findViewById(R.id.guideline_status);
         View bottomNav = findViewById(R.id.bottom_nav);
         int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
@@ -32,8 +32,8 @@ public class NotificacionActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-            lineaGuiaEstado.setGuidelineBegin(bars.top);
-            lineaGuiaCabeza.setGuidelineBegin(headerBase + bars.top);
+            guidelineStatus.setGuidelineBegin(bars.top);
+            guidelineHeader.setGuidelineBegin(headerBase + bars.top);
 
             bottomNav.setPadding(0, 0, 0, bars.bottom);
             ViewGroup.LayoutParams lp = bottomNav.getLayoutParams();
@@ -62,13 +62,13 @@ public class NotificacionActivity extends AppCompatActivity {
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(NotificacionActivity.this, FormularioArticuloActivity.class)));
 
-        boolean hayNotificaciones = true;
+        boolean notificationsExist = true;
         findViewById(R.id.tv_sin_notificaciones)
-                .setVisibility(hayNotificaciones ? View.GONE : View.VISIBLE);
+                .setVisibility(notificationsExist ? View.GONE : View.VISIBLE);
         findViewById(R.id.rv_notificaciones)
-                .setVisibility(hayNotificaciones ? View.VISIBLE : View.GONE);
+                .setVisibility(notificationsExist ? View.VISIBLE : View.GONE);
 
-        RecyclerView rvNotificaciones = findViewById(R.id.rv_notificaciones);
-        rvNotificaciones.setAdapter(new NotificacionAdapter(1));
+        RecyclerView notificationList = findViewById(R.id.rv_notificaciones);
+        notificationList.setAdapter(new NotificacionAdapter(1));
     }
 }

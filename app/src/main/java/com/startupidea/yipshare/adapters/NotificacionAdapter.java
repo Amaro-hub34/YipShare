@@ -13,10 +13,10 @@ import com.startupidea.yipshare.R;
 
 public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapter.NotificacionViewHolder> {
 
-    private final int cantidad;
+    private final int count;
 
-    public NotificacionAdapter(int cantidad) {
-        this.cantidad = cantidad;
+    public NotificacionAdapter(int count) {
+        this.count = count;
     }
 
     @NonNull
@@ -29,31 +29,31 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
-        holder.nombreArticulo.setText(R.string.demo_taladro);
-        holder.solicitante.setText("Carlos Ramírez");
+        holder.itemNameLabel.setText(R.string.demo_taladro);
+        holder.requesterLabel.setText("Carlos Ramírez");
         holder.ratingBar.setRating(4.5f);
-        holder.calificacion.setText("4.5");
-        holder.direccion.setText(R.string.demo_direccion);
+        holder.ratingLabel.setText("4.5");
+        holder.addressLabel.setText(R.string.demo_direccion);
     }
 
     @Override
     public int getItemCount() {
-        return cantidad;
+        return count;
     }
 
     /**
      * ViewHolder for the notification items. this method is not final but is just for the teacher homework
      */
     static class NotificacionViewHolder extends RecyclerView.ViewHolder {
-        TextView nombreArticulo, solicitante, calificacion, direccion;
+        TextView itemNameLabel, requesterLabel, ratingLabel, addressLabel;
         RatingBar ratingBar;
 
         NotificacionViewHolder(@NonNull View itemView) {
             super(itemView);
-            nombreArticulo = itemView.findViewById(R.id.tv_nombre_articulo);
-            solicitante = itemView.findViewById(R.id.tv_solicitante);
-            calificacion = itemView.findViewById(R.id.tv_calificacion_solicitante);
-            direccion = itemView.findViewById(R.id.tv_direccion_solicitante);
+            itemNameLabel = itemView.findViewById(R.id.tv_nombre_articulo);
+            requesterLabel = itemView.findViewById(R.id.tv_solicitante);
+            ratingLabel = itemView.findViewById(R.id.tv_calificacion_solicitante);
+            addressLabel = itemView.findViewById(R.id.tv_direccion_solicitante);
             ratingBar = itemView.findViewById(R.id.rb_calificacion_solicitante);
         }
     }
