@@ -19,14 +19,15 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.DuplicatePhoneNumber;
 import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
-import com.startupidea.yipshare.user.PendingUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
 import com.startupidea.yipshare.user.User;
@@ -38,13 +39,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import com.startupidea.yipshare.MainActivity;
 
 public class RegistroCuenta2Activity extends AppCompatActivity {
 
     private static final String DEFAULT_REGION = "MX";
 
     private final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-    private final UserService userService = new UserService(new PendingUserRepository());
+    private UserService userService;
 
     private RegistrationDraft draft;
     private EditText usernameField;
@@ -58,6 +60,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
         setContentView(R.layout.activity_registrocuenta2);
 
         draft = RegistrationDraft.fromIntent(getIntent());
@@ -177,6 +180,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
 
         try {
             User user = userService.register(currentDraft());
+            new SessionRepository(this).createSession(user);
             Intent intent = new Intent(this, PantallaPrincipalActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             user.putInto(intent);

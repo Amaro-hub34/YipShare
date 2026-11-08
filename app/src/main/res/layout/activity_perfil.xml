@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="70dp" />
+        app:layout_constraintGuide_begin="48dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_status"
@@ -136,7 +136,7 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textPassword"
-                        android:hint="@string/contrasena_actualizar_perfil"
+                        android:text="@string/password_oculta"
                         android:maxLines="1"
                         android:layout_marginBottom="10dp"/>
 
@@ -244,6 +244,13 @@
                             android:text="@string/placeholder_calificacion_perfil" />
 
                     </LinearLayout>
+
+                    <include
+                        layout="@layout/section_feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
 
                     <Button
                         android:id="@+id/btn_actualizar_datos"

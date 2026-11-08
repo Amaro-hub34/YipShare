@@ -51,6 +51,7 @@
 
             <TextView
                 android:id="@+id/tv_solicitante"
+                android:background="?attr/selectableItemBackground"
                 style="@style/TextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,10 +60,12 @@
                 android:text="@string/notif_solicitante" />
 
             <LinearLayout
+                android:id="@+id/layout_calificacion_solicitante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
                 android:layout_marginTop="2dp">
 
                 <RatingBar
@@ -94,6 +97,33 @@
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:text="@string/notif_direccion" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btn_denegar_solicitud"
+                    style="@style/ButtonSecundary"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:textSize="14sp"
+                    android:text="@string/btn_denegar" />
+
+                <Button
+                    android:id="@+id/btn_aceptar_solicitud"
+                    style="@style/ButtonPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:textSize="14sp"
+                    android:text="@string/btn_aceptar" />
+            </LinearLayout>
 
         </LinearLayout>
 

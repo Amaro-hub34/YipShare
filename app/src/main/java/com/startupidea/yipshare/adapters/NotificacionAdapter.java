@@ -10,13 +10,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.loan.LoanRequest;
+
+import java.util.List;
+import java.util.Locale;
 
 public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapter.NotificacionViewHolder> {
 
-    private final int count;
+    public interface OnLoanRequestAction {
+        void onAccept(LoanRequest request);
 
-    public NotificacionAdapter(int count) {
-        this.count = count;
+        void onReject(LoanRequest request);
+
+        void onRequesterClick(LoanRequest request);
+    }
+
+    private final List<LoanRequest> requests;
+    private final OnLoanRequestAction listener;
+
+    public NotificacionAdapter(List<LoanRequest> requests, OnLoanRequestAction listener) {
+        this.requests = requests;
+        this.listener = listener;
     }
 
     @NonNull
@@ -29,32 +43,39 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
-        holder.itemNameLabel.setText(R.string.demo_taladro);
-        holder.requesterLabel.setText("Carlos Ramírez");
-        holder.ratingBar.setRating(4.5f);
-        holder.ratingLabel.setText("4.5");
-        holder.addressLabel.setText(R.string.demo_direccion);
+        LoanRequest request = requests.get(position);
+        holder.itemNameLabel.setText(request.getItemName());
+        holder.requesterLabel.setText(request.getRequesterUsername());
+        holder.ratingBar.setRating(request.getRequesterRating());
+        holder.ratingLabel.setText(String.format(Locale.getDefault(), "%.1f", request.getRequesterRating()));
+        holder.requestTextLabel.setText(request.getRequestText());
+
+        holder.requesterLabel.setOnClickListener(v -> listener.onRequesterClick(request));
+        holder.ratingRow.setOnClickListener(v -> listener.onRequesterClick(request));
+        holder.acceptButton.setOnClickListener(v -> listener.onAccept(request));
+        holder.rejectButton.setOnClickListener(v -> listener.onReject(request));
     }
 
     @Override
     public int getItemCount() {
-        return count;
+        return requests.size();
     }
 
-    /**
-     * ViewHolder for the notification items. this method is not final but is just for the teacher homework
-     */
     static class NotificacionViewHolder extends RecyclerView.ViewHolder {
-        TextView itemNameLabel, requesterLabel, ratingLabel, addressLabel;
+        TextView itemNameLabel, requesterLabel, ratingLabel, requestTextLabel;
         RatingBar ratingBar;
+        View ratingRow, acceptButton, rejectButton;
 
         NotificacionViewHolder(@NonNull View itemView) {
             super(itemView);
             itemNameLabel = itemView.findViewById(R.id.tv_nombre_articulo);
             requesterLabel = itemView.findViewById(R.id.tv_solicitante);
             ratingLabel = itemView.findViewById(R.id.tv_calificacion_solicitante);
-            addressLabel = itemView.findViewById(R.id.tv_direccion_solicitante);
+            requestTextLabel = itemView.findViewById(R.id.tv_direccion_solicitante);
             ratingBar = itemView.findViewById(R.id.rb_calificacion_solicitante);
+            ratingRow = itemView.findViewById(R.id.layout_calificacion_solicitante);
+            acceptButton = itemView.findViewById(R.id.btn_aceptar_solicitud);
+            rejectButton = itemView.findViewById(R.id.btn_denegar_solicitud);
         }
     }
 }

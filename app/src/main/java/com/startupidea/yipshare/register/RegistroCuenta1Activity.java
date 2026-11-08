@@ -10,18 +10,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.TermsAndConditionsActivity;
+import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.user.InvalidField;
-import com.startupidea.yipshare.user.PendingUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
 import com.startupidea.yipshare.user.UserService;
+import com.startupidea.yipshare.MainActivity;
+import com.startupidea.yipshare.TermsAndConditionsActivity;
 
 public class RegistroCuenta1Activity extends AppCompatActivity {
 
-    private final UserService userService = new UserService(new PendingUserRepository());
+    private UserService userService;
 
     private final ActivityResultLauncher<Intent> credentialsScreen = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -39,6 +40,7 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
         setContentView(R.layout.activity_registrocuenta1);
 
         if (savedInstanceState != null) {

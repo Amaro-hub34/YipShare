@@ -32,6 +32,29 @@ public class UserServiceTest {
             public User createUser(RegistrationPayload payload) {
                 return new User("new", payload.getUsername());
             }
+
+            @Override
+            public UserProfile getUserProfileById(String id) {
+                return "1".equals(id) ? new UserProfile("1", "ana", "Ana", "Pérez", "López", "+525512345678", 45) : null;
+            }
+
+            @Override
+            public boolean matchesPassword(String id, String password) {
+                return false;
+            }
+
+            @Override
+            public void modifyUser(String id, ProfilePayload payload, String newPassword) {
+            }
+
+            @Override
+            public void deleteUser(String id) {
+            }
+
+            @Override
+            public boolean isActiveUser(String id) {
+                return "1".equals(id);
+            }
         });
     }
 
@@ -166,5 +189,19 @@ public class UserServiceTest {
     public void registerCreatesUserWithTrimmedUsername() {
         User user = serviceWith(null, false).register(credentials(" anitas ", "Secret1!", "Secret1!"));
         assertEquals("anitas", user.getUsername());
+    }
+
+    @Test
+    public void returnsProfileWithRatingInStars() {
+        UserProfile profile = serviceWith(null, false).getUserProfile("1");
+
+        assertEquals("Ana", profile.getFirstNames());
+        assertEquals(4.5f, profile.getRating(), 0.001f);
+    }
+
+    @Test
+    public void unknownOrMissingSessionHasNoProfile() {
+        assertThrows(AccountNotFound.class, () -> serviceWith(null, false).getUserProfile("2"));
+        assertThrows(AccountNotFound.class, () -> serviceWith(null, false).getUserProfile(null));
     }
 }

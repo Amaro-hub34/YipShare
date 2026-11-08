@@ -25,11 +25,9 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
     private static final int CARD_IMAGE_MAX_SIZE_PX = 400;
 
     private final List<Item> items;
-    private final int exampleCount;
 
-    public ArticuloAdapter(List<Item> items, int exampleCount) {
+    public ArticuloAdapter(List<Item> items) {
         this.items = items;
-        this.exampleCount = exampleCount;
     }
 
     @NonNull
@@ -42,26 +40,21 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
 
     @Override
     public void onBindViewHolder(@NonNull ArticuloViewHolder holder, int position) {
-        if (position < items.size()) {
-            holder.bind(items.get(position));
-        } else {
-            holder.bindExample();
-        }
+        holder.bind(items.get(position));
 
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, DetalleArticuloActivity.class);
             int current = holder.getBindingAdapterPosition();
-            if (current != RecyclerView.NO_POSITION && current < items.size()) {
-                items.get(current).putInto(intent);
-            }
+            if (current == RecyclerView.NO_POSITION) return;
+            items.get(current).putInto(intent);
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return items.size() + exampleCount;
+        return items.size();
     }
 
     static class ArticuloViewHolder extends RecyclerView.ViewHolder {
@@ -80,20 +73,15 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
         }
 
         void bind(Item item) {
-            Uri imageUri = Uri.parse(item.getPayload().getImageUri());
-            Bitmap image = ImagePreviewUtil.tryLoad(itemView.getContext(), imageUri, CARD_IMAGE_MAX_SIZE_PX);
+            // Demo items come without a picture; the card keeps its placeholder background.
+            String imageUri = item.getPayload().getImageUri();
+            Bitmap image = imageUri == null
+                    ? null : ImagePreviewUtil.tryLoad(itemView.getContext(), Uri.parse(imageUri), CARD_IMAGE_MAX_SIZE_PX);
 
             itemImage.setImageBitmap(image);
             nameLabel.setText(item.getPayload().getName());
             lenderLabel.setVisibility(View.GONE);
             ratingLabel.setVisibility(View.GONE);
-        }
-
-        void bindExample() {
-            itemImage.setImageDrawable(null);
-            nameLabel.setText(R.string.item_objeto);
-            lenderLabel.setVisibility(View.VISIBLE);
-            ratingLabel.setVisibility(View.VISIBLE);
         }
     }
 }

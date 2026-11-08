@@ -13,9 +13,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.adapters.PrestamoAdapter;
+import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.loan.LoanService;
+import com.startupidea.yipshare.loan.SqliteLoanRepository;
+import com.startupidea.yipshare.user.SessionRepository;
+
+import android.widget.Toast;
 
 public class PrestamoActivity extends AppCompatActivity {
+
+    private LoanService loanService;
+    private RecyclerView loanList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +37,7 @@ public class PrestamoActivity extends AppCompatActivity {
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         Guideline guidelineStatus = findViewById(R.id.guideline_status);
         View bottomNav = findViewById(R.id.bottom_nav);
-        int headerBase = (int) (70 * getResources().getDisplayMetrics().density);
+        int headerBase = (int) (48 * getResources().getDisplayMetrics().density);
         int navBase = (int) (64 * getResources().getDisplayMetrics().density);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -43,8 +54,10 @@ public class PrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        RecyclerView loanList = findViewById(R.id.rv_prestamos);
-        loanList.setAdapter(new PrestamoAdapter());
+        loanService = new LoanService(
+                new SqliteLoanRepository(new DatabaseDriver(this), this),
+                new SqliteCondominiumRepository(new DatabaseDriver(this), this));
+        loanList = findViewById(R.id.rv_prestamos);
 
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(PrestamoActivity.this, PantallaPrincipalActivity.class)));
@@ -58,5 +71,17 @@ public class PrestamoActivity extends AppCompatActivity {
             startActivity(new Intent(PrestamoActivity.this, FormularioArticuloActivity.class));
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SessionRepository session = new SessionRepository(this);
+        try {
+            loanList.setAdapter(new PrestamoAdapter(
+                    loanService.getAllLoansByUserId(session.getUserId(), session.getCondominiumId())));
+        } catch (AppException e) {
+            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

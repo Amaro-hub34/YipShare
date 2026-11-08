@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.condominium.CondominiumMembership;
 
 import java.util.List;
 
@@ -22,14 +23,14 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     private static final long SLIDE_DURATION_MS = 250;
     private static final long CHECK_DURATION_MS = 300;
 
-    private final List<String> names;
+    private final List<CondominiumMembership> memberships;
     private final View highlight;
     private final OnCondominioClick listener;
     private RecyclerView recyclerView;
     private int selected;
 
-    public CondominioAdapter(List<String> names, int selected, View highlight, OnCondominioClick listener) {
-        this.names = names;
+    public CondominioAdapter(List<CondominiumMembership> memberships, int selected, View highlight, OnCondominioClick listener) {
+        this.memberships = memberships;
         this.selected = selected;
         this.highlight = highlight;
         this.listener = listener;
@@ -58,8 +59,13 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull CondominioViewHolder holder, int position) {
         boolean active = position == selected;
-        holder.nameLabel.setText(names.get(position));
-        holder.detailLabel.setText(R.string.residente);
+        CondominiumMembership membership = memberships.get(position);
+        // Notifications are split by condominium, so the panel says where something is waiting.
+        int pending = membership.getPendingNotifications();
+        holder.nameLabel.setText(pending > 0
+                ? holder.itemView.getContext().getString(R.string.condominio_con_pendientes, membership.getName(), pending)
+                : membership.getName());
+        holder.detailLabel.setText(membership.isAdmin() ? R.string.rol_admin_condominio : R.string.residente);
         holder.checkImage.animate().cancel();
         holder.checkImage.setScaleX(1f);
         holder.checkImage.setScaleY(1f);
@@ -114,7 +120,7 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return memberships.size();
     }
 
     static class CondominioViewHolder extends RecyclerView.ViewHolder {

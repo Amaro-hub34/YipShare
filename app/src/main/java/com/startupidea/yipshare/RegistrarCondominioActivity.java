@@ -25,7 +25,9 @@ import com.startupidea.yipshare.condominium.CondominiumField;
 import com.startupidea.yipshare.condominium.CondominiumPayload;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.InvalidCondominium;
-import com.startupidea.yipshare.condominium.PendingCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
+import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.error.AppException;
 
 import java.util.Set;
@@ -69,7 +71,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registrar_condominio);
 
-        condominiumService = new CondominiumService(new PendingCondominiumRepository());
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(new DatabaseDriver(this), this));
         nameField = findViewById(R.id.et_nombre_condominio);
         streetField = findViewById(R.id.et_direccion_condominio1);
         neighborhoodField = findViewById(R.id.et_direccion_condominio2);
@@ -169,7 +171,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
 
     private void tryRequestCondominium() {
         try {
-            condominiumService.createCondominiumRequest(readPayload());
+            condominiumService.createCondominiumRequest(new SessionRepository(this).getUserId(), readPayload());
             Toast.makeText(this, R.string.solicitud_condominio_enviada, Toast.LENGTH_LONG).show();
             finish();
         } catch (InvalidCondominium e) {

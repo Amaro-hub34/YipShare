@@ -7,11 +7,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.core.content.IntentCompat;
 
-import java.io.Serializable;
-
-public final class Item implements Serializable, Parcelable {
-
-    private static final long serialVersionUID = 1L;
+public final class Item implements Parcelable {
 
     private static final String EXTRA_ITEM = "com.startupidea.yipshare.extra.ITEM";
 
@@ -20,6 +16,9 @@ public final class Item implements Serializable, Parcelable {
         public Item createFromParcel(Parcel source) {
             return new Item(
                     source.readString(),
+                    source.readString(),
+                    source.readString(),
+                    ItemAvailability.valueOf(source.readString()),
                     new ItemPayload(
                             source.readString(),
                             source.readString(),
@@ -36,10 +35,16 @@ public final class Item implements Serializable, Parcelable {
     };
 
     private final String id;
+    private final String ownerId;
+    private final String condominiumId;
+    private final ItemAvailability availability;
     private final ItemPayload payload;
 
-    public Item(String id, ItemPayload payload) {
+    public Item(String id, String ownerId, String condominiumId, ItemAvailability availability, ItemPayload payload) {
         this.id = id;
+        this.ownerId = ownerId;
+        this.condominiumId = condominiumId;
+        this.availability = availability;
         this.payload = payload;
     }
 
@@ -48,11 +53,27 @@ public final class Item implements Serializable, Parcelable {
     }
 
     public void putInto(Intent intent) {
-        intent.putExtra(EXTRA_ITEM, (Parcelable) this);
+        intent.putExtra(EXTRA_ITEM, this);
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public String getCondominiumId() {
+        return condominiumId;
+    }
+
+    public ItemAvailability getAvailability() {
+        return availability;
+    }
+
+    public boolean isOwnedBy(String userId) {
+        return ownerId != null && ownerId.equals(userId);
     }
 
     public ItemPayload getPayload() {
@@ -67,6 +88,9 @@ public final class Item implements Serializable, Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(ownerId);
+        dest.writeString(condominiumId);
+        dest.writeString(availability.name());
         dest.writeString(payload.getName());
         dest.writeString(payload.getCategory());
         dest.writeString(payload.getDescription());

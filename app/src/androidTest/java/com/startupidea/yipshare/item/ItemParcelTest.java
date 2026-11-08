@@ -18,7 +18,7 @@ public class ItemParcelTest {
     @Test
     public void itemSurvivesIntentParceling() {
         Intent intent = new Intent();
-        new Item("id-1", new ItemPayload("Drill", "Tools", "Works fine", "Good",
+        new Item("id-1", "owner-1", "condo-1", ItemAvailability.PENDING, new ItemPayload("Drill", "Tools", "Works fine", "Good",
                 "content://image/1", Arrays.asList("1 day", "1 week"))).putInto(intent);
 
         Parcel parcel = Parcel.obtain();
@@ -30,6 +30,9 @@ public class ItemParcelTest {
 
         Item item = Item.fromIntent(restored);
         assertEquals("id-1", item.getId());
+        assertEquals("owner-1", item.getOwnerId());
+        assertEquals("condo-1", item.getCondominiumId());
+        assertEquals(ItemAvailability.PENDING, item.getAvailability());
         assertEquals("Drill", item.getPayload().getName());
         assertEquals("Tools", item.getPayload().getCategory());
         assertEquals("Works fine", item.getPayload().getDescription());

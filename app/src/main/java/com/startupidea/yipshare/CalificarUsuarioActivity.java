@@ -1,9 +1,10 @@
 package com.startupidea.yipshare;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +12,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.register.RegistroCuenta1Activity;
+import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.feedback.FeedbackService;
+import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
+import com.startupidea.yipshare.loan.Loan;
+import com.startupidea.yipshare.user.SessionRepository;
 
 public class CalificarUsuarioActivity extends AppCompatActivity {
+
+    private Loan loan;
+    private RatingBar ratingBar;
+    private EditText commentField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +36,23 @@ public class CalificarUsuarioActivity extends AppCompatActivity {
             return insets;
         });
 
-        ImageButton returnButton = findViewById(R.id.btnRegresar);
+        loan = Loan.fromIntent(getIntent());
+        ratingBar = findViewById(R.id.ratingBar);
+        commentField = findViewById(R.id.etComentario);
+        ((TextView) findViewById(R.id.tvNombreUsuario)).setText(loan.getOtherUsername());
 
-        returnButton.setOnClickListener(v -> {
+        findViewById(R.id.btnRegresar).setOnClickListener(v -> finish());
+        findViewById(R.id.btnEnviarCalificacion).setOnClickListener(v -> tryCreateReview());
+    }
+
+    private void tryCreateReview() {
+        try {
+            new FeedbackService(new SqliteFeedbackRepository(new DatabaseDriver(this))).createReview(
+                    new SessionRepository(this).getUserId(), loan, ratingBar.getRating(), commentField.getText().toString());
+            Toast.makeText(this, R.string.calificacion_enviada, Toast.LENGTH_SHORT).show();
             finish();
-        });
-
-        Button sendRatingButton = findViewById(R.id.btnEnviarCalificacion);
-
-        sendRatingButton.setOnClickListener(v -> {
-            finish();
-        });
+        } catch (AppException e) {
+            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

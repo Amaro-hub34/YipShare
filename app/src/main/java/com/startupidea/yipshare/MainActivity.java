@@ -12,19 +12,21 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.register.RegistroCuenta1Activity;
 import com.startupidea.yipshare.user.EmptyPassword;
 import com.startupidea.yipshare.user.EmptyUsername;
 import com.startupidea.yipshare.user.LoginPayload;
-import com.startupidea.yipshare.user.PendingUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.PasswordToggleUtil;
+import com.startupidea.yipshare.register.RegistroCuenta1Activity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final UserService userService = new UserService(new PendingUserRepository());
+    private UserService userService;
 
     private EditText usernameField;
     private EditText passwordField;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             User user = userService.login(payload);
+            new SessionRepository(this).createSession(user);
             Intent intent = new Intent(this, PantallaPrincipalActivity.class);
             user.putInto(intent);
             startActivity(intent);

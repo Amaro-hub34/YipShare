@@ -59,6 +59,17 @@
                 android:text="@string/item_nombre_persona" />
 
             <TextView
+                android:id="@+id/tv_telefono_prestamo"
+                style="@style/TextBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="32dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/azul_yipshare"
+                android:background="?attr/selectableItemBackground"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/tv_estado_prestamo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

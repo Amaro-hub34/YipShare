@@ -106,7 +106,29 @@
                         android:background="@drawable/bg_input"
                         android:padding="12dp"
                         android:inputType="textPassword"
-                        android:hint="@string/contrasena_actualizar_perfil"
+                        android:hint="@string/nueva_contrasena"
+                        android:maxLines="1" />
+
+                    <EditText
+                        android:id="@+id/et_confirmar_contrasena"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textPassword"
+                        android:hint="@string/confirmar_nueva_contrasena"
+                        android:maxLines="1" />
+
+                    <EditText
+                        android:id="@+id/et_contrasena_actual"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textPassword"
+                        android:hint="@string/contrasena_actual"
                         android:maxLines="1"
                         android:layout_marginBottom="10dp"/>
 

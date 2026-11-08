@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,21 +31,23 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.item.InvalidItem;
+import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemField;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
-import com.startupidea.yipshare.item.LocalItemRepository;
+import com.startupidea.yipshare.item.SqliteItemRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
+import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.utils.ImageFileUtil;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class FormularioArticuloActivity extends AppCompatActivity {
 
-    private static final String ITEMS_FILE = "items.dat";
     private static final String KEY_IMAGE_URI = "image_uri";
     private static final int DURATION_ID_BASE = 1000;
     private static final int PREVIEW_MAX_SIZE_PX = 1080;
@@ -55,6 +60,9 @@ public class FormularioArticuloActivity extends AppCompatActivity {
             });
 
     private ItemService itemService;
+    private String userId;
+    private String condominiumId;
+    private Item editingItem;
     private EditText nameField;
     private EditText descriptionField;
     private Spinner categorySpinner;
@@ -70,7 +78,9 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_formulario_articulo);
 
-        itemService = new ItemService(new LocalItemRepository(new File(getFilesDir(), ITEMS_FILE)));
+        DatabaseDriver databaseDriver = new DatabaseDriver(this);
+        itemService = new ItemService(
+                new SqliteItemRepository(databaseDriver, this), new SqliteCondominiumRepository(databaseDriver, this));
         nameField = findViewById(R.id.et_nombre_articulo);
         descriptionField = findViewById(R.id.et_descripcion);
         categorySpinner = findViewById(R.id.spinner_categoria);
@@ -79,13 +89,22 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         durationErrorLabel = findViewById(R.id.tv_error_duracion);
         imageErrorLabel = findViewById(R.id.tv_error_imagen);
 
+        SessionRepository session = new SessionRepository(this);
+        userId = session.getUserId();
+        condominiumId = session.getCondominiumId();
+        editingItem = Item.fromIntent(getIntent());
+
         addDurationBoxes();
         findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
-        findViewById(R.id.btn_accion_principal).setOnClickListener(v -> tryPostItem());
+        Button mainButton = findViewById(R.id.btn_accion_principal);
+        mainButton.setOnClickListener(v -> tryPostItem());
+        if (editingItem != null) mainButton.setText(R.string.btn_guardar_cambios);
 
         if (savedInstanceState != null) {
             String savedUri = savedInstanceState.getString(KEY_IMAGE_URI);
             if (savedUri != null) showImage(Uri.parse(savedUri));
+        } else if (editingItem != null) {
+            showEditingItem();
         }
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
@@ -174,20 +193,49 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         try {
             itemService.validate(readPayload(pickedImage));
 
-            Uri storedImage = ImageFileUtil.tryCopy(this, imageUri);
+            // An unchanged image is already in the app folder, so it is not copied again.
+            boolean sameImage = editingItem != null && pickedImage.equals(editingItem.getPayload().getImageUri());
+            Uri storedImage = sameImage ? imageUri : ImageFileUtil.tryCopy(this, imageUri);
             if (storedImage == null) {
                 showImageError(R.string.error_imagen_invalida);
                 return;
             }
 
-            itemService.createItem(readPayload(storedImage.toString()));
-            Toast.makeText(this, R.string.articulo_publicado, Toast.LENGTH_SHORT).show();
+            ItemPayload payload = readPayload(storedImage.toString());
+            if (editingItem == null) {
+                itemService.createItem(userId, condominiumId, payload);
+                Toast.makeText(this, R.string.articulo_publicado, Toast.LENGTH_SHORT).show();
+            } else {
+                Intent result = new Intent();
+                itemService.modifyItem(userId, editingItem.getId(), payload).putInto(result);
+                setResult(Activity.RESULT_OK, result);
+                Toast.makeText(this, R.string.articulo_actualizado, Toast.LENGTH_SHORT).show();
+            }
             finish();
         } catch (InvalidItem e) {
             showErrors(e.getFields(), e.getMessageRes());
         } catch (AppException e) {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showEditingItem() {
+        ItemPayload payload = editingItem.getPayload();
+        nameField.setText(payload.getName());
+        descriptionField.setText(payload.getDescription());
+        selectValue(categorySpinner, payload.getCategory());
+        selectValue(physicalConditionSpinner, payload.getPhysicalCondition());
+        for (CheckBox box : durationBoxes) {
+            box.setChecked(payload.getLoanDurations().contains(box.getText().toString()));
+        }
+        // Demo items have no picture; the form then asks for one when saving.
+        if (payload.getImageUri() != null) showImage(Uri.parse(payload.getImageUri()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void selectValue(Spinner spinner, String value) {
+        int position = ((ArrayAdapter<CharSequence>) spinner.getAdapter()).getPosition(value);
+        if (position >= 0) spinner.setSelection(position);
     }
 
     private void cleanGUI() {

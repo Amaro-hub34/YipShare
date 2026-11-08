@@ -63,4 +63,16 @@
             xmlns:app="http://schemas.android.com/apk/res-auto" />
     </FrameLayout>
 
+    <!-- Only for the admin of the selected condominium -->
+    <Button
+        android:id="@+id/btn_ver_vecinos"
+        style="@style/ButtonPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_ver_vecinos"
+        android:visibility="gone" />
+
 </LinearLayout>
