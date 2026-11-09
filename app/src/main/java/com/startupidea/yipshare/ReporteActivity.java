@@ -49,7 +49,6 @@ public class ReporteActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Only someone in a loan can report the other neighbor, so the screen needs that loan.
         loan = Loan.fromIntent(getIntent());
         if (loan == null) {
             Toast.makeText(this, R.string.reporte_bloqueado, Toast.LENGTH_LONG).show();
@@ -117,7 +116,6 @@ public class ReporteActivity extends AppCompatActivity{
         descriptionField.setError(null);
 
         try {
-            // The evidence is optional; when there is one it is copied so it survives the gallery.
             String storedImage = null;
             if (evidenceUri != null) {
                 Uri copy = ImageFileUtil.tryCopy(this, evidenceUri);

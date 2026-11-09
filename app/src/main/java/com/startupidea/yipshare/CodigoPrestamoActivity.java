@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,7 +60,7 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
             codeLabel.setVisibility(TextView.VISIBLE);
         });
 
-        findViewById(R.id.btn_confirmar_codigo).setOnClickListener(v -> tryConfirmCode());
+        findViewById(R.id.btn_confirmar_codigo).setOnClickListener(v -> new LoadingOverlay(this).run(this::tryConfirmCode));
     }
 
     private void tryConfirmCode() {

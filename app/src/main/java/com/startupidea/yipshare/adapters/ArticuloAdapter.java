@@ -73,7 +73,6 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
         }
 
         void bind(Item item) {
-            // Demo items come without a picture; the card keeps its placeholder background.
             String imageUri = item.getPayload().getImageUri();
             Bitmap image = imageUri == null
                     ? null : ImagePreviewUtil.tryLoad(itemView.getContext(), Uri.parse(imageUri), CARD_IMAGE_MAX_SIZE_PX);

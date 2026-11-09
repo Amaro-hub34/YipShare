@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 import com.startupidea.yipshare.R;
 
-/** Shows a phone number and opens the dialer when tapped; calling is simpler than an in-app chat. */
 public final class PhoneUtil {
 
     private PhoneUtil() {

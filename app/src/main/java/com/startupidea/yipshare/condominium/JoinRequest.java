@@ -1,6 +1,5 @@
 package com.startupidea.yipshare.condominium;
 
-/** Someone asked to join a condominium the user administers. */
 public final class JoinRequest {
 
     // computed_rating is stored in tenths, so 45 means 4.5 stars.

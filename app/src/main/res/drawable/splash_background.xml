@@ -21,4 +21,13 @@
         android:left="-151dp"
         android:drawable="@drawable/ellipse_1" />
 
+    <item
+        android:gravity="center"
+        android:width="180dp"
+        android:height="180dp">
+        <bitmap
+            android:src="@drawable/logo_yipshare"
+            android:gravity="center" />
+    </item>
+
 </layer-list>

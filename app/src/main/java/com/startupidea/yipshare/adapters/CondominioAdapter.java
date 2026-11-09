@@ -60,7 +60,6 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     public void onBindViewHolder(@NonNull CondominioViewHolder holder, int position) {
         boolean active = position == selected;
         CondominiumMembership membership = memberships.get(position);
-        // Notifications are split by condominium, so the panel says where something is waiting.
         int pending = membership.getPendingNotifications();
         holder.nameLabel.setText(pending > 0
                 ? holder.itemView.getContext().getString(R.string.condominio_con_pendientes, membership.getName(), pending)

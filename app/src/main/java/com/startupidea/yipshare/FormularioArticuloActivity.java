@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -97,7 +98,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         addDurationBoxes();
         findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
         Button mainButton = findViewById(R.id.btn_accion_principal);
-        mainButton.setOnClickListener(v -> tryPostItem());
+        mainButton.setOnClickListener(v -> new LoadingOverlay(this).run(this::tryPostItem));
         if (editingItem != null) mainButton.setText(R.string.btn_guardar_cambios);
 
         if (savedInstanceState != null) {
@@ -228,7 +229,6 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         for (CheckBox box : durationBoxes) {
             box.setChecked(payload.getLoanDurations().contains(box.getText().toString()));
         }
-        // Demo items have no picture; the form then asks for one when saving.
         if (payload.getImageUri() != null) showImage(Uri.parse(payload.getImageUri()));
     }
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** In-memory condominium data for service tests; fields are public so each test sets up what it needs. */
 public class FakeCondominiumRepository implements CondominiumRepository {
 
     public final Set<String> admins = new HashSet<>();          // "userId@condominiumId"

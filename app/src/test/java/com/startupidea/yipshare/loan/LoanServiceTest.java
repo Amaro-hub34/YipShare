@@ -114,7 +114,6 @@ public class LoanServiceTest {
         assertEquals(1, service.getAllLoansByUserId("user", "condo").size());
         assertEquals(1, service.getAllLoansByUserId("user", "condo").size());
         assertEquals(1, demoCalls);
-        // The demo loans go to the user's demo condominiums, created first if needed.
         assertEquals(1, condominiums.demoCalls);
         assertEquals("demo|demo", demoCondominiums);
     }

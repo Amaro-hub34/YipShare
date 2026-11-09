@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -117,7 +119,28 @@ public class PerfilActivity extends AppCompatActivity {
         passwordConfirmationField.setTransformationMethod(new AsteriskPasswordTransformation());
         currentPasswordField.setTransformationMethod(new AsteriskPasswordTransformation());
 
-        sheet.findViewById(R.id.btn_actualizar_datos).setOnClickListener(v -> confirm(R.string.confirmar_actualizar_perfil, () -> {
+        View updateButton = sheet.findViewById(R.id.btn_actualizar_datos);
+        EditText[] fields = {usernameField, firstNamesField, paternalLastNameField, maternalLastNameField,
+                passwordField, passwordConfirmationField, currentPasswordField};
+        String[] saved = {profile.getUsername(), profile.getFirstNames(), profile.getPaternalLastName(),
+                profile.getMaternalLastName(), "", "", ""};
+        TextWatcher changeWatcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                boolean changed = false;
+                for (int i = 0; i < fields.length; i++) {
+                    changed |= !fields[i].getText().toString().trim().equals(saved[i] == null ? "" : saved[i].trim());
+                }
+                updateButton.setEnabled(changed);
+                updateButton.setAlpha(changed ? 1f : 0.5f);
+            }
+        };
+        for (EditText field : fields) field.addTextChangedListener(changeWatcher);
+        changeWatcher.afterTextChanged(null);
+
+        updateButton.setOnClickListener(v -> confirm(R.string.confirmar_actualizar_perfil, () -> {
             for (EditText field : new EditText[]{usernameField, passwordField, passwordConfirmationField, currentPasswordField,
                     paternalLastNameField, maternalLastNameField, firstNamesField}) {
                 field.setError(null);

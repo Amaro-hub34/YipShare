@@ -23,7 +23,6 @@ import com.startupidea.yipshare.utils.FeedbackSectionUtil;
 
 import java.util.Locale;
 
-/** Ratings and reports another neighbor has received. */
 public class UserFeedbackActivity extends AppCompatActivity {
 
     private static final String EXTRA_USER_ID = "com.startupidea.yipshare.extra.USER_ID";

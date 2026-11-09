@@ -1,6 +1,5 @@
 package com.startupidea.yipshare.loan;
 
-/** A pending loan seen by the lender: someone asked to borrow one of their items. */
 public final class LoanRequest {
 
     // computed_rating is stored in tenths, so 45 means 4.5 stars.

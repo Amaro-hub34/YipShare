@@ -21,7 +21,6 @@ import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
 
 import java.util.List;
 
-/** Fills the section_feedback layout (ratings / reports buttons and their list) for one user. */
 public final class FeedbackSectionUtil {
 
     private FeedbackSectionUtil() {

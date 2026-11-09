@@ -72,7 +72,6 @@ public class CondominiumService {
         return condominiumRepository.getAllNeighborsByCondominiumId(condominiumId);
     }
 
-    /** Only the requests of the selected condominium, and only if the user administers it. */
     public List<JoinRequest> getAllJoinRequests(String adminId, String condominiumId) {
         if (condominiumId == null) return new ArrayList<>();
         return condominiumRepository.getAllJoinRequestsByAdminId(adminId, condominiumId);
@@ -88,7 +87,6 @@ public class CondominiumService {
         condominiumRepository.rejectJoinRequest(userId, condominiumId);
     }
 
-    /** E.g. a neighbor who hasn't paid maintenance can't borrow until the admin gives access back. */
     public void modifyLoanAccess(String adminId, String userId, String condominiumId, boolean allowed) {
         ensureAdmin(adminId, condominiumId);
         if (adminId.equals(userId)) throw new NotCondominiumAdmin();

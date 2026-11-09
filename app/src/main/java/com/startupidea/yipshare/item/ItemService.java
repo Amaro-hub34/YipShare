@@ -26,7 +26,6 @@ public class ItemService {
         return matches;
     }
 
-    /** Items of the other neighbors that can be requested right now. */
     public List<Item> searchAvailableItems(String userId, String condominiumId, String query) {
         List<Item> matches = new ArrayList<>();
         for (Item item : search(condominiumId, query)) {

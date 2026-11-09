@@ -3,30 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/loadingSpinner"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
-        android:background="@drawable/bg_loading_card"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="28dp">
-
-        <ImageView
-            android:id="@+id/loadingHouse"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:importantForAccessibility="no"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logo_casita" />
-
-        <TextView
-            android:id="@+id/loadingMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/cargando"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-    </LinearLayout>
+        android:accessibilityLiveRegion="polite"
+        android:contentDescription="@string/cargando"
+        android:src="@drawable/ic_loading_dots"
+        android:tint="@color/texto_primario" />
 </FrameLayout>

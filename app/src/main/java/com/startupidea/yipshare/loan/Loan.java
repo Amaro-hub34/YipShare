@@ -95,7 +95,6 @@ public final class Loan implements Parcelable {
         return imageUri;
     }
 
-    /** The other person of the loan: the borrower if the user lent it, the lender otherwise. */
     public String getOtherUserId() {
         return otherUserId;
     }

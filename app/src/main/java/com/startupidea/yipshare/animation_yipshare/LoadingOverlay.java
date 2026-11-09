@@ -5,35 +5,29 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.startupidea.yipshare.R;
 
-/**
- * Loading overlay with the YipShare house spinning around its vertical axis.
- * Usage: LoadingOverlay loading = new LoadingOverlay(this); loading.show(); ... loading.dismiss();
- */
 public class LoadingOverlay {
 
-    private static final long TURN_DURATION_MS = 1400;
+    private static final long TURN_DURATION_MS = 1000;
+    // Actions hit local SQLite and finish instantly, so the overlay stays up this long to be seen.
+    private static final long MIN_SHOW_MS = 800;
 
     private final Dialog dialog;
-    private final ImageView house;
-    private final TextView message;
+    private final ImageView spinner;
     private ObjectAnimator spin;
 
     public LoadingOverlay(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_loading, null);
-        house = view.findViewById(R.id.loadingHouse);
-        message = view.findViewById(R.id.loadingMessage);
-
-
-        house.setCameraDistance(8000 * context.getResources().getDisplayMetrics().density);
+        spinner = view.findViewById(R.id.loadingSpinner);
 
         dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -41,7 +35,7 @@ public class LoadingOverlay {
         dialog.setCancelable(false);
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.getWindow().setDimAmount(0.5f);
+            dialog.getWindow().setDimAmount(0.4f);
         }
         dialog.setOnDismissListener(d -> stopSpin());
     }
@@ -53,8 +47,17 @@ public class LoadingOverlay {
     }
 
     public void show(int messageRes) {
-        message.setText(messageRes);
+        spinner.setContentDescription(spinner.getContext().getString(messageRes));
         show();
+    }
+
+    public void run(Runnable action) {
+        show();
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (!dialog.isShowing()) return;
+            dismiss();
+            action.run();
+        }, MIN_SHOW_MS);
     }
 
     public void dismiss() {
@@ -63,7 +66,7 @@ public class LoadingOverlay {
 
     private void startSpin() {
         stopSpin();
-        spin = ObjectAnimator.ofFloat(house, View.ROTATION_Y, 0f, 360f);
+        spin = ObjectAnimator.ofFloat(spinner, View.ROTATION, 0f, 360f);
         spin.setDuration(TURN_DURATION_MS);
         spin.setInterpolator(new LinearInterpolator());
         spin.setRepeatCount(ObjectAnimator.INFINITE);
@@ -75,6 +78,6 @@ public class LoadingOverlay {
             spin.cancel();
             spin = null;
         }
-        house.setRotationY(0f);
+        spinner.setRotation(0f);
     }
 }

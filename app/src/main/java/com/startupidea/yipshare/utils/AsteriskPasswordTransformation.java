@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-/** Masks a password with '*' instead of Android's dots. */
 public class AsteriskPasswordTransformation extends PasswordTransformationMethod {
 
     @Override

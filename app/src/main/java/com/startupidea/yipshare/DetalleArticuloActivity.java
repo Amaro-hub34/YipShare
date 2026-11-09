@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -156,7 +157,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
     private void showItem(Item item) {
         this.item = item;
-        // Keeps the edited item if the activity is recreated (rotation).
         item.putInto(getIntent());
         ItemPayload payload = item.getPayload();
 
@@ -181,7 +181,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         deleteButton.setText(admin ? R.string.eliminar_publicacion : R.string.eliminar_articulo);
         findViewById(R.id.tv_aviso_no_editable).setVisibility(own && !editable ? View.VISIBLE : View.GONE);
 
-        // Demo items come without a picture; the placeholder background stays.
         if (payload.getImageUri() != null) {
             ((ImageView) findViewById(R.id.iv_imagen_articulo)).setImageBitmap(
                     ImagePreviewUtil.tryLoad(this, Uri.parse(payload.getImageUri()), IMAGE_MAX_SIZE_PX));
@@ -216,14 +215,14 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.confirmar_solicitar_articulo, item.getPayload().getName(), duration))
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> {
+                .setPositiveButton(R.string.opcion_si, (dialog, which) -> new LoadingOverlay(this).run(() -> {
                     try {
                         loanService.requestLoan(userId, item, getString(R.string.texto_solicitud, duration), days);
                         Toast.makeText(this, R.string.solicitud_enviada, Toast.LENGTH_SHORT).show();
                     } catch (AppException e) {
                         Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_LONG).show();
                     }
-                })
+                }))
                 .setNegativeButton(R.string.opcion_cancelar, null)
                 .show();
     }
@@ -248,7 +247,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
     private void showLoan(Loan loan) {
         this.loan = loan;
-        // Keeps the new status if the activity is recreated (rotation).
         loan.putInto(getIntent());
 
         if (loan.getImageUri() != null) {
@@ -275,7 +273,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         findViewById(R.id.sp_estado_fisico).setVisibility(View.GONE);
         findViewById(R.id.btn_accion_articulo).setVisibility(View.GONE);
         findViewById(R.id.layout_acciones_prestamo).setVisibility(View.VISIBLE);
-        // Once the loan is over the code is no longer needed, so the same button rates the neighbor.
         Button codeButton = findViewById(R.id.btn_introducir_codigo);
         boolean finished = loan.getStatus() == LoanStatus.FINISHED;
         codeButton.setText(finished ? R.string.btn_calificar_vecino : R.string.btn_introducir_codigo);

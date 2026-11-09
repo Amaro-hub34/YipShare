@@ -165,7 +165,6 @@ public class SqliteLoanRepository implements LoanRepository {
             SQLiteDatabase db = databaseDriver.getWritableDatabase();
             db.beginTransaction();
             try {
-                // Neighbors are members of the demo condominiums; Luis has no loan access in the administered one.
                 createDemoLoan(db, administeredId, userId, DemoData.CARLOS, R.string.demo_taladro, R.string.demo_desc_taladro, LoanStatus.ACCEPTED, "+7 days");
                 createDemoLoan(db, administeredId, DemoData.ANA, userId, R.string.demo_escalera, R.string.demo_desc_escalera, LoanStatus.ACCEPTED, "+2 days");
                 createDemoLoan(db, administeredId, userId, DemoData.ANA, R.string.demo_bicicleta, R.string.demo_desc_bicicleta, LoanStatus.PENDING, "+3 days");

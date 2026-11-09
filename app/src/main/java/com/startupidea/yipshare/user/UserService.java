@@ -43,7 +43,6 @@ public class UserService {
         }
     }
 
-    /** A saved session only counts if its account still exists and wasn't deleted. */
     public boolean isActiveSession(String userId) {
         return userId != null && userRepository.isActiveUser(userId);
     }

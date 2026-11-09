@@ -3,7 +3,6 @@ package com.startupidea.yipshare.user;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-// Remembers who is logged in, so screens opened from the bottom bar know the current user.
 public class SessionRepository {
 
     private static final String PREFERENCES = "session";
@@ -24,7 +23,6 @@ public class SessionRepository {
         return preferences.getString(KEY_USER_ID, null);
     }
 
-    /** The condominium picked in the home panel; roles depend on it. */
     public String getCondominiumId() {
         return preferences.getString(KEY_CONDOMINIUM_ID, null);
     }

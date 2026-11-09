@@ -20,7 +20,6 @@ import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.SessionRepository;
 
-/** Condominium admin only: every neighbor of the selected condominium and their loan access. */
 public class NeighborsActivity extends AppCompatActivity {
 
     private CondominiumService condominiumService;
@@ -91,7 +90,6 @@ public class NeighborsActivity extends AppCompatActivity {
                     }
                     showNeighbors();
                 })
-                // Cancelling redraws the list so the switch goes back to its saved state.
                 .setNegativeButton(R.string.opcion_cancelar, (dialog, which) -> showNeighbors())
                 .setOnCancelListener(dialog -> showNeighbors())
                 .show();

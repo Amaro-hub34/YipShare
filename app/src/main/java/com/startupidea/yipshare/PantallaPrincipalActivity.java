@@ -77,7 +77,6 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             return insets;
         });
 
-        // The activity is recreated on rotation, so checking once here is enough.
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             bottomNav.setVisibility(View.GONE);
             findViewById(R.id.tv_condominio).setVisibility(View.GONE);
@@ -139,7 +138,6 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         showItems();
     }
 
-    /** Keeps the selected condominium valid and shows it with the user's role there. */
     private void showCondominium() {
         try {
             memberships = condominiumService.getAllMemberships(userId);
@@ -168,7 +166,6 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         for (CondominiumMembership membership : memberships) pending += membership.getPendingNotifications();
 
         findViewById(R.id.punto_notificaciones).setVisibility(pending > 0 ? View.VISIBLE : View.GONE);
-        // The dot is only visual, so screen readers hear it through the bell's description.
         findViewById(R.id.iv_notificaciones).setContentDescription(
                 getString(pending > 0 ? R.string.notificaciones_pendientes : R.string.notification));
     }
@@ -198,7 +195,6 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             String name = userService.getUserProfile(userId).getFirstNames();
             ((TextView) findViewById(R.id.tv_saludo)).setText(getString(R.string.saludo, name));
         } catch (AppException e) {
-            // No valid session (e.g. the database was recreated): log in again.
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         errorLabel = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(passwordField, findViewById(R.id.btn_toggle_password));
 
-        findViewById(R.id.btn_entrar).setOnClickListener(v -> sendLoginRequest());
+        findViewById(R.id.btn_entrar).setOnClickListener(v -> new LoadingOverlay(this).run(this::sendLoginRequest));
 
         findViewById(R.id.boton_registrate).setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RegistroCuenta1Activity.class)));

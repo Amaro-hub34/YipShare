@@ -20,31 +20,19 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_DURATION = 1500;
 
-    private LoadingOverlay loading;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Splash);
         super.onCreate(savedInstanceState);
 
-        loading = new LoadingOverlay(this);
-        loading.show();
-
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            loading.dismiss();
             Intent intent = new Intent(SplashActivity.this, hasActiveSession() ? PantallaPrincipalActivity.class : MainActivity.class);
             startActivity(intent);
             finish();
         }, SPLASH_DURATION);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (loading != null) loading.dismiss();
-        super.onDestroy();
-    }
-
-
+    // Closing the app keeps the user logged in; only logging out or deleting the account ends the session.
     private boolean hasActiveSession() {
         SessionRepository session = new SessionRepository(this);
         boolean active;

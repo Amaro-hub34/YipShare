@@ -1,5 +1,6 @@
 package com.startupidea.yipshare.register;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -82,7 +83,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             showPhoneNumber(draft.getPhoneNumber());
         }
 
-        findViewById(R.id.btn_siguiente).setOnClickListener(v -> tryRegister());
+        findViewById(R.id.btn_siguiente).setOnClickListener(v -> new LoadingOverlay(this).run(this::tryRegister));
         findViewById(R.id.btn_regresar_registro2).setOnClickListener(v -> returnToPrevious());
         findViewById(R.id.btn_regresar_main).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);

@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -43,7 +44,7 @@ public class IngresoCondominioActivity extends AppCompatActivity {
         apartmentField = findViewById(R.id.et_direccion_departamento);
         codeErrorLabel = findViewById(R.id.tv_error_codigo);
 
-        findViewById(R.id.btn_unirse).setOnClickListener(v -> tryJoinCondominium());
+        findViewById(R.id.btn_unirse).setOnClickListener(v -> new LoadingOverlay(this).run(this::tryJoinCondominium));
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         View bottomNav = findViewById(R.id.bottom_nav);

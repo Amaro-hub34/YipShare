@@ -1,6 +1,5 @@
 package com.startupidea.yipshare.condominium;
 
-/** A condominium the user belongs to and the role they have there; one user can be admin in one and resident in another. */
 public final class CondominiumMembership {
 
     private final String condominiumId;
@@ -27,7 +26,6 @@ public final class CondominiumMembership {
         return admin;
     }
 
-    /** Loan requests for the user's items there, plus join requests when the user is its admin. */
     public int getPendingNotifications() {
         return pendingNotifications;
     }

@@ -1,5 +1,6 @@
 package com.startupidea.yipshare;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -92,7 +93,6 @@ public class NotificacionActivity extends AppCompatActivity {
         showLoanRequests();
     }
 
-    // Only the selected condominium's notifications: join requests if the user is its admin, loan requests for their items.
     private void showLoanRequests() {
         List<LoanRequest> requests;
         List<JoinRequest> joinRequests;
@@ -154,7 +154,7 @@ public class NotificacionActivity extends AppCompatActivity {
     private void confirm(String message, Runnable answer, int doneMessage) {
         new AlertDialog.Builder(this)
                 .setMessage(message)
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> {
+                .setPositiveButton(R.string.opcion_si, (dialog, which) -> new LoadingOverlay(this).run(() -> {
                     try {
                         answer.run();
                         Toast.makeText(this, doneMessage, Toast.LENGTH_SHORT).show();
@@ -162,7 +162,7 @@ public class NotificacionActivity extends AppCompatActivity {
                         Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
                     }
                     showLoanRequests();
-                })
+                }))
                 .setNegativeButton(R.string.opcion_cancelar, null)
                 .show();
     }

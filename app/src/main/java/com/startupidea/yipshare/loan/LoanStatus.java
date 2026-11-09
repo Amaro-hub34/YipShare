@@ -41,7 +41,6 @@ public enum LoanStatus {
         return badgeRes;
     }
 
-    /** Only an accepted loan (delivery) or one on loan (return) takes a code. */
     public boolean acceptsCode() {
         return this == ACCEPTED || this == ON_LOAN;
     }

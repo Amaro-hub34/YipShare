@@ -327,7 +327,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
             try {
                 DemoData.createDemoNeighbors(db);
 
-                // The user administers this one: neighbors, join requests and a neighbor without loan access.
                 String administered = createDemoCondominium(db, userId, "Residencial Los Pinos", 10);
                 addMember(db, administered, userId, "1");
                 addMember(db, administered, DemoData.CARLOS, "2");
@@ -340,7 +339,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
                 addDemoArticle(db, administered, DemoData.CARLOS, R.string.demo_podadora, R.string.demo_desc_podadora, "category_2", "0,1,2");
                 addDemoArticle(db, administered, DemoData.ANA, R.string.demo_licuadora, R.string.demo_desc_licuadora, "category_3", "2,3");
 
-                // The user only lives in this one; Carlos is its admin.
                 String lived = createDemoCondominium(db, DemoData.CARLOS, "Torres del Valle", 6);
                 addMember(db, lived, DemoData.CARLOS, "1");
                 addMember(db, lived, DemoData.LUIS, "2");

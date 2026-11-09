@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 8 dots fading around a ring; LoadingOverlay rotates it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillAlpha="1.0"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M20.00,8.00a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.89"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M31.31,12.69a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.78"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M36.00,24.00a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.67"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M31.31,35.31a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.56"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M20.00,40.00a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.45"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M8.69,35.31a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.34"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4.00,24.00a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+    <path
+        android:fillAlpha="0.23"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M8.69,12.69a4,4 0,1 0,8,0a4,4 0,1 0,-8,0" />
+</vector>

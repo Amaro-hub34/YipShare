@@ -23,7 +23,6 @@ public class LoanService {
         this.condominiumRepository = condominiumRepository;
     }
 
-    /** Loans of the selected condominium only; the other condominiums keep theirs. */
     public List<Loan> getAllLoansByUserId(String userId, String condominiumId) {
         ensureDemoLoans(userId);
         if (condominiumId == null) return new ArrayList<>();
@@ -36,7 +35,6 @@ public class LoanService {
         return loanRepository.getAllLoanRequestsByLenderId(userId, condominiumId);
     }
 
-    /** Sends the owner a request; it shows up in their notifications. */
     public void requestLoan(String userId, Item item, String requestText, int days) {
         if (item.isOwnedBy(userId)) throw new ItemNotFound();
         if (item.getAvailability() != ItemAvailability.AVAILABLE) throw new ItemNotAvailable();
@@ -63,7 +61,6 @@ public class LoanService {
         return loanRepository.getLoanById(loan.getId(), userId);
     }
 
-    // Only the lender answers, and only once.
     private void answerLoanRequest(String userId, String loanId, LoanStatus answer) {
         Loan loan = loanRepository.getLoanById(loanId, userId);
         if (loan == null || !loan.isLentByMe() || loan.getStatus() != LoanStatus.PENDING) throw new LoanRequestNotPending();
