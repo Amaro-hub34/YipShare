@@ -178,6 +178,16 @@
                         android:minHeight="48dp"
                         android:layout_marginBottom="14dp" />
 
+                    <TextView
+                        android:id="@+id/telefono"
+                        style="@style/InputBrand"
+                        android:hint="@string/telefono_hint"
+                        android:inputType="phone"
+                        android:autofillHints="phoneNumber"
+                        android:background="@drawable/bg_input"
+                        android:minHeight="48dp"
+                        android:layout_marginBottom="14dp" />
+
 
                     <TextView
                         style="@style/TextTitle"

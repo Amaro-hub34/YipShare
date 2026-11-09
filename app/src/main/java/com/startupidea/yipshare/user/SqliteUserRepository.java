@@ -118,6 +118,7 @@ public class SqliteUserRepository implements UserRepository {
         values.put("name", payload.getFirstNames());
         values.put("paternal_surname", payload.getPaternalLastName());
         values.put("maternal_surname", payload.getMaternalLastName());
+        values.put("phone_number", payload.getPhoneNumber());
         if (newPassword != null) values.put("password_hash", PasswordHashUtil.hash(newPassword));
 
         try {

@@ -29,7 +29,7 @@ public class UserProfileServiceTest {
 
         @Override
         public boolean existsPhoneNumber(String phoneNumber) {
-            return false;
+            return "+525598765432".equals(phoneNumber);
         }
 
         @Override
@@ -65,7 +65,7 @@ public class UserProfileServiceTest {
     });
 
     private static ProfilePayload profile(String username) {
-        return new ProfilePayload(username, " Ana María ", "López", "Pérez");
+        return new ProfilePayload(username, " Ana María ", "López", "Pérez", "+525512345678");
     }
 
     @Test
@@ -85,6 +85,19 @@ public class UserProfileServiceTest {
     }
 
     @Test
+    public void validatesAndNormalizesPhoneNumber() {
+        assertThrows(DuplicatePhoneNumber.class, () -> service.modifyProfile(
+                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 9876 5432"), "", "", ""));
+        InvalidField badPhone = assertThrows(InvalidField.class, () -> service.modifyProfile(
+                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "123"), "", "", ""));
+        assertEquals(RegistrationField.PHONE_NUMBER, badPhone.getField());
+        assertNull(savedProfile);
+
+        service.modifyProfile("1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 1111 2222"), "", "", "");
+        assertEquals("+525511112222", savedProfile.getPhoneNumber());
+    }
+
+    @Test
     public void rejectsUsernameOfAnotherUser() {
         assertThrows(DuplicateUsername.class, () -> service.modifyProfile("1", profile("taken_user"), "", "", ""));
         assertNull(savedProfile);
@@ -96,7 +109,7 @@ public class UserProfileServiceTest {
         assertEquals(RegistrationField.USERNAME, shortName.getField());
 
         InvalidField badName = assertThrows(InvalidField.class, () -> service.modifyProfile(
-                "1", new ProfilePayload("ana_lopez", "Ana", "L0pez", "Pérez"), "", "", ""));
+                "1", new ProfilePayload("ana_lopez", "Ana", "L0pez", "Pérez", "+525512345678"), "", "", ""));
         assertEquals(RegistrationField.PATERNAL_LAST_NAME, badName.getField());
         assertNull(savedProfile);
     }

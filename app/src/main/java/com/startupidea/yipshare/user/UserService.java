@@ -76,6 +76,10 @@ public class UserService {
         validateName(payload.getPaternalLastName(), RegistrationField.PATERNAL_LAST_NAME);
         validateName(payload.getMaternalLastName(), RegistrationField.MATERNAL_LAST_NAME);
         validateName(payload.getFirstNames(), RegistrationField.FIRST_NAMES);
+        String phoneNumber = UserRules.normalizePhoneNumber(payload.getPhoneNumber());
+        if (phoneNumber == null) {
+            throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
+        }
 
         boolean changesPassword = !newPassword.isEmpty() || !passwordConfirmation.isEmpty();
         if (changesPassword) {
@@ -89,12 +93,14 @@ public class UserService {
             }
         }
         if (!username.equals(current.getUsername())) ensureUsernameAvailable(username);
+        if (!phoneNumber.equals(current.getPhoneNumber())) ensurePhoneNumberAvailable(phoneNumber);
 
         userRepository.modifyUser(userId, new ProfilePayload(
                 username,
                 payload.getFirstNames().trim(),
                 payload.getPaternalLastName().trim(),
-                payload.getMaternalLastName().trim()), changesPassword ? newPassword : null);
+                payload.getMaternalLastName().trim(),
+                phoneNumber), changesPassword ? newPassword : null);
     }
 
     /** Logical delete: the data stays (reviews, reports, loans) but the account can no longer log in. */

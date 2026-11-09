@@ -9,7 +9,7 @@ import com.startupidea.yipshare.R;
 public enum ItemAvailability {
     AVAILABLE(R.string.disponibilidad_disponible, R.drawable.bg_badge_disponible),
     NOT_AVAILABLE(R.string.disponibilidad_no_disponible, R.drawable.bg_badge_uso),
-    PENDING(R.string.disponibilidad_pendiente, R.drawable.bg_badge_uso);
+    PENDING(R.string.disponibilidad_pendiente, R.drawable.bg_pendiente);
 
     private final int messageRes;
     private final int badgeRes;

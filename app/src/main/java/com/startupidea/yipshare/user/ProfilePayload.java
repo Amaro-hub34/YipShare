@@ -6,12 +6,15 @@ public final class ProfilePayload {
     private final String firstNames;
     private final String paternalLastName;
     private final String maternalLastName;
+    private final String phoneNumber;
 
-    public ProfilePayload(String username, String firstNames, String paternalLastName, String maternalLastName) {
+    public ProfilePayload(String username, String firstNames, String paternalLastName, String maternalLastName,
+                          String phoneNumber) {
         this.username = username;
         this.firstNames = firstNames;
         this.paternalLastName = paternalLastName;
         this.maternalLastName = maternalLastName;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUsername() {
@@ -28,5 +31,9 @@ public final class ProfilePayload {
 
     public String getMaternalLastName() {
         return maternalLastName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 }

@@ -14,13 +14,16 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.user.DuplicatePhoneNumber;
 import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.ProfilePayload;
@@ -29,8 +32,8 @@ import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.UserProfile;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.user.WrongPassword;
-import com.startupidea.yipshare.utils.AsteriskPasswordTransformation;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
+import com.startupidea.yipshare.utils.PhoneInputUtil;
 
 import java.util.Locale;
 
@@ -110,14 +113,14 @@ public class PerfilActivity extends AppCompatActivity {
         EditText paternalLastNameField = sheet.findViewById(R.id.apellido_paterno);
         EditText maternalLastNameField = sheet.findViewById(R.id.apellido_materno);
         EditText firstNamesField = sheet.findViewById(R.id.nombres);
+        EditText phoneNumberField = sheet.findViewById(R.id.telefono);
+        PhoneInputUtil phoneInput = PhoneInputUtil.attach(sheet.findViewById(R.id.spinner_codigo_pais), phoneNumberField);
 
         usernameField.setText(profile.getUsername());
         paternalLastNameField.setText(profile.getPaternalLastName());
         maternalLastNameField.setText(profile.getMaternalLastName());
         firstNamesField.setText(profile.getFirstNames());
-        passwordField.setTransformationMethod(new AsteriskPasswordTransformation());
-        passwordConfirmationField.setTransformationMethod(new AsteriskPasswordTransformation());
-        currentPasswordField.setTransformationMethod(new AsteriskPasswordTransformation());
+        phoneInput.setPhoneNumber(profile.getPhoneNumber());
 
         View updateButton = sheet.findViewById(R.id.btn_actualizar_datos);
         EditText[] fields = {usernameField, firstNamesField, paternalLastNameField, maternalLastNameField,
@@ -129,7 +132,7 @@ public class PerfilActivity extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                boolean changed = false;
+                boolean changed = !phoneInput.getPhoneNumber().equals(profile.getPhoneNumber());
                 for (int i = 0; i < fields.length; i++) {
                     changed |= !fields[i].getText().toString().trim().equals(saved[i] == null ? "" : saved[i].trim());
                 }
@@ -138,11 +141,18 @@ public class PerfilActivity extends AppCompatActivity {
             }
         };
         for (EditText field : fields) field.addTextChangedListener(changeWatcher);
+        phoneNumberField.addTextChangedListener(changeWatcher);
+        ((Spinner) sheet.findViewById(R.id.spinner_codigo_pais)).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                changeWatcher.afterTextChanged(null);
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
         changeWatcher.afterTextChanged(null);
 
         updateButton.setOnClickListener(v -> confirm(R.string.confirmar_actualizar_perfil, () -> {
             for (EditText field : new EditText[]{usernameField, passwordField, passwordConfirmationField, currentPasswordField,
-                    paternalLastNameField, maternalLastNameField, firstNamesField}) {
+                    paternalLastNameField, maternalLastNameField, firstNamesField, phoneNumberField}) {
                 field.setError(null);
             }
 
@@ -153,7 +163,8 @@ public class PerfilActivity extends AppCompatActivity {
                                 usernameField.getText().toString(),
                                 firstNamesField.getText().toString(),
                                 paternalLastNameField.getText().toString(),
-                                maternalLastNameField.getText().toString()),
+                                maternalLastNameField.getText().toString(),
+                                phoneInput.getPhoneNumber()),
                         passwordField.getText().toString(),
                         passwordConfirmationField.getText().toString(),
                         currentPasswordField.getText().toString());
@@ -168,11 +179,14 @@ public class PerfilActivity extends AppCompatActivity {
                     case PASSWORD_CONFIRMATION: field = passwordConfirmationField; break;
                     case PATERNAL_LAST_NAME: field = paternalLastNameField; break;
                     case MATERNAL_LAST_NAME: field = maternalLastNameField; break;
+                    case PHONE_NUMBER: field = phoneNumberField; break;
                     default: field = firstNamesField; break;
                 }
                 showInputError(field, e);
             } catch (DuplicateUsername e) {
                 showInputError(usernameField, e);
+            } catch (DuplicatePhoneNumber e) {
+                showInputError(phoneNumberField, e);
             } catch (WrongPassword e) {
                 showInputError(currentPasswordField, e);
             } catch (AppException e) {
@@ -219,6 +233,7 @@ public class PerfilActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.apellido_paterno)).setText(profile.getPaternalLastName());
             ((TextView) findViewById(R.id.apellido_materno)).setText(profile.getMaternalLastName());
             ((TextView) findViewById(R.id.nombres)).setText(profile.getFirstNames());
+            ((TextView) findViewById(R.id.telefono)).setText(profile.getPhoneNumber());
             ((RatingBar) findViewById(R.id.rb_mi_calificacion)).setRating(profile.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));

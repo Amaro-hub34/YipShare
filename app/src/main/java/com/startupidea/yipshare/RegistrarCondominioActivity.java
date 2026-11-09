@@ -204,7 +204,6 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
                 documentLabels[index].setError(getString(R.string.error_documento_obligatorio));
             }
         }
-        // Reverse screen order so the topmost invalid input keeps the focus.
         showInputError(fields, CondominiumField.UNITS, unitsField, requiredMessage);
         showInputError(fields, CondominiumField.CITY, cityField, requiredMessage);
         showInputError(fields, CondominiumField.MUNICIPALITY, municipalityField, requiredMessage);

@@ -170,6 +170,33 @@
                         android:minHeight="48dp"
                         android:layout_marginBottom="14dp" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/spinner_codigo_pais"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="@string/codigo_pais"
+                            android:minHeight="48dp" />
+
+                        <EditText
+                            android:id="@+id/telefono"
+                            style="@style/InputBrand"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:hint="@string/telefono_hint"
+                            android:inputType="phone"
+                            android:autofillHints="phoneNational"
+                            android:background="@drawable/bg_input"
+                            android:minHeight="48dp" />
+                    </LinearLayout>
+
 
                     <TextView
                         style="@style/TextTitle"
