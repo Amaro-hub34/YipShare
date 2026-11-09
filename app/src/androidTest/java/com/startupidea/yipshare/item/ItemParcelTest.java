@@ -18,7 +18,8 @@ public class ItemParcelTest {
     @Test
     public void itemSurvivesIntentParceling() {
         Intent intent = new Intent();
-        new Item("id-1", "owner-1", "condo-1", ItemAvailability.PENDING, new ItemPayload("Drill", "Tools", "Works fine", "Good",
+        new Item("id-1", "owner-1", "condo-1", ItemAvailability.PENDING, new ItemPayload("Drill", "Tools",
+                "Works fine", "Good",
                 "content://image/1", Arrays.asList("1 day", "1 week"))).putInto(intent);
 
         Parcel parcel = Parcel.obtain();
