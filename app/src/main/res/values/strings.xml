@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <string name="app_name">YipShare</string>
     <string name="footer_contacto">Contact us: +52 55 1234 5678</string>
     <string name="footer_terminos">Read our terms and conditions</string>
+    <string name="cargando">Loading...</string>
 
     <string-array name="opciones_estado_fisico">
         <item>Excellent condition</item>

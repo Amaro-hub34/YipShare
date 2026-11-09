@@ -3,6 +3,7 @@
     <string name="app_name">YipShare</string>
     <string name="footer_contacto">Contáctanos: +52 55 1234 5678</string>
     <string name="footer_terminos">Conoce nuestros términos y condiciones</string>
+    <string name="cargando">Cargando...</string>
 
     <string-array name="opciones_estado_fisico">
         <item>Excelente estado</item>
