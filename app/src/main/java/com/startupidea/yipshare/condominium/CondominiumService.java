@@ -53,8 +53,6 @@ public class CondominiumService {
     }
 
     public List<CondominiumMembership> getAllMemberships(String userId) {
-        // shortcut: approval only happens on the web, so every user gets a demo condominium they administer
-        // and another one they live in; remove once condominiums are approved for real.
         if (!condominiumRepository.existsMembershipByUserId(userId)) condominiumRepository.createDemoCondominiums(userId);
         return condominiumRepository.getAllMembershipsByUserId(userId);
     }

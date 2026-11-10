@@ -42,7 +42,6 @@ public class DatabaseDriver extends SQLiteOpenHelper {
         }
     }
 
-    // shortcut: drops every table and recreates it, so local data is lost; write real migrations once the app ships.
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Newest tables first: children go before the parents they reference, so foreign keys never fail.

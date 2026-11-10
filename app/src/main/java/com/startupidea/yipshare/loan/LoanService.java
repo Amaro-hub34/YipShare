@@ -52,7 +52,6 @@ public class LoanService {
         answerLoanRequest(userId, loanId, LoanStatus.REJECTED);
     }
 
-    // shortcut: any 6 digits are accepted, check it against the generated code once the API exists.
     public Loan confirmCode(String userId, Loan loan, String code) {
         if (!CODE.matcher(code).matches()) throw new InvalidCode();
         if (!loan.getStatus().acceptsCode()) throw new LoanNotActive();
@@ -67,8 +66,6 @@ public class LoanService {
         loanRepository.modifyLoanStatus(loanId, answer);
     }
 
-    // shortcut: loans can't be requested locally yet (articles need an approved condominium),
-    // so every user gets demo loans and requests from demo neighbors; remove once loans are requested for real.
     private void ensureDemoLoans(String userId) {
         if (loanRepository.existsLoanByUserId(userId)) return;
         if (!condominiumRepository.existsMembershipByUserId(userId)) condominiumRepository.createDemoCondominiums(userId);

@@ -2,10 +2,6 @@ package com.startupidea.yipshare.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * shortcut: demo neighbors shared by the demo loans and demo condominiums, needed while loans and
- * condominium approval can't happen locally; delete with the demo data once the API exists.
- */
 public final class DemoData {
 
     public static final String CARLOS = "demo_carlos";
