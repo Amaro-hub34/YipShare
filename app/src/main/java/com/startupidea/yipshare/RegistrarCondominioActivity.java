@@ -142,7 +142,6 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
     private void attachDocument(int index, Uri uri) {
         TextView label = documentLabels[index];
 
-        // Some providers ignore the MIME filter, so the picked file is checked again.
         if (!PDF_MIME.equals(getContentResolver().getType(uri))) {
             documents[index] = null;
             label.setText(R.string.tv_archivo_identificacion);
@@ -154,7 +153,6 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         try {
             getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } catch (SecurityException ignored) {
-            // Restored URIs may already hold the permission or not offer a persistable one.
         }
         documents[index] = uri.toString();
         label.setText(displayName(uri));

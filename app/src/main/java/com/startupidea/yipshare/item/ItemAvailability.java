@@ -5,7 +5,6 @@ import androidx.annotation.StringRes;
 
 import com.startupidea.yipshare.R;
 
-// Same values as article_availability in the database schema.
 public enum ItemAvailability {
     AVAILABLE(R.string.disponibilidad_disponible, R.drawable.bg_badge_disponible),
     NOT_AVAILABLE(R.string.disponibilidad_no_disponible, R.drawable.bg_badge_uso),

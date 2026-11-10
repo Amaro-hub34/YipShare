@@ -194,7 +194,6 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         try {
             itemService.validate(readPayload(pickedImage));
 
-            // An unchanged image is already in the app folder, so it is not copied again.
             boolean sameImage = editingItem != null && pickedImage.equals(editingItem.getPayload().getImageUri());
             Uri storedImage = sameImage ? imageUri : ImageFileUtil.tryCopy(this, imageUri);
             if (storedImage == null) {

@@ -18,7 +18,6 @@ public final class PasswordHashUtil {
     private PasswordHashUtil() {
     }
 
-    /** Returns "salt:hash" in hex, ready for users.password_hash. */
     public static String hash(String password) {
         byte[] salt = new byte[SALT_BYTES];
         new SecureRandom().nextBytes(salt);

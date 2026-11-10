@@ -7,7 +7,6 @@ import java.util.List;
 
 public class FeedbackService {
 
-    // The rating bar gives stars; the database keeps tenths (1 to 50).
     private static final int RATING_SCALE = 10;
 
     private final FeedbackRepository feedbackRepository;

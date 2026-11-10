@@ -13,7 +13,6 @@ public class UserService {
     public User login(LoginPayload payload) {
         if (payload.getUsername().trim().isEmpty()) throw new EmptyUsername();
         if (payload.getPassword().trim().isEmpty()) throw new EmptyPassword();
-        // An account that breaks the registration rules can't exist; skip the DB lookup.
         if (payload.getUsername().trim().length() < UserRules.USERNAME_MIN_LENGTH
                 || !UserRules.PASSWORD.matcher(payload.getPassword()).matches()) {
             throw new AccountNotFound();
@@ -63,10 +62,6 @@ public class UserService {
         return userRepository.createUser(payload);
     }
 
-    /**
-     * Updates the logged-in user's data. Empty password fields keep the current password; a new one
-     * must be confirmed, needs the current password and must be different from it. Everything points to user_id, so reviews and reports stay with the account.
-     */
     public void modifyProfile(String userId, ProfilePayload payload, String newPassword,
                               String passwordConfirmation, String currentPassword) {
         UserProfile current = getUserProfile(userId);
@@ -103,7 +98,6 @@ public class UserService {
                 phoneNumber), changesPassword ? newPassword : null);
     }
 
-    /** Logical delete: the data stays (reviews, reports, loans) but the account can no longer log in. */
     public void deleteAccount(String userId) {
         getUserProfile(userId);
         userRepository.deleteUser(userId);

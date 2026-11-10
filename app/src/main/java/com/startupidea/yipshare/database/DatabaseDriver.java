@@ -37,7 +37,6 @@ public class DatabaseDriver extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // execSQL runs a single statement, so the schema is split by ';' once comments are gone.
         for (String statement : readSchema().split(";")) {
             if (!statement.trim().isEmpty()) db.execSQL(statement);
         }

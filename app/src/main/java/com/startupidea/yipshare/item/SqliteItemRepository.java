@@ -17,13 +17,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-/**
- * The database keeps language-free values (category_2, 'good', '0,3'); the app shows the texts of the
- * current language. This class translates between both using the app's option lists.
- */
 public class SqliteItemRepository implements ItemRepository {
 
-    // Same order as R.array.opciones_estado_fisico and article_state in the schema.
     private static final String[] CONDITIONS = {"excellent", "good", "medium", "bad"};
     private static final String CATEGORY_PREFIX = "category_";
 

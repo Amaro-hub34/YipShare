@@ -59,7 +59,6 @@ public class ItemService {
         return itemRepository.modifyItem(itemId, payload);
     }
 
-    /** The owner deletes an available item; the condominium admin can take down any publication of the condominium. */
     public void deleteItem(String userId, String itemId) {
         Item stored = itemRepository.getItemById(itemId);
         if (stored == null) throw new ItemNotFound();
@@ -78,7 +77,6 @@ public class ItemService {
         return matches;
     }
 
-    // Checks the stored item, not the one the screen holds, which can be outdated.
     private void ensureOwnerCanChange(String userId, String itemId) {
         Item stored = itemRepository.getItemById(itemId);
         if (stored == null || !stored.isOwnedBy(userId)) throw new ItemNotFound();

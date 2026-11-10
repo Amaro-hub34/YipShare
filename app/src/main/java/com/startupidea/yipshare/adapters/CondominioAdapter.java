@@ -39,7 +39,6 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
-        // The highlight lives outside the list, so it has to follow the scroll by hand.
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {

@@ -54,7 +54,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         PhoneUtil.attach(holder.phoneLabel, neighbor.getPhoneNumber());
         holder.neighborArea.setOnClickListener(v -> listener.onNeighborClick(neighbor));
 
-        // The listener is removed while setting the state, so binding doesn't count as a change.
         holder.loanAccess.setOnCheckedChangeListener(null);
         holder.loanAccess.setChecked(neighbor.canRequestLoans());
         holder.loanAccess.setVisibility(neighbor.isAdmin() ? View.GONE : View.VISIBLE);

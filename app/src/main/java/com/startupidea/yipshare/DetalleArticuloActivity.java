@@ -18,7 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
+import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -167,8 +167,6 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         findViewById(R.id.layout_prestamista).setOnClickListener(v ->
                 startActivity(UserFeedbackActivity.intentFor(this, item.getOwnerId())));
 
-        // Nobody can request their own item; the owner gets edit and delete instead (only while available).
-        // The condominium admin can take down anyone else's publication at any time.
         boolean own = item.isOwnedBy(userId);
         boolean admin = !own && condominiumService.isAdmin(userId, item.getCondominiumId());
         boolean editable = own && item.getAvailability() == ItemAvailability.AVAILABLE;
@@ -213,26 +211,20 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         String duration = picked.toString();
         int days = LoanDuration.daysOf(Arrays.asList(getResources().getStringArray(R.array.tiempo_prestamo)).indexOf(duration));
 
-        new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.confirmar_solicitar_articulo, item.getPayload().getName(), duration))
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> new LoadingOverlay(this).run(() -> {
+        ConfirmDialogUtil.show(this,
+                getString(R.string.confirmar_solicitar_articulo, item.getPayload().getName(), duration),
+                () -> new LoadingOverlay(this).run(() -> {
                     try {
                         loanService.requestLoan(userId, item, getString(R.string.texto_solicitud, duration), days);
                         Toast.makeText(this, R.string.solicitud_enviada, Toast.LENGTH_SHORT).show();
                     } catch (AppException e) {
                         Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_LONG).show();
                     }
-                }))
-                .setNegativeButton(R.string.opcion_cancelar, null)
-                .show();
+                }));
     }
 
     private void confirmDeleteItem() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.confirmar_eliminar_articulo)
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> tryDeleteItem())
-                .setNegativeButton(R.string.opcion_cancelar, null)
-                .show();
+        ConfirmDialogUtil.show(this, getString(R.string.confirmar_eliminar_articulo), this::tryDeleteItem);
     }
 
     private void tryDeleteItem() {

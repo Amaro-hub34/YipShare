@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_condominio_icono"
+        android:importantForAccessibility="no"
+        android:padding="14dp"
+        android:src="@drawable/ic_warning"
+        android:tint="@color/texto_sobre_imagen" />
+
+    <TextView
+        android:id="@+id/tv_mensaje_confirmar"
+        style="@style/TextTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancelar_confirmar"
+            style="@style/ButtonSecundary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/opcion_cancelar" />
+
+        <Button
+            android:id="@+id/btn_aceptar_confirmar"
+            style="@style/ButtonPrimary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/opcion_si" />
+    </LinearLayout>
+</LinearLayout>

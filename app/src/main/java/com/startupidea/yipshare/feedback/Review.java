@@ -2,7 +2,6 @@ package com.startupidea.yipshare.feedback;
 
 public final class Review {
 
-    // Ratings are stored in tenths (1 to 50), so 45 means 4.5 stars.
     private static final float RATING_SCALE = 10f;
 
     private final String authorUsername;

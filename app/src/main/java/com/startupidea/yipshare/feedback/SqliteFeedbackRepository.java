@@ -14,7 +14,6 @@ import java.util.UUID;
 
 public class SqliteFeedbackRepository implements FeedbackRepository {
 
-    // Received = written by someone else in a loan where the user took part (as lender or borrower).
     private static final String getAllReviewsByUserId
             = "SELECT author.username, review.review_text, review.rating"
             + " FROM reviews review"
@@ -33,7 +32,6 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
     private static final String getReview
             = "SELECT 1 FROM reviews WHERE author_id = ? AND loan_id = ?";
 
-    // users.computed_rating caches the average of the reviews the user has received.
     private static final String modifyComputedRating
             = "UPDATE users SET computed_rating = ("
             + " SELECT CAST(ROUND(AVG(review.rating)) AS INTEGER) FROM reviews review"

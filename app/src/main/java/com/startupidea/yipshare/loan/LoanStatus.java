@@ -7,7 +7,6 @@ import com.startupidea.yipshare.R;
 
 import java.util.Locale;
 
-// Same values as loan_state in the database schema.
 public enum LoanStatus {
     PENDING(R.string.estado_solicitud_pendiente, R.drawable.bg_badge_uso),
     ACCEPTED(R.string.estado_pendiente, R.drawable.bg_badge_disponible),

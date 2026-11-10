@@ -32,7 +32,6 @@ public class SplashActivity extends AppCompatActivity {
         }, SPLASH_DURATION);
     }
 
-    // Closing the app keeps the user logged in; only logging out or deleting the account ends the session.
     private boolean hasActiveSession() {
         SessionRepository session = new SessionRepository(this);
         boolean active;

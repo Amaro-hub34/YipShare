@@ -1,6 +1,6 @@
 package com.startupidea.yipshare;
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -212,11 +212,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void confirm(int message, Runnable onConfirm) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> onConfirm.run())
-                .setNegativeButton(R.string.opcion_cancelar, null)
-                .show();
+        ConfirmDialogUtil.show(this, getString(message), onConfirm);
     }
 
     private void showInputError(EditText field, AppException e) {

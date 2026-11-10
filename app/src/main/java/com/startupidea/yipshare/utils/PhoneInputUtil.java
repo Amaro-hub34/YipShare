@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-/** Country code spinner + local number field that together read and write an E.164 phone number. */
 public final class PhoneInputUtil {
 
     private static final String DEFAULT_REGION = "MX";
@@ -55,7 +54,6 @@ public final class PhoneInputUtil {
             selectRegion(phoneUtil.getRegionCodeForCountryCode(number.getCountryCode()));
             phoneNumberField.setText(phoneUtil.getNationalSignificantNumber(number));
         } catch (NumberParseException e) {
-            // Too short to parse: keep only the digits the user typed after the country code.
             phoneNumberField.setText(phoneNumber.replaceFirst("^\\+" + countryCodeOf(selectedRegion()), ""));
         }
     }

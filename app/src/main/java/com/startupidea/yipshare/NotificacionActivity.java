@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -152,18 +152,14 @@ public class NotificacionActivity extends AppCompatActivity {
     }
 
     private void confirm(String message, Runnable answer, int doneMessage) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> new LoadingOverlay(this).run(() -> {
-                    try {
-                        answer.run();
-                        Toast.makeText(this, doneMessage, Toast.LENGTH_SHORT).show();
-                    } catch (AppException e) {
-                        Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-                    }
-                    showLoanRequests();
-                }))
-                .setNegativeButton(R.string.opcion_cancelar, null)
-                .show();
+        ConfirmDialogUtil.show(this, message, () -> new LoadingOverlay(this).run(() -> {
+            try {
+                answer.run();
+                Toast.makeText(this, doneMessage, Toast.LENGTH_SHORT).show();
+            } catch (AppException e) {
+                Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+            }
+            showLoanRequests();
+        }));
     }
 }

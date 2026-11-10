@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -79,19 +79,17 @@ public class NeighborsActivity extends AppCompatActivity {
     }
 
     private void confirmLoanAccess(Neighbor neighbor, boolean allowed) {
-        new AlertDialog.Builder(this)
-                .setMessage(getString(allowed ? R.string.confirmar_dar_acceso : R.string.confirmar_quitar_acceso,
-                        neighbor.getUsername()))
-                .setPositiveButton(R.string.opcion_si, (dialog, which) -> {
+        ConfirmDialogUtil.show(this,
+                getString(allowed ? R.string.confirmar_dar_acceso : R.string.confirmar_quitar_acceso,
+                        neighbor.getUsername()),
+                () -> {
                     try {
                         condominiumService.modifyLoanAccess(userId, neighbor.getUserId(), condominiumId, allowed);
                     } catch (AppException e) {
                         Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
                     }
                     showNeighbors();
-                })
-                .setNegativeButton(R.string.opcion_cancelar, (dialog, which) -> showNeighbors())
-                .setOnCancelListener(dialog -> showNeighbors())
-                .show();
+                },
+                this::showNeighbors);
     }
 }

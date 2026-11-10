@@ -13,7 +13,6 @@ final class UserRules {
     static final Pattern NAME = Pattern.compile("[\\p{L}\\p{M}]+([ '-][\\p{L}\\p{M}]+)*");
     static final Pattern PASSWORD = Pattern.compile("(?=.*\\p{Lu})(?=.*\\d)(?=.*[^\\p{L}\\p{N}\\s]).{8,}");
 
-    /** Returns the number in E.164 (e.g. +525512345678), or null if it's not valid for its country. */
     static String normalizePhoneNumber(String phoneNumber) {
         PhoneNumberUtil util = PhoneNumberUtil.getInstance();
         try {

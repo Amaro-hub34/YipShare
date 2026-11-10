@@ -31,7 +31,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
             = "SELECT 1 FROM condominium_members WHERE user_id = ? AND condominium_id = ?"
             + " UNION SELECT 1 FROM pending_condominium_members WHERE user_id = ? AND condominium_id = ?";
 
-    // Units are created as "1".."N", so an apartment typed as "12" suggests unit "12"; otherwise the first one.
     private static final String getSuggestedUnit
             = "SELECT condominium_unit_id FROM condominium_units WHERE condominium_id = ?"
             + " ORDER BY name = ? DESC, CAST(name AS INTEGER) LIMIT 1";
@@ -49,7 +48,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
             + " AND override.condominium_id = member.condominium_id AND override.permission_id = '" + REQUEST_LOANS + "'"
             + " AND override.constraints = '" + LOANS_DENIED + "')";
 
-    // Same rules as the notifications screen, so the panel counter matches what the user will see there.
     private static final String pendingNotifications
             = "(SELECT COUNT(*) FROM loans loan JOIN articles article ON article.article_id = loan.article_id"
             + " WHERE loan.lender_id = member.user_id AND loan.state = 'pending'"
@@ -94,7 +92,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
     private static final String getJoinRequest
             = "SELECT 1 FROM pending_condominium_members WHERE user_id = ? AND condominium_id = ?";
 
-    // The admin can change the unit later; the request already carries the suggested one.
     private static final String acceptJoinRequest
             = "INSERT INTO condominium_members (user_id, condominium_id, condominium_unit_id)"
             + " SELECT user_id, condominium_id, suggested_unit_id FROM pending_condominium_members"
@@ -368,7 +365,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         return condominiumId;
     }
 
-    // Demo unit ids are derived from the condominium, so members and requests can point to them directly.
     private static String unitId(String condominiumId, String unit) {
         return condominiumId + "_unit_" + unit;
     }
@@ -432,7 +428,6 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         db.insertOrThrow("article_categories", null, category);
     }
 
-    // A missing maternal surname must not leave a double space in the full name.
     private static String joinNonEmpty(String... parts) {
         StringBuilder joined = new StringBuilder();
         for (String part : parts) {

@@ -2,7 +2,6 @@ package com.startupidea.yipshare.user;
 
 public final class UserProfile {
 
-    // computed_rating is stored in tenths (reviews go from 1 to 50), so 45 means 4.5 stars.
     private static final float RATING_SCALE = 10f;
 
     private final String id;

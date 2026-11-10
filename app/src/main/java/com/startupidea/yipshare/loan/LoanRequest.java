@@ -2,7 +2,6 @@ package com.startupidea.yipshare.loan;
 
 public final class LoanRequest {
 
-    // computed_rating is stored in tenths, so 45 means 4.5 stars.
     private static final float RATING_SCALE = 10f;
 
     private final String loanId;

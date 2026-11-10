@@ -17,7 +17,6 @@ import java.util.UUID;
 
 public class SqliteLoanRepository implements LoanRepository {
 
-    // The other person is the borrower when the user lent the item, and the lender otherwise.
     private static final String selectLoans
             = "SELECT loan.loan_id, article.name, article.description, other.user_id, other.username,"
             + " loan.lender_id = ?1, strftime('%d/%m/%Y', loan.start_time), strftime('%d/%m/%Y', loan.return_time),"
@@ -27,8 +26,6 @@ public class SqliteLoanRepository implements LoanRepository {
             + " JOIN users other ON other.user_id = CASE WHEN loan.lender_id = ?1 THEN loan.user_id ELSE loan.lender_id END"
             + " WHERE (loan.lender_id = ?1 OR loan.user_id = ?1)";
 
-    // Pending requests show up as notifications and rejected ones are history, so neither is listed as a loan.
-    // Each condominium shows only its own loans and requests (the item's condominium decides).
     private static final String getAllLoansByUserId
             = selectLoans + " AND article.condominium_id = ?2 AND loan.state IN ('accepted', 'on_loan', 'finished')"
             + " ORDER BY loan.return_time";
@@ -49,7 +46,6 @@ public class SqliteLoanRepository implements LoanRepository {
     private static final String getLoanById
             = selectLoans + " AND loan.loan_id = ?2";
 
-    // An accepted loan takes the item out of the available list until it is finished (or turned down).
     private static final String modifyArticleAvailability
             = "UPDATE articles SET availability = CASE ?1"
             + " WHEN 'accepted' THEN 'not_available' WHEN 'on_loan' THEN 'not_available' ELSE 'available' END"
@@ -191,7 +187,6 @@ public class SqliteLoanRepository implements LoanRepository {
         article.put("name", context.getString(name));
         article.put("description", context.getString(description));
         article.put("state", "good");
-        // A requested item is still available; an accepted loan takes it out of the list.
         article.put("availability", status == LoanStatus.PENDING ? "available" : "not_available");
         article.put("maximum_lend_time", 14);
         db.insertOrThrow("articles", null, article);

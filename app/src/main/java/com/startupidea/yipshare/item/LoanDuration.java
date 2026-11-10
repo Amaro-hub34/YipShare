@@ -1,7 +1,6 @@
 package com.startupidea.yipshare.item;
 import com.startupidea.yipshare.R;
 
-/** Days of each entry of R.array.tiempo_prestamo, in the same order. */
 public final class LoanDuration {
 
     private static final int[] DAYS = {1, 2, 3, 7, 14, 30};

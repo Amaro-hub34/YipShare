@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -260,15 +260,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void confirmLogout() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.confirmar_cerrar_sesion)
-                .setPositiveButton(R.string.opcion_si, (d, which) -> {
-                    new SessionRepository(this).deleteSession();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                })
-                .setNegativeButton(R.string.opcion_cancelar, null)
-                .show();
+        ConfirmDialogUtil.show(this, getString(R.string.confirmar_cerrar_sesion), () -> {
+            new SessionRepository(this).deleteSession();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 }
