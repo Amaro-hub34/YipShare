@@ -13,11 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.startupidea.yipshare.DetalleArticuloActivity;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.loan.Loan;
+import com.startupidea.yipshare.loan.LoanStatus;
 import com.startupidea.yipshare.utils.PhoneUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
+
+    // must match strftime('%d/%m/%Y') in SqliteLoanRepository
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     private final List<Loan> loans;
 
@@ -41,7 +48,9 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
         holder.personLabel.setText(loan.getOtherUsername());
         holder.statusLabel.setText(loan.getStatus().getMessageRes());
         holder.statusLabel.setBackgroundResource(loan.getStatus().getBadgeRes());
-        PhoneUtil.attach(holder.phoneLabel, loan.getOtherPhoneNumber());
+        String message = whatsAppMessage(holder.itemView.getContext(), loan);
+        if (message != null) PhoneUtil.attachWhatsApp(holder.phoneLabel, loan.getOtherPhoneNumber(), message, loan.getImageUri());
+        else PhoneUtil.attach(holder.phoneLabel, loan.getOtherPhoneNumber());
 
         holder.itemView.setOnClickListener(v -> {
             int current = holder.getBindingAdapterPosition();
@@ -52,6 +61,18 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
             loans.get(current).putInto(intent);
             context.startActivity(intent);
         });
+    }
+
+    private static String whatsAppMessage(Context context, Loan loan) {
+        if (!loan.isLentByMe() && loan.getStatus() == LoanStatus.ACCEPTED)
+            return context.getString(R.string.mensaje_interes_articulo, loan.getItemName());
+        if (loan.getStatus() == LoanStatus.ON_LOAN && isToday(loan.getEndDate()))
+            return context.getString(R.string.mensaje_dia_entrega);
+        return null;
+    }
+
+    private static boolean isToday(String date) {
+        return new SimpleDateFormat(DATE_FORMAT, Locale.ROOT).format(new Date()).equals(date);
     }
 
     @Override

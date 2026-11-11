@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.net.Uri;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.database.DemoData;
 import com.startupidea.yipshare.error.DatabaseUnavailable;
+import com.startupidea.yipshare.utils.ImageFileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class SqliteLoanRepository implements LoanRepository {
     private static final String selectLoans
             = "SELECT loan.loan_id, article.name, article.description, other.user_id, other.username,"
             + " loan.lender_id = ?1, strftime('%d/%m/%Y', loan.start_time), strftime('%d/%m/%Y', loan.return_time),"
-            + " loan.state, other.phone_number"
+            + " loan.state, other.phone_number, article.image"
             + " FROM loans loan"
             + " JOIN articles article ON article.article_id = loan.article_id"
             + " JOIN users other ON other.user_id = CASE WHEN loan.lender_id = ?1 THEN loan.user_id ELSE loan.lender_id END"
@@ -64,8 +66,9 @@ public class SqliteLoanRepository implements LoanRepository {
             + " WHERE loan_id = ?2";
 
     private static final String insertLoan
-            = "INSERT INTO loans (loan_id, lender_id, user_id, article_id, request_text, state, return_time)"
-            + " VALUES (?, ?, ?, ?, ?, ?, date('now', 'localtime', ?))";
+            = "INSERT INTO loans (loan_id, lender_id, user_id, article_id, request_text, state, start_time, return_time)"
+            + " VALUES (?1, ?2, ?3, ?4, ?5, ?6, CASE WHEN ?6 = 'on_loan' THEN date('now', 'localtime') END,"
+            + " date('now', 'localtime', ?7))";
 
     private final DatabaseDriver databaseDriver;
     private final Context context;
@@ -161,11 +164,13 @@ public class SqliteLoanRepository implements LoanRepository {
             SQLiteDatabase db = databaseDriver.getWritableDatabase();
             db.beginTransaction();
             try {
-                createDemoLoan(db, administeredId, userId, DemoData.CARLOS, R.string.demo_taladro, R.string.demo_desc_taladro, LoanStatus.ACCEPTED, "+7 days");
-                createDemoLoan(db, administeredId, DemoData.ANA, userId, R.string.demo_escalera, R.string.demo_desc_escalera, LoanStatus.ACCEPTED, "+2 days");
-                createDemoLoan(db, administeredId, userId, DemoData.ANA, R.string.demo_bicicleta, R.string.demo_desc_bicicleta, LoanStatus.PENDING, "+3 days");
-                createDemoLoan(db, livedId, userId, DemoData.LUIS, R.string.demo_bocina, R.string.demo_desc_bocina, LoanStatus.ACCEPTED, "+14 days");
-                createDemoLoan(db, livedId, userId, DemoData.LUIS, R.string.demo_casa_campana, R.string.demo_desc_casa_campana, LoanStatus.PENDING, "+5 days");
+                createDemoLoan(db, administeredId, userId, DemoData.CARLOS, R.string.demo_taladro, R.string.demo_desc_taladro, LoanStatus.ACCEPTED, "+7 days", null);
+                createDemoLoan(db, administeredId, DemoData.ANA, userId, R.string.demo_escalera, R.string.demo_desc_escalera, LoanStatus.ACCEPTED, "+2 days", demoImage());
+                createDemoLoan(db, administeredId, DemoData.ANA, userId, R.string.demo_bocina, R.string.demo_desc_bocina, LoanStatus.ON_LOAN, "+0 days", demoImage());
+                createDemoLoan(db, administeredId, userId, DemoData.ANA, R.string.demo_taladro, R.string.demo_desc_taladro, LoanStatus.ON_LOAN, "+0 days", demoImage());
+                createDemoLoan(db, administeredId, userId, DemoData.ANA, R.string.demo_bicicleta, R.string.demo_desc_bicicleta, LoanStatus.PENDING, "+3 days", null);
+                createDemoLoan(db, livedId, userId, DemoData.LUIS, R.string.demo_bocina, R.string.demo_desc_bocina, LoanStatus.ACCEPTED, "+14 days", null);
+                createDemoLoan(db, livedId, userId, DemoData.LUIS, R.string.demo_casa_campana, R.string.demo_desc_casa_campana, LoanStatus.PENDING, "+5 days", null);
 
                 db.setTransactionSuccessful();
             } finally {
@@ -177,7 +182,7 @@ public class SqliteLoanRepository implements LoanRepository {
     }
 
     private void createDemoLoan(SQLiteDatabase db, String condominiumId, String lenderId, String borrowerId, int name,
-                                int description, LoanStatus status, String duration) {
+                                int description, LoanStatus status, String duration, Uri image) {
         String articleId = UUID.randomUUID().toString();
 
         ContentValues article = new ContentValues();
@@ -189,6 +194,7 @@ public class SqliteLoanRepository implements LoanRepository {
         article.put("state", "good");
         article.put("availability", status == LoanStatus.PENDING ? "available" : "not_available");
         article.put("maximum_lend_time", 14);
+        if (image != null) article.put("image", image.toString());
         db.insertOrThrow("articles", null, article);
 
         String requestText = status == LoanStatus.PENDING ? context.getString(R.string.demo_texto_solicitud) : "";
@@ -196,12 +202,16 @@ public class SqliteLoanRepository implements LoanRepository {
                 UUID.randomUUID().toString(), lenderId, borrowerId, articleId, requestText, status.getValue(), duration});
     }
 
+    private Uri demoImage() {
+        return ImageFileUtil.tryCopy(context, Uri.parse("android.resource://" + context.getPackageName() + "/" + R.drawable.logo_yipshare));
+    }
+
     private static Loan readLoan(Cursor cursor) {
         return new Loan(
                 cursor.getString(0),
                 cursor.getString(1),
                 cursor.getString(2),
-                null,
+                cursor.getString(10),
                 cursor.getString(3),
                 cursor.getString(4),
                 cursor.getInt(5) == 1,

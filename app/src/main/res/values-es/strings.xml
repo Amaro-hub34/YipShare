@@ -362,6 +362,8 @@
     <string name="confirmar_quitar_acceso">¿Seguro que quieres quitarle a %1$s el acceso a préstamos? (por ejemplo, por no pagar el mantenimiento)</string>
     <string name="confirmar_dar_acceso">¿Seguro que quieres devolverle a %1$s el acceso a préstamos?</string>
     <string name="telefono_contacto">Teléfono: %1$s</string>
+    <string name="mensaje_dia_entrega">Hoy es el día de entrega, ¿a qué hora estás disponible?</string>
+    <string name="mensaje_interes_articulo">Estoy interesado/a en tu artículo: %1$s</string>
     <string name="notif_quiere_unirse">Quiere unirse a %1$s</string>
     <string name="notif_unidad">Dirección: %1$s</string>
     <string name="confirmar_aceptar_union">¿Seguro que quieres aceptar a %1$s en %2$s?</string>

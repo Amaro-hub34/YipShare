@@ -21,7 +21,7 @@ public final class DemoData {
 
     public static void createDemoNeighbors(SQLiteDatabase db) {
         db.execSQL(insertDemoUser, new Object[]{CARLOS, "carlos_ramirez", "Carlos", "Ramírez", "+525511112222", 45});
-        db.execSQL(insertDemoUser, new Object[]{ANA, "ana_lopez", "Ana", "López", "+525533334444", 38});
+        db.execSQL(insertDemoUser, new Object[]{ANA, "ana_lopez", "Ana", "López", "+525564449105", 38});
         db.execSQL(insertDemoUser, new Object[]{LUIS, "luis_torres", "Luis", "Torres", "+525555556666", 0});
         db.execSQL(insertDemoUser, new Object[]{MARIA, "maria_gomez", "María", "Gómez", "+525577778888", 0});
         db.execSQL(insertDemoUser, new Object[]{JORGE, "jorge_diaz", "Jorge", "Díaz", "+525599990000", 0});

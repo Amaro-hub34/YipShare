@@ -369,6 +369,8 @@
     <string name="confirmar_quitar_acceso">Take away %1$s’s access to loans? (e.g. unpaid maintenance)</string>
     <string name="confirmar_dar_acceso">Give %1$s access to loans again?</string>
     <string name="telefono_contacto">Phone: %1$s</string>
+    <string name="mensaje_dia_entrega">Today is the return day, what time are you available?</string>
+    <string name="mensaje_interes_articulo">I\'m interested in your item: %1$s</string>
     <string name="notif_quiere_unirse">Wants to join %1$s</string>
     <string name="notif_unidad">Address: %1$s</string>
     <string name="confirmar_aceptar_union">Let %1$s into %2$s?</string>

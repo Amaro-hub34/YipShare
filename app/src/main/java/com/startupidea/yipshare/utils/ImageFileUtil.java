@@ -1,7 +1,9 @@
 package com.startupidea.yipshare.utils;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,10 +32,21 @@ public final class ImageFileUtil {
             byte[] buffer = new byte[BUFFER_SIZE];
             int read;
             while ((read = input.read(buffer)) != -1) output.write(buffer, 0, read);
-            return Uri.fromFile(target);
         } catch (IOException | RuntimeException e) {
             target.delete();
             return null;
         }
+        return Uri.fromFile(withExtension(target));
+    }
+
+    // other apps (WhatsApp) need the extension to know the file is an image
+    private static File withExtension(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getPath(), options);
+        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(options.outMimeType);
+        if (extension == null) return file;
+        File named = new File(file.getPath() + "." + extension);
+        return file.renameTo(named) ? named : file;
     }
 }
