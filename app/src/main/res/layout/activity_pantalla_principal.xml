@@ -63,7 +63,6 @@
         app:layout_constraintBottom_toBottomOf="@id/logo_yipshare"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Shown while any condominium has pending notifications; the panel says which one. -->
     <View
         android:id="@+id/punto_notificaciones"
         android:layout_width="10dp"

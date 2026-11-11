@@ -48,7 +48,6 @@ public final class PhoneUtil {
                     .setPackage(WHATSAPP_PACKAGE)
                     .putExtra(Intent.EXTRA_STREAM, image)
                     .putExtra(Intent.EXTRA_TEXT, message)
-                    // undocumented WhatsApp extra that opens this contact's chat directly
                     .putExtra("jid", digits + "@s.whatsapp.net")
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             try {

@@ -39,7 +39,6 @@ public final class ImageFileUtil {
         return Uri.fromFile(withExtension(target));
     }
 
-    // other apps (WhatsApp) need the extension to know the file is an image
     private static File withExtension(File file) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
