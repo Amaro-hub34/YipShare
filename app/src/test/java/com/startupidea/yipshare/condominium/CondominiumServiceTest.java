@@ -25,7 +25,7 @@ public class CondominiumServiceTest {
     }
 
     private static CondominiumPayload payload(String zipCode, int units, String deed) {
-        return new CondominiumPayload("Torres", "Av. 1", "Centro", zipCode, "Cuauhtémoc", "CDMX",
+        return new CondominiumPayload("Torres", "Av. 1", "Centro", zipCode, "Cuauhtémoc", "CDMX", "CDMX",
                 units, deed, PDF, PDF, PDF);
     }
 
@@ -55,6 +55,13 @@ public class CondominiumServiceTest {
     @Test
     public void rejectsMissingUnitsAndDocument() {
         assertInvalid(payload("06000", 0, null), EnumSet.of(CondominiumField.UNITS, CondominiumField.DEED));
+    }
+
+    @Test
+    public void rejectsBlankState() {
+        CondominiumPayload payload = new CondominiumPayload("Torres", "Av. 1", "Centro", "06000", "Cuauhtémoc", "CDMX", "  ",
+                10, PDF, PDF, PDF, PDF);
+        assertInvalid(payload, EnumSet.of(CondominiumField.STATE));
     }
 
     @Test

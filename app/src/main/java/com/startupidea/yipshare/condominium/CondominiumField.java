@@ -7,6 +7,7 @@ public enum CondominiumField {
     ZIP_CODE,
     MUNICIPALITY,
     CITY,
+    STATE,
     UNITS,
     DEED,
     MINUTES,

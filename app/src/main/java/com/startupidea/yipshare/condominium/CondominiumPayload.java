@@ -12,6 +12,7 @@ public final class CondominiumPayload implements Serializable {
     private final String zipCode;
     private final String municipality;
     private final String city;
+    private final String state;
     private final int units;
     private final String deedUri;
     private final String minutesUri;
@@ -25,6 +26,7 @@ public final class CondominiumPayload implements Serializable {
             String zipCode,
             String municipality,
             String city,
+            String state,
             int units,
             String deedUri,
             String minutesUri,
@@ -36,6 +38,7 @@ public final class CondominiumPayload implements Serializable {
         this.zipCode = zipCode;
         this.municipality = municipality;
         this.city = city;
+        this.state = state;
         this.units = units;
         this.deedUri = deedUri;
         this.minutesUri = minutesUri;
@@ -65,6 +68,10 @@ public final class CondominiumPayload implements Serializable {
 
     public String getCity() {
         return city;
+    }
+
+    public String getState() {
+        return state;
     }
 
     public int getUnits() {

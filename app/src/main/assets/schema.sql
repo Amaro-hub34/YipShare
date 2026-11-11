@@ -1,15 +1,3 @@
--- SQLite translation of the Drizzle (PostgreSQL) schema.
--- Must run on Android API 24 (SQLite 3.9): no STRICT tables, no JSON functions, no UPSERT.
--- uuid -> TEXT (the app generates it), enum -> TEXT + CHECK, timestamp -> TEXT ISO-8601,
--- boolean -> INTEGER 0/1, jsonb -> TEXT. Foreign keys need PRAGMA foreign_keys = ON.
--- reviews and reports name their author; the reviewed or reported user is the other person of the loan.
--- loans: the first delivery code moves accepted -> on_loan (sets start_time), the second one -> finished.
--- articles: loan_durations lists the offered options (indexes of the app's duration list, e.g. '0,3');
--- deleted_at marks a logical delete, because loans keep pointing to the article.
--- condominium roles live in user_roles; a permission_overrides row with {"allowed": false} on request_loans
--- takes away a neighbor's right to borrow in that condominium (e.g. unpaid maintenance).
--- a pending loan is a request to the lender, who accepts it (accepted) or turns it down (rejected).
-
 CREATE TABLE roles (
     role_id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
@@ -54,6 +42,7 @@ CREATE TABLE condominiums (
     postal_code TEXT NOT NULL CHECK (length(postal_code) = 5),
     municipality TEXT NOT NULL,
     city TEXT NOT NULL,
+    state TEXT NOT NULL,
     digital_state TEXT NOT NULL CHECK (digital_state IN ('approved', 'pending', 'suspended', 'deleted')),
     verification_data TEXT,
     approved_at TEXT,
@@ -154,7 +143,6 @@ CREATE TABLE user_roles (
     )
 );
 
--- SQLite treats NULLs as distinct in UNIQUE; IFNULL emulates Postgres NULLS NOT DISTINCT.
 CREATE UNIQUE INDEX uq_user_condominium_role_user_roles
     ON user_roles (user_id, IFNULL(condominium_id, ''), role_id);
 
@@ -197,13 +185,11 @@ CREATE TABLE article_categories (
     PRIMARY KEY (article_id, category_id)
 );
 
--- Fixed catalog rows the app relies on.
 INSERT INTO roles (role_id, name) VALUES ('role_condominium_admin', 'condominium_admin');
 
 INSERT INTO permissions (permission_id, name, constraint_schema)
 VALUES ('permission_request_loans', 'request_loans', '{"allowed": "boolean"}');
 
--- Same order as the app's category list, so category_N is the N-th entry.
 INSERT INTO categories (category_id, name) VALUES
     ('category_0', 'Herramientas'),
     ('category_1', 'Electrodomésticos'),

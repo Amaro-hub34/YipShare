@@ -62,6 +62,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
     private EditText zipCodeField;
     private EditText municipalityField;
     private EditText cityField;
+    private EditText stateField;
     private EditText unitsField;
     private int pendingDocument;
 
@@ -78,6 +79,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         zipCodeField = findViewById(R.id.et_direccion_condominio3);
         municipalityField = findViewById(R.id.et_direccion_condominio4);
         cityField = findViewById(R.id.et_direccion_condominio5);
+        stateField = findViewById(R.id.et_estado_condominio);
         unitsField = findViewById(R.id.et_cantidad_unidades);
 
         for (int index = 0; index < DOCUMENT_FIELDS.length; index++) {
@@ -189,6 +191,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
                 zipCodeField.getText().toString().trim(),
                 municipalityField.getText().toString().trim(),
                 cityField.getText().toString().trim(),
+                stateField.getText().toString().trim(),
                 units.isEmpty() ? 0 : Integer.parseInt(units),
                 documents[0],
                 documents[1],
@@ -203,6 +206,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
             }
         }
         showInputError(fields, CondominiumField.UNITS, unitsField, requiredMessage);
+        showInputError(fields, CondominiumField.STATE, stateField, requiredMessage);
         showInputError(fields, CondominiumField.CITY, cityField, requiredMessage);
         showInputError(fields, CondominiumField.MUNICIPALITY, municipalityField, requiredMessage);
         showInputError(fields, CondominiumField.ZIP_CODE, zipCodeField, getString(R.string.error_cp_formato));

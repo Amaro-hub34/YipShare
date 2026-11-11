@@ -18,7 +18,6 @@ import com.startupidea.yipshare.R;
 public class LoadingOverlay {
 
     private static final long TURN_DURATION_MS = 1000;
-    // Actions hit local SQLite and finish instantly, so the overlay stays up this long to be seen.
     private static final long MIN_SHOW_MS = 800;
 
     private final Dialog dialog;

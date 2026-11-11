@@ -11,7 +11,6 @@ public final class DemoData {
     public static final String JORGE = "demo_jorge";
     public static final String GLOBAL_ADMIN = "demo_global_admin";
 
-    // An unusable password hash, so nobody can log in as a demo neighbor.
     private static final String insertDemoUser
             = "INSERT OR IGNORE INTO users"
             + " (user_id, username, password_hash, name, paternal_surname, phone_number, computed_rating, state)"

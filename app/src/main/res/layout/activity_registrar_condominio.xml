@@ -158,6 +158,15 @@
                         android:padding="12dp"
                         android:inputType="textMultiLine|textCapSentences"
                         android:hint="@string/rc_ciudad" />
+                    <EditText
+                        android:id="@+id/et_estado_condominio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_input"
+                        android:padding="12dp"
+                        android:inputType="textCapWords"
+                        android:hint="@string/rc_estado" />
 
 
                     <TextView

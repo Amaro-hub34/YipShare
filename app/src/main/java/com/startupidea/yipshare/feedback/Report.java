@@ -1,6 +1,5 @@
 package com.startupidea.yipshare.feedback;
 
-// The author is left out on purpose: whoever reports a neighbor stays anonymous to others.
 public final class Report {
 
     private final String text;

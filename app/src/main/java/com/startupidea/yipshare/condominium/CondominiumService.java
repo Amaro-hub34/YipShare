@@ -26,6 +26,7 @@ public class CondominiumService {
         if (!ZIP_CODE.matcher(payload.getZipCode()).matches()) invalidFields.add(CondominiumField.ZIP_CODE);
         if (payload.getMunicipality().trim().isEmpty()) invalidFields.add(CondominiumField.MUNICIPALITY);
         if (payload.getCity().trim().isEmpty()) invalidFields.add(CondominiumField.CITY);
+        if (payload.getState().trim().isEmpty()) invalidFields.add(CondominiumField.STATE);
         if (payload.getUnits() <= 0) invalidFields.add(CondominiumField.UNITS);
         if (payload.getDeedUri() == null) invalidFields.add(CondominiumField.DEED);
         if (payload.getMinutesUri() == null) invalidFields.add(CondominiumField.MINUTES);

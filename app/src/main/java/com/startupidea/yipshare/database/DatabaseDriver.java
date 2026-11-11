@@ -16,7 +16,7 @@ import java.util.List;
 public class DatabaseDriver extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "yipshare.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String SCHEMA_FILE = "schema.sql";
 
     private static final String getAllTables
@@ -44,7 +44,6 @@ public class DatabaseDriver extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Newest tables first: children go before the parents they reference, so foreign keys never fail.
         List<String> tables = new ArrayList<>();
         try (Cursor cursor = db.rawQuery(getAllTables, null)) {
             while (cursor.moveToNext()) tables.add(cursor.getString(0));

@@ -109,8 +109,8 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
 
     private static final String insertDemoCondominium
             = "INSERT INTO condominiums (condominium_id, short_code, user_id, name, street, neighborhood, postal_code,"
-            + " municipality, city, digital_state, approved_at, approved_by)"
-            + " VALUES (?, ?, ?, ?, 'Av. Demo 100', 'Centro', '06000', 'Cuauhtémoc', 'CDMX', 'approved', datetime('now'), ?)";
+            + " municipality, city, state, digital_state, approved_at, approved_by)"
+            + " VALUES (?, ?, ?, ?, 'Av. Demo 100', 'Centro', '06000', 'Cuauhtémoc', 'CDMX', 'CDMX', 'approved', datetime('now'), ?)";
 
     private final DatabaseDriver databaseDriver;
     private final Context context;
@@ -139,6 +139,7 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
                 condominium.put("postal_code", payload.getZipCode());
                 condominium.put("municipality", payload.getMunicipality());
                 condominium.put("city", payload.getCity());
+                condominium.put("state", payload.getState());
                 condominium.put("digital_state", "pending");
                 db.insertOrThrow("condominiums", null, condominium);
 

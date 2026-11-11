@@ -84,10 +84,12 @@ public final class Loan implements Parcelable {
     }
 
     public String getItemName() {
+
         return itemName;
     }
 
     public String getDescription() {
+
         return description;
     }
 
@@ -96,35 +98,43 @@ public final class Loan implements Parcelable {
     }
 
     public String getOtherUserId() {
+
         return otherUserId;
     }
 
     public String getOtherUsername() {
+
         return otherUsername;
     }
 
     public boolean isLentByMe() {
+
         return lentByMe;
     }
 
     public String getStartDate() {
+
         return startDate;
     }
 
     public String getEndDate() {
+
         return endDate;
     }
 
     public LoanStatus getStatus() {
+
         return status;
     }
 
     public String getOtherPhoneNumber() {
+
         return otherPhoneNumber;
     }
 
     @Override
     public int describeContents() {
+
         return 0;
     }
 
