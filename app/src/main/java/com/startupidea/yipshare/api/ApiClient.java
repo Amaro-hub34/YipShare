@@ -2,6 +2,7 @@ package com.startupidea.yipshare.api;
 
 import android.content.Context;
 
+import com.startupidea.yipshare.error.FileTooLarge;
 import com.startupidea.yipshare.error.ServerError;
 import com.startupidea.yipshare.error.ServerUnavailable;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -28,6 +29,7 @@ public class ApiClient {
     private static final String JSON_TYPE = "application/json";
     private static final int TIMEOUT_MS = 15000;
     private static final int BUFFER_SIZE = 8192;
+    private static final int PAYLOAD_TOO_LARGE = 413;
 
     private final SessionRepository sessionRepository;
 
@@ -66,6 +68,9 @@ public class ApiClient {
     public String upload(InputStream input, String contentType) {
         try {
             return toObject(send("POST", "/uploads", contentType, readAll(input))).getString("path");
+        } catch (ServerError e) {
+            if (e.getStatus() == PAYLOAD_TOO_LARGE) throw new FileTooLarge();
+            throw e;
         } catch (IOException | JSONException e) {
             throw new ServerUnavailable();
         }
