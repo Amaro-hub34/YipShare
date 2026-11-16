@@ -75,4 +75,27 @@
         android:text="@string/btn_ver_vecinos"
         android:visibility="gone" />
 
+    <Button
+        android:id="@+id/btn_ver_unidades"
+        style="@style/ButtonPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_ver_unidades"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btn_ver_reportes_condominio"
+        style="@style/ButtonPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/btn_ver_reportes_condominio"
+        android:visibility="gone" />
+
 </LinearLayout>

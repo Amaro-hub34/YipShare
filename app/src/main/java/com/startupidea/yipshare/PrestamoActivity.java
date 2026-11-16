@@ -13,12 +13,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
+import com.startupidea.yipshare.utils.TaskUtil;
 import com.startupidea.yipshare.adapters.PrestamoAdapter;
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.loan.LoanService;
-import com.startupidea.yipshare.loan.SqliteLoanRepository;
+import com.startupidea.yipshare.loan.ApiLoanRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 
 import android.widget.Toast;
@@ -54,9 +53,7 @@ public class PrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        loanService = new LoanService(
-                new SqliteLoanRepository(new DatabaseDriver(this), this),
-                new SqliteCondominiumRepository(new DatabaseDriver(this), this));
+        loanService = new LoanService(new ApiLoanRepository(new ApiClient(this), this));
         loanList = findViewById(R.id.rv_prestamos);
 
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
@@ -77,11 +74,8 @@ public class PrestamoActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         SessionRepository session = new SessionRepository(this);
-        try {
-            loanList.setAdapter(new PrestamoAdapter(
-                    loanService.getAllLoansByUserId(session.getUserId(), session.getCondominiumId())));
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        TaskUtil.run(this, () -> loanService.getAllLoansByUserId(session.getUserId(), session.getCondominiumId()),
+                loans -> loanList.setAdapter(new PrestamoAdapter(loans)),
+                e -> Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show());
     }
 }

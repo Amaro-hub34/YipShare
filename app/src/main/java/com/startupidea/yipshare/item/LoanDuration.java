@@ -8,6 +8,13 @@ public final class LoanDuration {
     private LoanDuration() {
     }
 
+    public static int indexOf(int days) {
+        for (int index = 0; index < DAYS.length; index++) {
+            if (DAYS[index] == days) return index;
+        }
+        return -1;
+    }
+
     public static int daysOf(int index) {
         return DAYS[Math.max(0, Math.min(index, DAYS.length - 1))];
     }

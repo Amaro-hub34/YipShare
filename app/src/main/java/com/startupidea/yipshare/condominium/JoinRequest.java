@@ -11,10 +11,11 @@ public final class JoinRequest {
     private final String condominiumId;
     private final String condominiumName;
     private final String unit;
+    private final String suggestedUnitId;
     private final int computedRating;
 
     public JoinRequest(String userId, String username, String fullName, String phoneNumber, String condominiumId,
-                       String condominiumName, String unit, int computedRating) {
+                       String condominiumName, String unit, String suggestedUnitId, int computedRating) {
         this.userId = userId;
         this.username = username;
         this.fullName = fullName;
@@ -22,6 +23,7 @@ public final class JoinRequest {
         this.condominiumId = condominiumId;
         this.condominiumName = condominiumName;
         this.unit = unit;
+        this.suggestedUnitId = suggestedUnitId;
         this.computedRating = computedRating;
     }
 
@@ -51,6 +53,10 @@ public final class JoinRequest {
 
     public String getUnit() {
         return unit;
+    }
+
+    public String getSuggestedUnitId() {
+        return suggestedUnitId;
     }
 
     public float getRating() {

@@ -21,19 +21,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.DuplicateEmail;
 import com.startupidea.yipshare.user.DuplicatePhoneNumber;
 import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.ProfilePayload;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.UserProfile;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.user.WrongPassword;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
 import com.startupidea.yipshare.utils.PhoneInputUtil;
+import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.Locale;
 
@@ -50,7 +53,7 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil);
-        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
+        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
         userId = new SessionRepository(this).getUserId();
         showProfile();
 
@@ -93,14 +96,10 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void showUpdateSheet() {
-        UserProfile profile;
-        try {
-            profile = userService.getUserProfile(userId);
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> showUpdateSheet(profile), this::showError);
+    }
 
+    private void showUpdateSheet(UserProfile profile) {
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View sheet = getLayoutInflater().inflate(R.layout.activity_actualizar_perfil, null);
         dialog.setContentView(sheet);
@@ -114,6 +113,7 @@ public class PerfilActivity extends AppCompatActivity {
         EditText maternalLastNameField = sheet.findViewById(R.id.apellido_materno);
         EditText firstNamesField = sheet.findViewById(R.id.nombres);
         EditText phoneNumberField = sheet.findViewById(R.id.telefono);
+        EditText emailField = sheet.findViewById(R.id.et_correo);
         PhoneInputUtil phoneInput = PhoneInputUtil.attach(sheet.findViewById(R.id.spinner_codigo_pais), phoneNumberField);
 
         usernameField.setText(profile.getUsername());
@@ -121,12 +121,13 @@ public class PerfilActivity extends AppCompatActivity {
         maternalLastNameField.setText(profile.getMaternalLastName());
         firstNamesField.setText(profile.getFirstNames());
         phoneInput.setPhoneNumber(profile.getPhoneNumber());
+        emailField.setText(profile.getEmail());
 
         View updateButton = sheet.findViewById(R.id.btn_actualizar_datos);
         EditText[] fields = {usernameField, firstNamesField, paternalLastNameField, maternalLastNameField,
-                passwordField, passwordConfirmationField, currentPasswordField};
+                passwordField, passwordConfirmationField, currentPasswordField, emailField};
         String[] saved = {profile.getUsername(), profile.getFirstNames(), profile.getPaternalLastName(),
-                profile.getMaternalLastName(), "", "", ""};
+                profile.getMaternalLastName(), "", "", "", profile.getEmail()};
         TextWatcher changeWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -152,63 +153,71 @@ public class PerfilActivity extends AppCompatActivity {
 
         updateButton.setOnClickListener(v -> confirm(R.string.confirmar_actualizar_perfil, () -> {
             for (EditText field : new EditText[]{usernameField, passwordField, passwordConfirmationField, currentPasswordField,
-                    paternalLastNameField, maternalLastNameField, firstNamesField, phoneNumberField}) {
+                    paternalLastNameField, maternalLastNameField, firstNamesField, phoneNumberField, emailField}) {
                 field.setError(null);
             }
 
-            try {
-                userService.modifyProfile(
-                        userId,
-                        new ProfilePayload(
-                                usernameField.getText().toString(),
-                                firstNamesField.getText().toString(),
-                                paternalLastNameField.getText().toString(),
-                                maternalLastNameField.getText().toString(),
-                                phoneInput.getPhoneNumber()),
-                        passwordField.getText().toString(),
-                        passwordConfirmationField.getText().toString(),
-                        currentPasswordField.getText().toString());
-                Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-                showProfile();
-            } catch (InvalidField e) {
-                EditText field;
-                switch (e.getField()) {
-                    case USERNAME: field = usernameField; break;
-                    case PASSWORD: field = passwordField; break;
-                    case PASSWORD_CONFIRMATION: field = passwordConfirmationField; break;
-                    case PATERNAL_LAST_NAME: field = paternalLastNameField; break;
-                    case MATERNAL_LAST_NAME: field = maternalLastNameField; break;
-                    case PHONE_NUMBER: field = phoneNumberField; break;
-                    default: field = firstNamesField; break;
-                }
-                showInputError(field, e);
-            } catch (DuplicateUsername e) {
-                showInputError(usernameField, e);
-            } catch (DuplicatePhoneNumber e) {
-                showInputError(phoneNumberField, e);
-            } catch (WrongPassword e) {
-                showInputError(currentPasswordField, e);
-            } catch (AppException e) {
-                Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            }
+            ProfilePayload payload = new ProfilePayload(
+                    usernameField.getText().toString(),
+                    firstNamesField.getText().toString(),
+                    paternalLastNameField.getText().toString(),
+                    maternalLastNameField.getText().toString(),
+                    phoneInput.getPhoneNumber(),
+                    emailField.getText().toString());
+            String newPassword = passwordField.getText().toString();
+            String passwordConfirmation = passwordConfirmationField.getText().toString();
+            String currentPassword = currentPasswordField.getText().toString();
+            new LoadingOverlay(this).run(
+                    () -> userService.modifyProfile(userId, payload, newPassword, passwordConfirmation, currentPassword),
+                    () -> {
+                        Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        showProfile();
+                    },
+                    e -> {
+                        if (e instanceof InvalidField) {
+                            EditText field;
+                            switch (((InvalidField) e).getField()) {
+                                case USERNAME: field = usernameField; break;
+                                case PASSWORD: field = passwordField; break;
+                                case PASSWORD_CONFIRMATION: field = passwordConfirmationField; break;
+                                case PATERNAL_LAST_NAME: field = paternalLastNameField; break;
+                                case MATERNAL_LAST_NAME: field = maternalLastNameField; break;
+                                case PHONE_NUMBER: field = phoneNumberField; break;
+                                case EMAIL: field = emailField; break;
+                                default: field = firstNamesField; break;
+                            }
+                            showInputError(field, e);
+                        } else if (e instanceof DuplicateUsername) {
+                            showInputError(usernameField, e);
+                        } else if (e instanceof DuplicatePhoneNumber) {
+                            showInputError(phoneNumberField, e);
+                        } else if (e instanceof DuplicateEmail) {
+                            showInputError(emailField, e);
+                        } else if (e instanceof WrongPassword) {
+                            showInputError(currentPasswordField, e);
+                        } else {
+                            showError(e);
+                        }
+                    });
         }));
 
         dialog.show();
     }
 
     private void tryDeleteAccount() {
-        try {
-            userService.deleteAccount(userId);
+        new LoadingOverlay(this).run(() -> userService.deleteAccount(userId), () -> {
             new SessionRepository(this).deleteSession();
             Toast.makeText(this, R.string.cuenta_eliminada, Toast.LENGTH_LONG).show();
 
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        }, this::showError);
+    }
+
+    private void showError(AppException e) {
+        Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
     }
 
     private void confirm(int message, Runnable onConfirm) {
@@ -221,11 +230,10 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void showProfile() {
-        try {
-            UserProfile profile = userService.getUserProfile(userId);
-            FeedbackSectionUtil.attach(this, userId);
-
+        FeedbackSectionUtil.attach(this, userId);
+        TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
             ((TextView) findViewById(R.id.et_correo_electronico)).setText(profile.getUsername());
+            ((TextView) findViewById(R.id.tv_correo)).setText(profile.getEmail());
             ((TextView) findViewById(R.id.apellido_paterno)).setText(profile.getPaternalLastName());
             ((TextView) findViewById(R.id.apellido_materno)).setText(profile.getMaternalLastName());
             ((TextView) findViewById(R.id.nombres)).setText(profile.getFirstNames());
@@ -233,8 +241,6 @@ public class PerfilActivity extends AppCompatActivity {
             ((RatingBar) findViewById(R.id.rb_mi_calificacion)).setRating(profile.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        }, this::showError);
     }
 }

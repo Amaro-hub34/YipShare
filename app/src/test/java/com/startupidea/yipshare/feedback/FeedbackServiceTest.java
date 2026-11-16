@@ -17,10 +17,10 @@ public class FeedbackServiceTest {
     private static final Loan LOAN = new Loan(
             "loan", "Drill", "Works well", null, "ana", "ana_lopez", true, "01/11/2026", "08/11/2026", LoanStatus.FINISHED, "+525500000000");
 
-    private boolean reviewExists;
-    private String reviewed;
-    private Integer savedRating;
+    private String reviewedLoan;
+    private Integer savedStars;
     private String savedText;
+    private ReportState savedState;
 
     private final FeedbackService service = new FeedbackService(new FeedbackRepository() {
         @Override
@@ -34,44 +34,49 @@ public class FeedbackServiceTest {
         }
 
         @Override
-        public boolean existsReview(String authorId, String loanId) {
-            return reviewExists;
-        }
-
-        @Override
-        public void createReview(String authorId, String loanId, String reviewedId, int rating, String text) {
-            reviewed = reviewedId;
-            savedRating = rating;
+        public void createReview(String loanId, int stars, String text) {
+            reviewedLoan = loanId;
+            savedStars = stars;
             savedText = text;
         }
 
         @Override
-        public void createReport(String authorId, String loanId, String text, String imageUri) {
+        public void createReport(String loanId, String text, String imageUri) {
             savedText = text;
+        }
+
+        @Override
+        public List<Review> getAllReviewsByCondominiumId(String condominiumId) {
+            return null;
+        }
+
+        @Override
+        public List<Report> getAllReportsByCondominiumId(String condominiumId) {
+            return null;
+        }
+
+        @Override
+        public void modifyReportState(String condominiumId, String reportId, ReportState state) {
+            savedState = state;
         }
     });
 
     @Test
-    public void reviewGoesToTheOtherPersonInTenths() {
-        service.createReview("me", LOAN, 4f, "  Muy puntual ");
+    public void reviewSendsWholeStarsOfTheLoan() {
+        service.createReview("me", LOAN, 3.5f, "  Muy puntual ");
 
-        assertEquals("ana", reviewed);
-        assertEquals(Integer.valueOf(40), savedRating);
+        assertEquals("loan", reviewedLoan);
+        assertEquals(Integer.valueOf(4), savedStars);
         assertEquals("Muy puntual", savedText);
     }
 
     @Test
     public void reviewNeedsAtLeastOneStar() {
         assertThrows(EmptyRating.class, () -> service.createReview("me", LOAN, 0f, "text"));
-        assertNull(savedRating);
-    }
+        assertNull(savedStars);
 
-    @Test
-    public void reviewsOncePerLoan() {
-        reviewExists = true;
-
-        assertThrows(AlreadyReviewed.class, () -> service.createReview("me", LOAN, 5f, "text"));
-        assertNull(savedRating);
+        service.createReview("me", LOAN, 0.2f, "text");
+        assertEquals(Integer.valueOf(1), savedStars);
     }
 
     @Test
@@ -84,8 +89,18 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void noSessionMeansNoFeedback() {
+    public void adminChangesTheReportState() {
+        service.modifyReportState("condo", new Report("r1", "text", ReportState.PENDING), ReportState.IN_REVIEW);
+
+        assertEquals(ReportState.IN_REVIEW, savedState);
+        assertEquals(ReportState.RESOLVED, ReportState.parse("resolved"));
+    }
+
+    @Test
+    public void noSessionOrCondominiumMeansNoFeedback() {
         assertTrue(service.getAllReviewsByUserId(null).isEmpty());
         assertTrue(service.getAllReportsByUserId(null).isEmpty());
+        assertTrue(service.getAllReviewsByCondominiumId(null).isEmpty());
+        assertTrue(service.getAllReportsByCondominiumId(null).isEmpty());
     }
 }

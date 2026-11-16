@@ -12,10 +12,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.feedback.FeedbackService;
-import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
+import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
 
@@ -46,13 +46,13 @@ public class CalificarUsuarioActivity extends AppCompatActivity {
     }
 
     private void tryCreateReview() {
-        try {
-            new FeedbackService(new SqliteFeedbackRepository(new DatabaseDriver(this))).createReview(
-                    new SessionRepository(this).getUserId(), loan, ratingBar.getRating(), commentField.getText().toString());
+        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
+        String userId = new SessionRepository(this).getUserId();
+        float stars = ratingBar.getRating();
+        String comment = commentField.getText().toString();
+        new LoadingOverlay(this).run(() -> feedbackService.createReview(userId, loan, stars, comment), () -> {
             Toast.makeText(this, R.string.calificacion_enviada, Toast.LENGTH_SHORT).show();
             finish();
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        }, e -> Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show());
     }
 }

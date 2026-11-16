@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import com.startupidea.yipshare.condominium.FakeCondominiumRepository;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
 import com.startupidea.yipshare.item.ItemNotAvailable;
@@ -14,134 +13,56 @@ import com.startupidea.yipshare.item.ItemPayload;
 
 import org.junit.Test;
 
-import java.util.Collections;
-
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class LoanServiceTest {
 
     private final List<Loan> stored = new ArrayList<>();
     private LoanStatus savedStatus;
-    private int demoCalls;
-    private Loan requestToAnswer;
+    private String sentCode;
     private String listedCondominium;
-    private String demoCondominiums;
-    private boolean requested;
     private Integer requestedDays;
-    private final FakeCondominiumRepository condominiums = new FakeCondominiumRepository();
 
     private final LoanService service = new LoanService(new LoanRepository() {
         @Override
-        public List<Loan> getAllLoansByUserId(String userId, String condominiumId) {
+        public List<Loan> getAllLoansByCondominiumId(String condominiumId) {
             listedCondominium = condominiumId;
             return new ArrayList<>(stored);
         }
 
         @Override
-        public List<LoanRequest> getAllLoanRequestsByLenderId(String lenderId, String condominiumId) {
+        public List<LoanRequest> getAllLoanRequestsByCondominiumId(String condominiumId) {
+            listedCondominium = condominiumId;
             return new ArrayList<>();
         }
 
         @Override
-        public boolean existsLoanByUserId(String userId) {
-            return !stored.isEmpty();
-        }
-
-        @Override
-        public Loan getLoanById(String loanId, String userId) {
-            if (requestToAnswer != null) return requestToAnswer;
-            return loan(savedStatus);
-        }
-
-        @Override
-        public void modifyLoanStatus(String loanId, LoanStatus status) {
-            savedStatus = status;
-        }
-
-        @Override
-        public boolean existsPendingRequest(String userId, String articleId) {
-            return requested;
-        }
-
-        @Override
-        public void createLoanRequest(String lenderId, String borrowerId, String articleId, String requestText, int days) {
+        public void createLoanRequest(String articleId, String requestText, int days) {
             requestedDays = days;
         }
 
         @Override
-        public void createDemoLoans(String userId, String administeredId, String livedId) {
-            demoCalls++;
-            demoCondominiums = administeredId + "|" + livedId;
-            stored.add(loan(LoanStatus.ACCEPTED));
+        public void modifyLoanStatus(String loanId, LoanStatus answer) {
+            savedStatus = answer;
         }
-    }, condominiums);
 
-    private static Loan loan(LoanStatus status) {
-        return new Loan("loan", "Drill", "Works well", null, "other", "ana", true, null, "08/11/2026", status, "+525500000000");
-    }
+        @Override
+        public String createCode(String loanId) {
+            return "ABC234";
+        }
 
-    @Test
-    public void firstCodeStartsTheLoan() {
-        Loan updated = service.confirmCode("user", loan(LoanStatus.ACCEPTED), "123456");
+        @Override
+        public Loan confirmCode(String loanId, String code) {
+            sentCode = code;
+            return loan(LoanStatus.ON_LOAN, false);
+        }
+    });
 
-        assertEquals(LoanStatus.ON_LOAN, savedStatus);
-        assertEquals(LoanStatus.ON_LOAN, updated.getStatus());
-    }
-
-    @Test
-    public void secondCodeFinishesTheLoan() {
-        service.confirmCode("user", loan(LoanStatus.ON_LOAN), "123456");
-
-        assertEquals(LoanStatus.FINISHED, savedStatus);
-    }
-
-    @Test
-    public void malformedCodeKeepsTheStatus() {
-        assertThrows(InvalidCode.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED), "12a45"));
-        assertNull(savedStatus);
-    }
-
-    @Test
-    public void pendingOrFinishedLoansTakeNoCode() {
-        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.PENDING), "123456"));
-        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.FINISHED), "123456"));
-        assertNull(savedStatus);
-    }
-
-    @Test
-    public void createsDemoLoansOnlyWhenTheUserHasNone() {
-        assertEquals(1, service.getAllLoansByUserId("user", "condo").size());
-        assertEquals(1, service.getAllLoansByUserId("user", "condo").size());
-        assertEquals(1, demoCalls);
-        assertEquals(1, condominiums.demoCalls);
-        assertEquals("demo|demo", demoCondominiums);
-    }
-
-    @Test
-    public void statusMatchesTheDatabaseValues() {
-        assertEquals("on_loan", LoanStatus.ON_LOAN.getValue());
-        assertEquals(LoanStatus.ON_LOAN, LoanStatus.parse("on_loan"));
-    }
-
-    @Test
-    public void lenderAcceptsOrRejectsPendingRequest() {
-        requestToAnswer = loan(LoanStatus.PENDING);
-        service.acceptLoanRequest("user", "loan");
-        assertEquals(LoanStatus.ACCEPTED, savedStatus);
-
-        service.rejectLoanRequest("user", "loan");
-        assertEquals(LoanStatus.REJECTED, savedStatus);
-    }
-
-    @Test
-    public void requestIsAnsweredOnlyOnceAndOnlyByTheLender() {
-        requestToAnswer = loan(LoanStatus.ACCEPTED);
-        assertThrows(LoanRequestNotPending.class, () -> service.rejectLoanRequest("user", "loan"));
-
-        requestToAnswer = new Loan("loan", "Drill", "d", null, "other", "ana", false, null, "08/11/2026", LoanStatus.PENDING, "+525500000000");
-        assertThrows(LoanRequestNotPending.class, () -> service.acceptLoanRequest("user", "loan"));
-        assertNull(savedStatus);
+    private static Loan loan(LoanStatus status, boolean lentByMe) {
+        return new Loan("loan", "Drill", "Works well", null, "other", "ana", lentByMe, null, "08/11/2026", status, "+525500000000");
     }
 
     private static Item item(String ownerId, ItemAvailability availability) {
@@ -150,39 +71,68 @@ public class LoanServiceTest {
     }
 
     @Test
-    public void neighborRequestsAvailableItem() {
-        condominiums.members.add(FakeCondominiumRepository.key("user", "condo"));
+    public void borrowerSendsTheCodeNormalized() {
+        Loan updated = service.confirmCode("user", loan(LoanStatus.ACCEPTED, false), " abc234 ");
 
+        assertEquals("ABC234", sentCode);
+        assertEquals(LoanStatus.ON_LOAN, updated.getStatus());
+    }
+
+    @Test
+    public void malformedCodeIsNotSent() {
+        assertThrows(InvalidCode.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, false), "12a4"));
+        assertNull(sentCode);
+    }
+
+    @Test
+    public void onlyActiveLoansTakeACode() {
+        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.PENDING, false), "ABC234"));
+        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.FINISHED, false), "ABC234"));
+        assertNull(sentCode);
+    }
+
+    @Test
+    public void lenderGeneratesTheCodeAndBorrowerTypesIt() {
+        assertEquals("ABC234", service.createCode(loan(LoanStatus.ON_LOAN, true)));
+        assertThrows(LoanNotActive.class, () -> service.createCode(loan(LoanStatus.ACCEPTED, false)));
+        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, true), "ABC234"));
+    }
+
+    @Test
+    public void serverStatusesMapToTheAppOnes() {
+        assertEquals(LoanStatus.ON_LOAN, LoanStatus.parse("on_loan"));
+        assertEquals(LoanStatus.FINISHED, LoanStatus.parse("returned"));
+    }
+
+    @Test
+    public void lenderAcceptsOrRejectsPendingRequest() {
+        service.acceptLoanRequest("user", "loan");
+        assertEquals(LoanStatus.ACCEPTED, savedStatus);
+
+        service.rejectLoanRequest("user", "loan");
+        assertEquals(LoanStatus.REJECTED, savedStatus);
+    }
+
+    @Test
+    public void neighborRequestsAvailableItem() {
         service.requestLoan("user", item("owner", ItemAvailability.AVAILABLE), "text", 7);
 
         assertEquals(Integer.valueOf(7), requestedDays);
     }
 
     @Test
-    public void neighborWithoutLoanAccessCannotRequest() {
-        condominiums.members.add(FakeCondominiumRepository.key("user", "condo"));
-        condominiums.withoutLoanAccess.add(FakeCondominiumRepository.key("user", "condo"));
-
-        assertThrows(LoanAccessRevoked.class, () -> service.requestLoan("user", item("owner", ItemAvailability.AVAILABLE), "t", 1));
-        assertNull(requestedDays);
-    }
-
-    @Test
-    public void cannotRequestOwnLentOrAlreadyRequestedItems() {
-        condominiums.members.add(FakeCondominiumRepository.key("user", "condo"));
-
+    public void cannotRequestOwnOrLentItems() {
         assertThrows(ItemNotFound.class, () -> service.requestLoan("user", item("user", ItemAvailability.AVAILABLE), "t", 1));
         assertThrows(ItemNotAvailable.class, () -> service.requestLoan("user", item("owner", ItemAvailability.NOT_AVAILABLE), "t", 1));
-        requested = true;
-        assertThrows(AlreadyRequested.class, () -> service.requestLoan("user", item("owner", ItemAvailability.AVAILABLE), "t", 1));
         assertNull(requestedDays);
     }
 
     @Test
-    public void listsOnlyTheSelectedCondominium() {
-        stored.add(loan(LoanStatus.ACCEPTED));
+    public void listsActiveAndFinishedLoansOfTheSelectedCondominium() {
+        stored.addAll(Arrays.asList(loan(LoanStatus.PENDING, true), loan(LoanStatus.ACCEPTED, true),
+                loan(LoanStatus.REJECTED, false), loan(LoanStatus.FINISHED, false)));
 
-        service.getAllLoansByUserId("user", "condo");
+        assertEquals(2, service.getAllLoansByUserId("user", "condo").size());
         assertEquals("condo", listedCondominium);
 
         listedCondominium = null;

@@ -15,16 +15,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.DuplicateEmail;
 import com.startupidea.yipshare.user.DuplicatePhoneNumber;
 import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
-import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
-import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.PasswordToggleUtil;
 import com.startupidea.yipshare.utils.PhoneInputUtil;
@@ -40,13 +40,14 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private EditText passwordField;
     private EditText passwordConfirmationField;
     private EditText phoneNumberField;
+    private EditText emailField;
     private PhoneInputUtil phoneInput;
     private TextView errorLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
+        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
         setContentView(R.layout.activity_registrocuenta2);
 
         draft = RegistrationDraft.fromIntent(getIntent());
@@ -55,6 +56,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         passwordField = findViewById(R.id.contrasenia);
         passwordConfirmationField = findViewById(R.id.contrasenia_confirmacion2);
         phoneNumberField = findViewById(R.id.telefono_frame2);
+        emailField = findViewById(R.id.et_correo);
         phoneInput = PhoneInputUtil.attach(findViewById(R.id.spinner_codigo_pais), phoneNumberField);
         errorLabel = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(passwordField, findViewById(R.id.btn_toggle_password));
@@ -65,9 +67,10 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
             passwordField.setText(draft.getPassword());
             passwordConfirmationField.setText(draft.getPasswordConfirmation());
             phoneInput.setPhoneNumber(draft.getPhoneNumber());
+            emailField.setText(draft.getEmail());
         }
 
-        findViewById(R.id.btn_siguiente).setOnClickListener(v -> new LoadingOverlay(this).run(this::tryRegister));
+        findViewById(R.id.btn_siguiente).setOnClickListener(v -> tryRegister());
         findViewById(R.id.btn_regresar_registro2).setOnClickListener(v -> returnToPrevious());
         findViewById(R.id.btn_regresar_main).setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -88,7 +91,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
                 usernameField.getText().toString(),
                 passwordField.getText().toString(),
                 passwordConfirmationField.getText().toString(),
-                phoneInput.getPhoneNumber());
+                phoneInput.getPhoneNumber(),
+                emailField.getText().toString());
     }
 
     private void returnToPrevious() {
@@ -101,20 +105,26 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     private void tryRegister() {
         errorLabel.setVisibility(View.GONE);
 
-        try {
-            User user = userService.register(currentDraft());
+        RegistrationDraft submitted = currentDraft();
+        new LoadingOverlay(this).run(() -> userService.register(submitted), user -> {
             new SessionRepository(this).createSession(user);
             Intent intent = new Intent(this, PantallaPrincipalActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             user.putInto(intent);
             startActivity(intent);
-        } catch (InvalidField e) {
-            showInputError(inputFor(e.getField()), e);
-        } catch (DuplicateUsername e) {
+        }, this::showRegisterError);
+    }
+
+    private void showRegisterError(AppException e) {
+        if (e instanceof InvalidField) {
+            showInputError(inputFor(((InvalidField) e).getField()), e);
+        } else if (e instanceof DuplicateUsername) {
             showInputError(usernameField, e);
-        } catch (DuplicatePhoneNumber e) {
+        } else if (e instanceof DuplicatePhoneNumber) {
             showInputError(phoneNumberField, e);
-        } catch (AppException e) {
+        } else if (e instanceof DuplicateEmail) {
+            showInputError(emailField, e);
+        } else {
             errorLabel.setText(e.getMessageRes());
             errorLabel.setVisibility(View.VISIBLE);
         }
@@ -133,6 +143,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
                 return passwordField;
             case PHONE_NUMBER:
                 return phoneNumberField;
+            case EMAIL:
+                return emailField;
             default:
                 return passwordConfirmationField;
         }

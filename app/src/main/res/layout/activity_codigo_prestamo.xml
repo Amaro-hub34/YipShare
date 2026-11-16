@@ -51,6 +51,7 @@
             android:text="@string/placeholder_codigo" />
 
         <TextView
+            android:id="@+id/tv_separador_codigo"
             style="@style/TextBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
             android:minHeight="48dp"
             android:gravity="center"
             android:hint="@string/et_codigo"
-            android:inputType="number"
+            android:inputType="textCapCharacters|textNoSuggestions"
             android:maxLength="6" />
 
         <Button

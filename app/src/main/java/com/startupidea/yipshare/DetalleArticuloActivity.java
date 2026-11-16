@@ -25,26 +25,25 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.item.LoanDuration;
-import com.startupidea.yipshare.item.SqliteItemRepository;
+import com.startupidea.yipshare.item.ApiItemRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.loan.LoanService;
-import com.startupidea.yipshare.loan.SqliteLoanRepository;
+import com.startupidea.yipshare.loan.ApiLoanRepository;
 import com.startupidea.yipshare.utils.PhoneUtil;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.loan.LoanStatus;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.user.SqliteUserRepository;
-import com.startupidea.yipshare.user.UserProfile;
+import com.startupidea.yipshare.user.ApiUserRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
+import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -102,13 +101,13 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
             return insets;
         });
-        DatabaseDriver databaseDriver = new DatabaseDriver(this);
-        SqliteCondominiumRepository condominiumRepository = new SqliteCondominiumRepository(databaseDriver, this);
-        itemService = new ItemService(new SqliteItemRepository(databaseDriver, this), condominiumRepository);
-        condominiumService = new CondominiumService(condominiumRepository);
-        loanService = new LoanService(new SqliteLoanRepository(databaseDriver, this), condominiumRepository);
-        userService = new UserService(new SqliteUserRepository(databaseDriver));
-        userId = new SessionRepository(this).getUserId();
+        ApiClient apiClient = new ApiClient(this);
+        SessionRepository session = new SessionRepository(this);
+        itemService = new ItemService(new ApiItemRepository(apiClient, this));
+        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
+        loanService = new LoanService(new ApiLoanRepository(apiClient, this));
+        userService = new UserService(new ApiUserRepository(apiClient, session));
+        userId = session.getUserId();
 
         Item received = Item.fromIntent(getIntent());
         if (received != null) showItem(received);
@@ -168,16 +167,12 @@ public class DetalleArticuloActivity extends AppCompatActivity {
                 startActivity(UserFeedbackActivity.intentFor(this, item.getOwnerId())));
 
         boolean own = item.isOwnedBy(userId);
-        boolean admin = !own && condominiumService.isAdmin(userId, item.getCondominiumId());
-        boolean editable = own && item.getAvailability() == ItemAvailability.AVAILABLE;
-        Button deleteButton = findViewById(R.id.btn_eliminar_articulo);
         findViewById(R.id.btn_accion_articulo).setVisibility(own ? View.GONE : View.VISIBLE);
-        findViewById(R.id.layout_acciones_dueno).setVisibility(own || admin ? View.VISIBLE : View.GONE);
-        findViewById(R.id.btn_editar_articulo).setVisibility(own ? View.VISIBLE : View.GONE);
-        findViewById(R.id.btn_editar_articulo).setEnabled(editable);
-        deleteButton.setEnabled(editable || admin);
-        deleteButton.setText(admin ? R.string.eliminar_publicacion : R.string.eliminar_articulo);
-        findViewById(R.id.tv_aviso_no_editable).setVisibility(own && !editable ? View.VISIBLE : View.GONE);
+        showOwnerActions(item, false);
+        if (!own) {
+            TaskUtil.run(this, () -> condominiumService.isAdmin(userId, item.getCondominiumId()),
+                    admin -> showOwnerActions(item, admin), e -> showOwnerActions(item, false));
+        }
 
         if (payload.getImageUri() != null) {
             ((ImageView) findViewById(R.id.iv_imagen_articulo)).setImageBitmap(
@@ -191,17 +186,26 @@ public class DetalleArticuloActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_dropdown_item, payload.getLoanDurations()));
     }
 
+    private void showOwnerActions(Item item, boolean admin) {
+        boolean own = item.isOwnedBy(userId);
+        boolean editable = own && item.getAvailability() == ItemAvailability.AVAILABLE;
+        Button deleteButton = findViewById(R.id.btn_eliminar_articulo);
+        findViewById(R.id.layout_acciones_dueno).setVisibility(own || admin ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btn_editar_articulo).setVisibility(own ? View.VISIBLE : View.GONE);
+        findViewById(R.id.btn_editar_articulo).setEnabled(editable);
+        deleteButton.setEnabled(editable || admin);
+        deleteButton.setText(admin ? R.string.eliminar_publicacion : R.string.eliminar_articulo);
+        findViewById(R.id.tv_aviso_no_editable).setVisibility(own && !editable ? View.VISIBLE : View.GONE);
+    }
+
     private void showOwner(String ownerId) {
-        try {
-            UserProfile owner = userService.getUserProfile(ownerId);
+        TaskUtil.run(this, () -> userService.getUserProfile(ownerId), owner -> {
             ((TextView) findViewById(R.id.tv_prestamista)).setText(owner.getUsername());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(owner.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", owner.getRating()));
             PhoneUtil.attach(findViewById(R.id.tv_telefono_prestamista), owner.getPhoneNumber());
-        } catch (AppException e) {
-            findViewById(R.id.layout_prestamista).setVisibility(View.GONE);
-        }
+        }, e -> findViewById(R.id.layout_prestamista).setVisibility(View.GONE));
     }
 
     private void confirmRequestLoan() {
@@ -213,14 +217,10 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
         ConfirmDialogUtil.show(this,
                 getString(R.string.confirmar_solicitar_articulo, item.getPayload().getName(), duration),
-                () -> new LoadingOverlay(this).run(() -> {
-                    try {
-                        loanService.requestLoan(userId, item, getString(R.string.texto_solicitud, duration), days);
-                        Toast.makeText(this, R.string.solicitud_enviada, Toast.LENGTH_SHORT).show();
-                    } catch (AppException e) {
-                        Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_LONG).show();
-                    }
-                }));
+                () -> new LoadingOverlay(this).run(
+                        () -> loanService.requestLoan(userId, item, getString(R.string.texto_solicitud, duration), days),
+                        () -> Toast.makeText(this, R.string.solicitud_enviada, Toast.LENGTH_SHORT).show(),
+                        e -> Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_LONG).show()));
     }
 
     private void confirmDeleteItem() {
@@ -228,13 +228,10 @@ public class DetalleArticuloActivity extends AppCompatActivity {
     }
 
     private void tryDeleteItem() {
-        try {
-            itemService.deleteItem(userId, item.getId());
+        new LoadingOverlay(this).run(() -> itemService.deleteItem(userId, item), () -> {
             Toast.makeText(this, R.string.articulo_eliminado, Toast.LENGTH_SHORT).show();
             finish();
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        }, e -> Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show());
     }
 
     private void showLoan(Loan loan) {

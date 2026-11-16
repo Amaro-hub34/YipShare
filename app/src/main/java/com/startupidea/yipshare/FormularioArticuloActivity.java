@@ -31,16 +31,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.error.InvalidImage;
 import com.startupidea.yipshare.item.InvalidItem;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemField;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
-import com.startupidea.yipshare.item.SqliteItemRepository;
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.utils.ImageFileUtil;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
 import java.util.ArrayList;
@@ -79,9 +78,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_formulario_articulo);
 
-        DatabaseDriver databaseDriver = new DatabaseDriver(this);
-        itemService = new ItemService(
-                new SqliteItemRepository(databaseDriver, this), new SqliteCondominiumRepository(databaseDriver, this));
+        itemService = new ItemService(new ApiItemRepository(new ApiClient(this), this));
         nameField = findViewById(R.id.et_nombre_articulo);
         descriptionField = findViewById(R.id.et_descripcion);
         categorySpinner = findViewById(R.id.spinner_categoria);
@@ -98,7 +95,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         addDurationBoxes();
         findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
         Button mainButton = findViewById(R.id.btn_accion_principal);
-        mainButton.setOnClickListener(v -> new LoadingOverlay(this).run(this::tryPostItem));
+        mainButton.setOnClickListener(v -> tryPostItem());
         if (editingItem != null) mainButton.setText(R.string.btn_guardar_cambios);
 
         if (savedInstanceState != null) {
@@ -189,32 +186,29 @@ public class FormularioArticuloActivity extends AppCompatActivity {
     private void tryPostItem() {
         cleanGUI();
 
-        String pickedImage = imageUri == null ? null : imageUri.toString();
-
-        try {
-            itemService.validate(readPayload(pickedImage));
-
-            boolean sameImage = editingItem != null && pickedImage.equals(editingItem.getPayload().getImageUri());
-            Uri storedImage = sameImage ? imageUri : ImageFileUtil.tryCopy(this, imageUri);
-            if (storedImage == null) {
-                showImageError(R.string.error_imagen_invalida);
-                return;
-            }
-
-            ItemPayload payload = readPayload(storedImage.toString());
-            if (editingItem == null) {
-                itemService.createItem(userId, condominiumId, payload);
+        ItemPayload payload = readPayload(imageUri == null ? null : imageUri.toString());
+        if (editingItem == null) {
+            new LoadingOverlay(this).run(() -> itemService.createItem(condominiumId, payload), created -> {
                 Toast.makeText(this, R.string.articulo_publicado, Toast.LENGTH_SHORT).show();
-            } else {
+                finish();
+            }, this::showPostError);
+        } else {
+            new LoadingOverlay(this).run(() -> itemService.modifyItem(userId, editingItem, payload), modified -> {
                 Intent result = new Intent();
-                itemService.modifyItem(userId, editingItem.getId(), payload).putInto(result);
+                modified.putInto(result);
                 setResult(Activity.RESULT_OK, result);
                 Toast.makeText(this, R.string.articulo_actualizado, Toast.LENGTH_SHORT).show();
-            }
-            finish();
-        } catch (InvalidItem e) {
-            showErrors(e.getFields(), e.getMessageRes());
-        } catch (AppException e) {
+                finish();
+            }, this::showPostError);
+        }
+    }
+
+    private void showPostError(AppException e) {
+        if (e instanceof InvalidItem) {
+            showErrors(((InvalidItem) e).getFields(), e.getMessageRes());
+        } else if (e instanceof InvalidImage) {
+            showImageError(e.getMessageRes());
+        } else {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -264,7 +258,9 @@ public class FormularioArticuloActivity extends AppCompatActivity {
 
     private void showErrors(Set<ItemField> fields, @StringRes int requiredMessage) {
         if (fields.contains(ItemField.DESCRIPTION)) {
-            descriptionField.setError(getString(requiredMessage));
+            boolean empty = descriptionField.getText().toString().trim().isEmpty();
+            descriptionField.setError(empty ? getString(requiredMessage)
+                    : getString(R.string.error_descripcion_corta, ItemService.DESCRIPTION_MIN_LENGTH));
             descriptionField.requestFocus();
         }
         if (fields.contains(ItemField.NAME)) {

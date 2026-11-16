@@ -8,9 +8,13 @@ public interface FeedbackRepository {
 
     List<Report> getAllReportsByUserId(String userId);
 
-    boolean existsReview(String authorId, String loanId);
+    void createReview(String loanId, int stars, String text);
 
-    void createReview(String authorId, String loanId, String reviewedId, int rating, String text);
+    void createReport(String loanId, String text, String imageUri);
 
-    void createReport(String authorId, String loanId, String text, String imageUri);
+    List<Review> getAllReviewsByCondominiumId(String condominiumId);
+
+    List<Report> getAllReportsByCondominiumId(String condominiumId);
+
+    void modifyReportState(String condominiumId, String reportId, ReportState state);
 }

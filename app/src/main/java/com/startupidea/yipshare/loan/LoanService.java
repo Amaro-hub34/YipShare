@@ -1,7 +1,5 @@
 package com.startupidea.yipshare.loan;
 
-import com.startupidea.yipshare.condominium.CondominiumMembership;
-import com.startupidea.yipshare.condominium.CondominiumRepository;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
 import com.startupidea.yipshare.item.ItemNotAvailable;
@@ -9,75 +7,56 @@ import com.startupidea.yipshare.item.ItemNotFound;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class LoanService {
 
-    private static final Pattern CODE = Pattern.compile("\\d{6}");
+    private static final Pattern CODE = Pattern.compile("[A-Z0-9]{6}");
 
     private final LoanRepository loanRepository;
-    private final CondominiumRepository condominiumRepository;
 
-    public LoanService(LoanRepository loanRepository, CondominiumRepository condominiumRepository) {
+    public LoanService(LoanRepository loanRepository) {
         this.loanRepository = loanRepository;
-        this.condominiumRepository = condominiumRepository;
     }
 
     public List<Loan> getAllLoansByUserId(String userId, String condominiumId) {
-        ensureDemoLoans(userId);
-        if (condominiumId == null) return new ArrayList<>();
-        return loanRepository.getAllLoansByUserId(userId, condominiumId);
+        List<Loan> loans = new ArrayList<>();
+        if (condominiumId == null) return loans;
+        for (Loan loan : loanRepository.getAllLoansByCondominiumId(condominiumId)) {
+            if (loan.getStatus() != LoanStatus.PENDING && loan.getStatus() != LoanStatus.REJECTED) loans.add(loan);
+        }
+        return loans;
     }
 
     public List<LoanRequest> getAllLoanRequests(String userId, String condominiumId) {
-        ensureDemoLoans(userId);
         if (condominiumId == null) return new ArrayList<>();
-        return loanRepository.getAllLoanRequestsByLenderId(userId, condominiumId);
+        return loanRepository.getAllLoanRequestsByCondominiumId(condominiumId);
     }
 
     public void requestLoan(String userId, Item item, String requestText, int days) {
         if (item.isOwnedBy(userId)) throw new ItemNotFound();
         if (item.getAvailability() != ItemAvailability.AVAILABLE) throw new ItemNotAvailable();
-        if (!condominiumRepository.canRequestLoans(userId, item.getCondominiumId())) throw new LoanAccessRevoked();
-        if (loanRepository.existsPendingRequest(userId, item.getId())) throw new AlreadyRequested();
-
-        loanRepository.createLoanRequest(item.getOwnerId(), userId, item.getId(), requestText, days);
+        loanRepository.createLoanRequest(item.getId(), requestText, days);
     }
 
     public void acceptLoanRequest(String userId, String loanId) {
-        answerLoanRequest(userId, loanId, LoanStatus.ACCEPTED);
+        loanRepository.modifyLoanStatus(loanId, LoanStatus.ACCEPTED);
     }
 
     public void rejectLoanRequest(String userId, String loanId) {
-        answerLoanRequest(userId, loanId, LoanStatus.REJECTED);
+        loanRepository.modifyLoanStatus(loanId, LoanStatus.REJECTED);
+    }
+
+    public String createCode(Loan loan) {
+        if (!loan.isLentByMe() || !loan.getStatus().acceptsCode()) throw new LoanNotActive();
+        return loanRepository.createCode(loan.getId());
     }
 
     public Loan confirmCode(String userId, Loan loan, String code) {
-        if (!CODE.matcher(code).matches()) throw new InvalidCode();
-        if (!loan.getStatus().acceptsCode()) throw new LoanNotActive();
-
-        loanRepository.modifyLoanStatus(loan.getId(), loan.getStatus().next());
-        return loanRepository.getLoanById(loan.getId(), userId);
-    }
-
-    private void answerLoanRequest(String userId, String loanId, LoanStatus answer) {
-        Loan loan = loanRepository.getLoanById(loanId, userId);
-        if (loan == null || !loan.isLentByMe() || loan.getStatus() != LoanStatus.PENDING) throw new LoanRequestNotPending();
-        loanRepository.modifyLoanStatus(loanId, answer);
-    }
-
-    private void ensureDemoLoans(String userId) {
-        if (loanRepository.existsLoanByUserId(userId)) return;
-        if (!condominiumRepository.existsMembershipByUserId(userId)) condominiumRepository.createDemoCondominiums(userId);
-
-        String administered = null;
-        String lived = null;
-        for (CondominiumMembership membership : condominiumRepository.getAllMembershipsByUserId(userId)) {
-            if (membership.isAdmin() && administered == null) administered = membership.getCondominiumId();
-            if (!membership.isAdmin() && lived == null) lived = membership.getCondominiumId();
-        }
-        if (administered == null) administered = lived;
-        if (lived == null) lived = administered;
-        if (administered != null) loanRepository.createDemoLoans(userId, administered, lived);
+        String normalized = code.trim().toUpperCase(Locale.ROOT);
+        if (!CODE.matcher(normalized).matches()) throw new InvalidCode();
+        if (loan.isLentByMe() || !loan.getStatus().acceptsCode()) throw new LoanNotActive();
+        return loanRepository.confirmCode(loan.getId(), normalized);
     }
 }

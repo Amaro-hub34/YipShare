@@ -134,7 +134,7 @@
     <string name="error_contrasena_vacia">Ingresa tu contraseña</string>
     <string name="error_cuenta_no_existe">La cuenta no existe</string>
     <string name="error_usuario_duplicado">Ese usuario ya existe</string>
-    <string name="error_bd_no_disponible">No se pudo conectar. Inténtalo más tarde</string>
+    <string name="error_servidor_no_disponible">No se pudo conectar. Inténtalo más tarde</string>
 
     <string name="error_campo_obligatorio">Este campo es obligatorio</string>
     <string name="error_nombre_largo">Máximo 150 caracteres</string>
@@ -241,10 +241,6 @@
     <string name="te_prestaron">Te prestaron</string>
     <string name="error_codigo_longitud">Debe tener 6 dígitos</string>
     <string name="codigo_confirmado">Código confirmado</string>
-    <string name="demo_taladro">Taladro eléctrico</string>
-    <string name="demo_escalera">Escalera plegable</string>
-    <string name="demo_bocina">Bocina portátil</string>
-    <string name="demo_direccion">Edificio B, Depto. 302</string>
 
     <!--activity_terms_and_conditions-->
     <string name="terms_titulo">Términos y Condiciones</string>
@@ -300,9 +296,6 @@
     <string name="fechas_prestamo">Inicio: %1$s\nFin: %2$s</string>
     <string name="btn_reportar_vecino">Reportar vecino</string>
     <string name="btn_introducir_codigo">Introducir código</string>
-    <string name="demo_desc_taladro">Taladro inalámbrico con dos baterías y juego de brocas.</string>
-    <string name="demo_desc_escalera">Escalera plegable de aluminio de 6 peldaños.</string>
-    <string name="demo_desc_bocina">Bocina Bluetooth con unas 10 horas de batería.</string>
     <string name="reporte_bloqueado">Para reportar a un vecino, entra desde uno de tus préstamos</string>
     <string name="error_ya_unido">Ya estás en este condominio o ya enviaste una solicitud</string>
     <string name="solicitud_union_enviada">Solicitud enviada. El administrador del condominio la revisará</string>
@@ -346,11 +339,6 @@
     <string name="confirmar_denegar_solicitud">¿Seguro que quieres denegar la solicitud de %1$s para %2$s?</string>
     <string name="solicitud_aceptada">Solicitud aceptada. La verás en Préstamos</string>
     <string name="solicitud_denegada">Solicitud denegada</string>
-    <string name="demo_bicicleta">Bicicleta de montaña</string>
-    <string name="demo_desc_bicicleta">Bicicleta de montaña talla M, con casco.</string>
-    <string name="demo_casa_campana">Casa de campaña</string>
-    <string name="demo_desc_casa_campana">Casa de campaña para 4 personas, fácil de armar.</string>
-    <string name="demo_texto_solicitud">¿Me lo prestas este fin de semana?</string>
     <string name="confirmar_nueva_contrasena">Confirmar nueva contraseña</string>
     <string name="error_contrasena_igual_actual">La nueva contraseña debe ser distinta a la actual</string>
     <string name="rol_admin_condominio">Admin condominio</string>
@@ -378,11 +366,32 @@
     <string name="confirmar_solicitar_articulo">¿Seguro que quieres solicitar %1$s por %2$s?</string>
     <string name="texto_solicitud">¿Me lo prestas por %1$s?</string>
     <string name="solicitud_enviada">Solicitud enviada al dueño</string>
-    <string name="demo_podadora">Podadora</string>
-    <string name="demo_desc_podadora">Podadora eléctrica, funciona muy bien.</string>
-    <string name="demo_licuadora">Licuadora</string>
-    <string name="demo_desc_licuadora">Licuadora con vaso de vidrio.</string>
-    <string name="demo_aspiradora">Aspiradora</string>
-    <string name="demo_desc_aspiradora">Aspiradora pequeña, ideal para el coche.</string>
     <string name="notificaciones_pendientes">Notificaciones, tienes pendientes</string>
+    <string name="error_servidor">Algo salió mal en el servidor. Inténtalo de nuevo</string>
+    <string name="error_correo_duplicado">Ese correo ya está registrado</string>
+    <string name="error_correo_formato">Escribe un correo válido</string>
+    <string name="error_usuario_formato">Usa solo letras, números, - o _ (máximo 50)</string>
+    <string name="correo_hint">Correo electrónico</string>
+    <string name="error_unidad_ocupada">No se puede eliminar: hay vecinos en esa unidad</string>
+    <string name="error_ya_reportado">Ya reportaste este préstamo</string>
+    <string name="error_descripcion_corta">Escribe al menos %1$d caracteres</string>
+    <string name="reporte_en_revision">En revisión</string>
+    <string name="btn_ver_unidades">Unidades</string>
+    <string name="btn_ver_reportes_condominio">Reportes y reseñas</string>
+    <string name="aviso_leido">Leída</string>
+    <string name="aviso_nuevo">Nueva</string>
+    <string name="aviso_texto">%1$s\n%2$s</string>
+    <string name="confirmar_eliminar_aviso">¿Eliminar la notificación «%1$s»?</string>
+    <string name="aviso_eliminado">Notificación eliminada</string>
+    <string name="sin_unidades">Primero crea las unidades del condominio</string>
+    <string name="elegir_unidad">Unidad de %1$s (escribió: %2$s)</string>
+    <string name="titulo_unidades">Unidades</string>
+    <string name="agregar_unidad">Agregar unidad</string>
+    <string name="editar_unidad">Editar unidad</string>
+    <string name="nombre_unidad">Nombre o número</string>
+    <string name="eliminar_unidad">Eliminar</string>
+    <string name="confirmar_eliminar_unidad">¿Eliminar la unidad «%1$s»?</string>
+    <string name="unidad_guardada">Unidad guardada</string>
+    <string name="unidad_eliminada">Unidad eliminada</string>
+    <string name="cambiar_estado_reporte">Estado del reporte</string>
 </resources>

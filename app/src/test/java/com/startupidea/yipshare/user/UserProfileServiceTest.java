@@ -23,32 +23,20 @@ public class UserProfileServiceTest {
         }
 
         @Override
-        public boolean existsUsername(String username) {
-            return "taken_user".equals(username) || "ana_lopez".equals(username);
-        }
-
-        @Override
-        public boolean existsPhoneNumber(String phoneNumber) {
-            return "+525598765432".equals(phoneNumber);
-        }
-
-        @Override
         public User createUser(RegistrationPayload payload) {
             return null;
         }
 
         @Override
         public UserProfile getUserProfileById(String id) {
-            return "1".equals(id) ? new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", 0) : null;
+            return "1".equals(id) ? new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@test.com", 0) : null;
         }
 
         @Override
-        public boolean matchesPassword(String id, String password) {
-            return CURRENT_PASSWORD.equals(password);
-        }
-
-        @Override
-        public void modifyUser(String id, ProfilePayload payload, String newPassword) {
+        public void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword) {
+            if ("taken_user".equals(payload.getUsername())) throw new DuplicateUsername();
+            if ("+525598765432".equals(payload.getPhoneNumber())) throw new DuplicatePhoneNumber();
+            if (newPassword != null && !CURRENT_PASSWORD.equals(currentPassword)) throw new WrongPassword();
             savedProfile = payload;
             savedPassword = newPassword;
         }
@@ -59,13 +47,17 @@ public class UserProfileServiceTest {
         }
 
         @Override
+        public void logout() {
+        }
+
+        @Override
         public boolean isActiveUser(String id) {
             return "1".equals(id);
         }
     });
 
     private static ProfilePayload profile(String username) {
-        return new ProfilePayload(username, " Ana María ", "López", "Pérez", "+525512345678");
+        return new ProfilePayload(username, " Ana María ", "López", "Pérez", "+525512345678", " ana@test.com ");
     }
 
     @Test
@@ -74,6 +66,7 @@ public class UserProfileServiceTest {
 
         assertEquals("ana_lopez", savedProfile.getUsername());
         assertEquals("Ana María", savedProfile.getFirstNames());
+        assertEquals("ana@test.com", savedProfile.getEmail());
         assertNull(savedPassword);
     }
 
@@ -87,13 +80,13 @@ public class UserProfileServiceTest {
     @Test
     public void validatesAndNormalizesPhoneNumber() {
         assertThrows(DuplicatePhoneNumber.class, () -> service.modifyProfile(
-                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 9876 5432"), "", "", ""));
+                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 9876 5432", "ana@test.com"), "", "", ""));
         InvalidField badPhone = assertThrows(InvalidField.class, () -> service.modifyProfile(
-                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "123"), "", "", ""));
+                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "123", "ana@test.com"), "", "", ""));
         assertEquals(RegistrationField.PHONE_NUMBER, badPhone.getField());
         assertNull(savedProfile);
 
-        service.modifyProfile("1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 1111 2222"), "", "", "");
+        service.modifyProfile("1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 1111 2222", "ana@test.com"), "", "", "");
         assertEquals("+525511112222", savedProfile.getPhoneNumber());
     }
 
@@ -109,13 +102,14 @@ public class UserProfileServiceTest {
         assertEquals(RegistrationField.USERNAME, shortName.getField());
 
         InvalidField badName = assertThrows(InvalidField.class, () -> service.modifyProfile(
-                "1", new ProfilePayload("ana_lopez", "Ana", "L0pez", "Pérez", "+525512345678"), "", "", ""));
+                "1", new ProfilePayload("ana_lopez", "Ana", "L0pez", "Pérez", "+525512345678", "ana@test.com"), "", "", ""));
         assertEquals(RegistrationField.PATERNAL_LAST_NAME, badName.getField());
         assertNull(savedProfile);
     }
 
     @Test
     public void newPasswordNeedsTheCurrentOne() {
+        assertThrows(WrongPassword.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", ""));
         assertThrows(WrongPassword.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", "otra"));
         assertNull(savedProfile);
 
@@ -131,11 +125,17 @@ public class UserProfileServiceTest {
     }
 
     @Test
-    public void deletesExistingAccountOnly() {
+    public void deletesTheAccount() {
         service.deleteAccount("1");
         assertEquals("1", deletedId);
+    }
 
-        assertThrows(AccountNotFound.class, () -> service.deleteAccount("2"));
+    @Test
+    public void rejectsInvalidEmail() {
+        InvalidField error = assertThrows(InvalidField.class, () -> service.modifyProfile(
+                "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@"), "", "", ""));
+        assertEquals(RegistrationField.EMAIL, error.getField());
+        assertNull(savedProfile);
     }
 
     @Test

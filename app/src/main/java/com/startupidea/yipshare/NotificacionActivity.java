@@ -17,17 +17,25 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
+import androidx.appcompat.app.AlertDialog;
+
+import com.startupidea.yipshare.adapters.InboxAdapter;
 import com.startupidea.yipshare.adapters.JoinRequestAdapter;
 import com.startupidea.yipshare.adapters.NotificacionAdapter;
+import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.JoinRequest;
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.condominium.Unit;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.loan.ApiLoanRepository;
 import com.startupidea.yipshare.loan.LoanRequest;
 import com.startupidea.yipshare.loan.LoanService;
-import com.startupidea.yipshare.loan.SqliteLoanRepository;
+import com.startupidea.yipshare.notification.ApiNotificationRepository;
+import com.startupidea.yipshare.notification.Notification;
+import com.startupidea.yipshare.notification.NotificationService;
 import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.List;
 
@@ -35,6 +43,7 @@ public class NotificacionActivity extends AppCompatActivity {
 
     private LoanService loanService;
     private CondominiumService condominiumService;
+    private NotificationService notificationService;
     private String userId;
     private String condominiumId;
 
@@ -83,10 +92,10 @@ public class NotificacionActivity extends AppCompatActivity {
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(NotificacionActivity.this, FormularioArticuloActivity.class)));
 
-        loanService = new LoanService(
-                new SqliteLoanRepository(new DatabaseDriver(this), this),
-                new SqliteCondominiumRepository(new DatabaseDriver(this), this));
-        condominiumService = new CondominiumService(new SqliteCondominiumRepository(new DatabaseDriver(this), this));
+        ApiClient apiClient = new ApiClient(this);
+        loanService = new LoanService(new ApiLoanRepository(apiClient, this));
+        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
+        notificationService = new NotificationService(new ApiNotificationRepository(apiClient));
         SessionRepository session = new SessionRepository(this);
         userId = session.getUserId();
         condominiumId = session.getCondominiumId();
@@ -94,17 +103,17 @@ public class NotificacionActivity extends AppCompatActivity {
     }
 
     private void showLoanRequests() {
-        List<LoanRequest> requests;
-        List<JoinRequest> joinRequests;
-        try {
-            requests = loanService.getAllLoanRequests(userId, condominiumId);
-            joinRequests = condominiumService.getAllJoinRequests(userId, condominiumId);
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        TaskUtil.run(this, () -> new Inbox(
+                        loanService.getAllLoanRequests(userId, condominiumId),
+                        condominiumService.getAllJoinRequests(userId, condominiumId),
+                        notificationService.getAllNotifications()),
+                this::showInbox, this::showError);
+    }
 
-        boolean notificationsExist = !requests.isEmpty() || !joinRequests.isEmpty();
+    private void showInbox(Inbox inbox) {
+        List<LoanRequest> requests = inbox.loanRequests;
+        List<JoinRequest> joinRequests = inbox.joinRequests;
+        boolean notificationsExist = !requests.isEmpty() || !joinRequests.isEmpty() || !inbox.notifications.isEmpty();
         findViewById(R.id.tv_sin_notificaciones).setVisibility(notificationsExist ? View.GONE : View.VISIBLE);
         RecyclerView notificationList = findViewById(R.id.rv_notificaciones);
         notificationList.setVisibility(notificationsExist ? View.VISIBLE : View.GONE);
@@ -125,16 +134,36 @@ public class NotificacionActivity extends AppCompatActivity {
             public void onRequesterClick(LoanRequest request) {
                 startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.getRequesterId()));
             }
-        })));
+        }), inboxAdapter(inbox.notifications)));
+    }
+
+    private InboxAdapter inboxAdapter(List<Notification> notifications) {
+        return new InboxAdapter(notifications, new InboxAdapter.OnNotificationAction() {
+            @Override
+            public void onRead(Notification notification) {
+                TaskUtil.run(NotificacionActivity.this, () -> notificationService.markAsRead(notification),
+                        NotificacionActivity.this::showLoanRequests, NotificacionActivity.this::showError);
+            }
+
+            @Override
+            public void onDelete(Notification notification) {
+                confirm(getString(R.string.confirmar_eliminar_aviso, notification.getHeader()),
+                        () -> notificationService.deleteNotification(notification), R.string.aviso_eliminado);
+            }
+        });
     }
 
     private JoinRequestAdapter joinAdapter(List<JoinRequest> joinRequests) {
         return new JoinRequestAdapter(joinRequests, new JoinRequestAdapter.OnJoinRequestAction() {
             @Override
             public void onAccept(JoinRequest request) {
-                confirm(getString(R.string.confirmar_aceptar_union, request.getUsername(), request.getCondominiumName()),
-                        () -> condominiumService.acceptJoinRequest(userId, request.getUserId(), request.getCondominiumId()),
-                        R.string.union_aceptada);
+                if (request.getSuggestedUnitId() != null) {
+                    confirm(getString(R.string.confirmar_aceptar_union, request.getUsername(), request.getCondominiumName()),
+                            () -> condominiumService.acceptJoinRequest(userId, request, null), R.string.union_aceptada);
+                    return;
+                }
+                TaskUtil.run(NotificacionActivity.this, () -> condominiumService.getAllUnits(request.getCondominiumId()),
+                        units -> pickUnit(request, units), NotificacionActivity.this::showError);
             }
 
             @Override
@@ -151,15 +180,47 @@ public class NotificacionActivity extends AppCompatActivity {
         });
     }
 
-    private void confirm(String message, Runnable answer, int doneMessage) {
-        ConfirmDialogUtil.show(this, message, () -> new LoadingOverlay(this).run(() -> {
-            try {
-                answer.run();
-                Toast.makeText(this, doneMessage, Toast.LENGTH_SHORT).show();
-            } catch (AppException e) {
-                Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            }
+    private void pickUnit(JoinRequest request, List<Unit> units) {
+        if (units.isEmpty()) {
+            Toast.makeText(this, R.string.sin_unidades, Toast.LENGTH_LONG).show();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.elegir_unidad, request.getUsername(), request.getUnit()))
+                .setItems(units.stream().map(Unit::getName).toArray(String[]::new), (dialog, which) ->
+                        answer(() -> condominiumService.acceptJoinRequest(userId, request, units.get(which).getId()),
+                                R.string.union_aceptada))
+                .setNegativeButton(R.string.opcion_cancelar, null)
+                .show();
+    }
+
+    private void confirm(String message, Runnable work, int doneMessage) {
+        ConfirmDialogUtil.show(this, message, () -> answer(work, doneMessage));
+    }
+
+    private void answer(Runnable work, int doneMessage) {
+        new LoadingOverlay(this).run(work, () -> {
+            Toast.makeText(this, doneMessage, Toast.LENGTH_SHORT).show();
             showLoanRequests();
-        }));
+        }, e -> {
+            showError(e);
+            showLoanRequests();
+        });
+    }
+
+    private void showError(AppException e) {
+        Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+    }
+
+    private static final class Inbox {
+        final List<LoanRequest> loanRequests;
+        final List<JoinRequest> joinRequests;
+        final List<Notification> notifications;
+
+        Inbox(List<LoanRequest> loanRequests, List<JoinRequest> joinRequests, List<Notification> notifications) {
+            this.loanRequests = loanRequests;
+            this.joinRequests = joinRequests;
+            this.notifications = notifications;
+        }
     }
 }

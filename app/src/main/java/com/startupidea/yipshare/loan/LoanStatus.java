@@ -23,11 +23,8 @@ public enum LoanStatus {
     }
 
     public static LoanStatus parse(String value) {
-        return LoanStatus.valueOf(value.trim().toUpperCase(Locale.ROOT));
-    }
-
-    public String getValue() {
-        return name().toLowerCase(Locale.ROOT);
+        String status = value.trim().toUpperCase(Locale.ROOT);
+        return "RETURNED".equals(status) ? FINISHED : LoanStatus.valueOf(status);
     }
 
     @StringRes
@@ -44,7 +41,4 @@ public enum LoanStatus {
         return this == ACCEPTED || this == ON_LOAN;
     }
 
-    public LoanStatus next() {
-        return this == ACCEPTED ? ON_LOAN : FINISHED;
-    }
 }

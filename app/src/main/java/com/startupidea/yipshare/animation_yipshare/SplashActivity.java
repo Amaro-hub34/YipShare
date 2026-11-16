@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.error.ServerUnavailable;
+import com.startupidea.yipshare.user.ApiUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.UserService;
+import com.startupidea.yipshare.utils.TaskUtil;
 import com.startupidea.yipshare.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -25,18 +28,26 @@ public class SplashActivity extends AppCompatActivity {
         setTheme(R.style.Theme_Splash);
         super.onCreate(savedInstanceState);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, hasActiveSession() ? PantallaPrincipalActivity.class : MainActivity.class);
-            startActivity(intent);
+        long start = SystemClock.uptimeMillis();
+        TaskUtil.run(this, this::hasActiveSession, active -> {
+            long remaining = Math.max(0, SPLASH_DURATION - (SystemClock.uptimeMillis() - start));
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                startActivity(new Intent(this, active ? PantallaPrincipalActivity.class : MainActivity.class));
+                finish();
+            }, remaining);
+        }, error -> {
+            startActivity(new Intent(this, MainActivity.class));
             finish();
-        }, SPLASH_DURATION);
+        });
     }
 
     private boolean hasActiveSession() {
         SessionRepository session = new SessionRepository(this);
         boolean active;
         try {
-            active = new UserService(new SqliteUserRepository(new DatabaseDriver(this))).isActiveSession(session.getUserId());
+            active = new UserService(new ApiUserRepository(new ApiClient(this), session)).isActiveSession(session.getUserId());
+        } catch (ServerUnavailable e) {
+            active = session.getUserId() != null;
         } catch (AppException e) {
             active = false;
         }

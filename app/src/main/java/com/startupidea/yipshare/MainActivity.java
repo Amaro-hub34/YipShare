@@ -13,12 +13,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.EmptyPassword;
 import com.startupidea.yipshare.user.EmptyUsername;
 import com.startupidea.yipshare.user.LoginPayload;
-import com.startupidea.yipshare.user.SqliteUserRepository;
+import com.startupidea.yipshare.user.ApiUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
+        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         errorLabel = findViewById(R.id.tv_error);
         PasswordToggleUtil.attach(passwordField, findViewById(R.id.btn_toggle_password));
 
-        findViewById(R.id.btn_entrar).setOnClickListener(v -> new LoadingOverlay(this).run(this::sendLoginRequest));
+        findViewById(R.id.btn_entrar).setOnClickListener(v -> sendLoginRequest());
 
         findViewById(R.id.boton_registrate).setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, RegistroCuenta1Activity.class)));
@@ -65,23 +65,25 @@ public class MainActivity extends AppCompatActivity {
                 usernameField.getText().toString().trim(),
                 passwordField.getText().toString());
 
-        try {
-            User user = userService.login(payload);
+        new LoadingOverlay(this).run(() -> userService.login(payload), user -> {
             new SessionRepository(this).createSession(user);
             Intent intent = new Intent(this, PantallaPrincipalActivity.class);
             user.putInto(intent);
             startActivity(intent);
             finish();
-        } catch (EmptyUsername e) {
+        }, this::showLoginError);
+    }
+
+    private void showLoginError(AppException e) {
+        if (e instanceof EmptyUsername) {
             usernameField.setError(getString(e.getMessageRes()));
             usernameField.requestFocus();
-        } catch (EmptyPassword e) {
+        } else if (e instanceof EmptyPassword) {
             passwordField.setError(getString(e.getMessageRes()));
             passwordField.requestFocus();
-        } catch (AppException e) {
+        } else {
             errorLabel.setText(e.getMessageRes());
             errorLabel.setVisibility(View.VISIBLE);
         }
-
     }
 }

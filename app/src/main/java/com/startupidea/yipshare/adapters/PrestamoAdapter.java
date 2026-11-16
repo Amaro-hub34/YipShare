@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
 
-    // must match strftime('%d/%m/%Y') in SqliteLoanRepository
+    // must match the format ApiLoanRepository.toDate produces
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final int CARD_IMAGE_MAX_SIZE_PX = 400;
 

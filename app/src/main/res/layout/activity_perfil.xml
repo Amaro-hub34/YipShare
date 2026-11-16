@@ -188,6 +188,14 @@
                         android:minHeight="48dp"
                         android:layout_marginBottom="14dp" />
 
+                    <TextView
+                        android:id="@+id/tv_correo"
+                        style="@style/InputBrand"
+                        android:hint="@string/correo_hint"
+                        android:background="@drawable/bg_input"
+                        android:minHeight="48dp"
+                        android:layout_marginBottom="14dp" />
+
 
                     <TextView
                         style="@style/TextTitle"

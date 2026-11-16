@@ -7,8 +7,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import com.startupidea.yipshare.condominium.FakeCondominiumRepository;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -22,18 +20,12 @@ public class ItemServiceTest {
     private static final String OWNER = "owner";
     private static final String CONDO = "condo";
     private static final String NAME = "Drill";
-    private static final String DESCRIPTION = "Works well";
+    private static final String DESCRIPTION = "Works well, barely used";
     private static final String IMAGE = "content://image/1";
     private static final List<String> DURATIONS = Collections.singletonList("1 day");
 
     private final List<Item> stored = new ArrayList<>();
-    private String deletedId;
-
-    private final FakeCondominiumRepository condominiums = new FakeCondominiumRepository();
-
-    {
-        condominiums.members.add(FakeCondominiumRepository.key(OWNER, CONDO));
-    }
+    private Item deleted;
 
     private final ItemService service = new ItemService(new ItemRepository() {
         @Override
@@ -46,29 +38,20 @@ public class ItemServiceTest {
         }
 
         @Override
-        public Item getItemById(String id) {
-            for (Item item : stored) {
-                if (item.getId().equals(id)) return item;
-            }
-            return null;
+        public Item createItem(String condominiumId, ItemPayload payload) {
+            return new Item("new", OWNER, condominiumId, ItemAvailability.AVAILABLE, payload);
         }
 
         @Override
-        public Item createItem(String ownerId, String condominiumId, ItemPayload payload) {
-            return new Item("new", ownerId, condominiumId, ItemAvailability.AVAILABLE, payload);
+        public Item modifyItem(Item item, ItemPayload payload) {
+            return new Item(item.getId(), item.getOwnerId(), item.getCondominiumId(), item.getAvailability(), payload);
         }
 
         @Override
-        public Item modifyItem(String id, ItemPayload payload) {
-            Item item = getItemById(id);
-            return new Item(id, item.getOwnerId(), item.getCondominiumId(), item.getAvailability(), payload);
+        public void deleteItem(Item item) {
+            deleted = item;
         }
-
-        @Override
-        public void deleteItem(String id) {
-            deletedId = id;
-        }
-    }, condominiums);
+    });
 
     private static ItemPayload payload(
             String name, String description, String imageUri, List<String> loanDurations) {
@@ -80,7 +63,7 @@ public class ItemServiceTest {
     }
 
     private void assertInvalid(ItemPayload payload, EnumSet<ItemField> expected) {
-        InvalidItem error = assertThrows(InvalidItem.class, () -> service.createItem(OWNER, CONDO, payload));
+        InvalidItem error = assertThrows(InvalidItem.class, () -> service.createItem(CONDO, payload));
         assertEquals(expected, error.getFields());
     }
 
@@ -88,7 +71,7 @@ public class ItemServiceTest {
     public void createsValidItemForItsOwner() {
         ItemPayload payload = payload(NAME, DESCRIPTION, IMAGE, DURATIONS);
 
-        Item item = service.createItem(OWNER, CONDO, payload);
+        Item item = service.createItem(CONDO, payload);
 
         assertFalse(item.getId().isEmpty());
         assertSame(payload, item.getPayload());
@@ -102,8 +85,9 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void rejectsBlankDescription() {
+    public void rejectsBlankOrShortDescription() {
         assertInvalid(payload(NAME, "   ", IMAGE, DURATIONS), EnumSet.of(ItemField.DESCRIPTION));
+        assertInvalid(payload(NAME, "Too short", IMAGE, DURATIONS), EnumSet.of(ItemField.DESCRIPTION));
     }
 
     @Test
@@ -125,19 +109,20 @@ public class ItemServiceTest {
 
     @Test
     public void acceptsSeveralDurations() {
-        Item item = service.createItem(OWNER, CONDO, payload(NAME, DESCRIPTION, IMAGE, Arrays.asList("1 day", "1 week")));
+        Item item = service.createItem(CONDO, payload(NAME, DESCRIPTION, IMAGE, Arrays.asList("1 day", "1 week")));
 
         assertEquals(2, item.getPayload().getLoanDurations().size());
     }
 
     @Test
-    public void searchesOnlyOwnItemsByNameIgnoringCase() {
+    public void filtersOnlyOwnItemsByNameIgnoringCase() {
         Item drill = item("1", OWNER, ItemAvailability.AVAILABLE, "Power Drill");
         Item ladder = item("2", OWNER, ItemAvailability.AVAILABLE, "Ladder");
         stored.addAll(Arrays.asList(drill, ladder, item("3", "other", ItemAvailability.AVAILABLE, "Drill")));
+        List<Item> items = service.getAllItems(CONDO);
 
-        assertEquals(Collections.singletonList(drill), service.searchMyItems(OWNER, CONDO, " dRi "));
-        assertEquals(Arrays.asList(drill, ladder), service.searchMyItems(OWNER, CONDO, ""));
+        assertEquals(Collections.singletonList(drill), service.filterMyItems(items, OWNER, " dRi "));
+        assertEquals(Arrays.asList(drill, ladder), service.filterMyItems(items, OWNER, ""));
     }
 
     @Test
@@ -148,72 +133,58 @@ public class ItemServiceTest {
         Item elsewhere = new Item("4", "other", "another", ItemAvailability.AVAILABLE, payload("Bike", DESCRIPTION, IMAGE, DURATIONS));
         stored.addAll(Arrays.asList(mine, free, lent, elsewhere));
 
-        assertEquals(Collections.singletonList(free), service.searchAvailableItems(OWNER, CONDO, ""));
-        assertTrue(service.searchAvailableItems(OWNER, null, "").isEmpty());
+        assertEquals(Collections.singletonList(free), service.filterAvailableItems(service.getAllItems(CONDO), OWNER, ""));
+        assertTrue(service.getAllItems(null).isEmpty());
     }
 
     @Test
-    public void publishesOnlyInACondominiumTheOwnerBelongsTo() {
+    public void publishesOnlyWithACondominiumSelected() {
         assertThrows(NoCondominiumSelected.class,
-                () -> service.createItem(OWNER, null, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
-        assertThrows(NoCondominiumSelected.class,
-                () -> service.createItem(OWNER, "another", payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
+                () -> service.createItem(null, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
     }
 
     @Test
-    public void adminRemovesAnyPublicationOfTheirCondominium() {
-        stored.add(item("1", "other", ItemAvailability.NOT_AVAILABLE, NAME));
-        condominiums.admins.add(FakeCondominiumRepository.key("admin", CONDO));
+    public void adminDeletesPublicationsOfOthersEvenWhenLent() {
+        Item lent = item("1", "other", ItemAvailability.NOT_AVAILABLE, NAME);
 
-        service.deleteItem("admin", "1");
+        service.deleteItem("admin", lent);
 
-        assertEquals("1", deletedId);
-    }
-
-    @Test
-    public void adminOfAnotherCondominiumCannotRemoveIt() {
-        stored.add(item("1", "other", ItemAvailability.AVAILABLE, NAME));
-        condominiums.admins.add(FakeCondominiumRepository.key("admin", "another"));
-
-        assertThrows(ItemNotFound.class, () -> service.deleteItem("admin", "1"));
-        assertNull(deletedId);
+        assertSame(lent, deleted);
     }
 
     @Test
     public void ownerModifiesAvailableItem() {
-        stored.add(item("1", OWNER, ItemAvailability.AVAILABLE, NAME));
-
-        Item modified = service.modifyItem(OWNER, "1", payload("Hammer", DESCRIPTION, IMAGE, DURATIONS));
+        Item modified = service.modifyItem(OWNER, item("1", OWNER, ItemAvailability.AVAILABLE, NAME),
+                payload("Hammer", DESCRIPTION, IMAGE, DURATIONS));
 
         assertEquals("Hammer", modified.getPayload().getName());
     }
 
     @Test
     public void ownerDeletesAvailableItem() {
-        stored.add(item("1", OWNER, ItemAvailability.AVAILABLE, NAME));
+        Item drill = item("1", OWNER, ItemAvailability.AVAILABLE, NAME);
 
-        service.deleteItem(OWNER, "1");
+        service.deleteItem(OWNER, drill);
 
-        assertEquals("1", deletedId);
+        assertSame(drill, deleted);
     }
 
     @Test
-    public void cannotModifyOrDeleteUnlessAvailable() {
-        stored.add(item("1", OWNER, ItemAvailability.NOT_AVAILABLE, NAME));
-        stored.add(item("2", OWNER, ItemAvailability.PENDING, NAME));
+    public void ownerCannotModifyOrDeleteUnlessAvailable() {
+        Item lent = item("1", OWNER, ItemAvailability.NOT_AVAILABLE, NAME);
+        Item pending = item("2", OWNER, ItemAvailability.PENDING, NAME);
 
         assertThrows(ItemNotAvailable.class,
-                () -> service.modifyItem(OWNER, "1", payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
-        assertThrows(ItemNotAvailable.class, () -> service.deleteItem(OWNER, "2"));
-        assertNull(deletedId);
+                () -> service.modifyItem(OWNER, lent, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
+        assertThrows(ItemNotAvailable.class, () -> service.deleteItem(OWNER, pending));
+        assertNull(deleted);
     }
 
     @Test
-    public void cannotTouchItemsOfOtherUsersOrMissingOnes() {
-        stored.add(item("1", "other", ItemAvailability.AVAILABLE, NAME));
+    public void cannotModifyItemsOfOtherUsers() {
+        Item others = item("1", "other", ItemAvailability.AVAILABLE, NAME);
 
-        assertThrows(ItemNotFound.class, () -> service.deleteItem(OWNER, "1"));
-        assertThrows(ItemNotFound.class, () -> service.deleteItem(OWNER, "missing"));
-        assertNull(deletedId);
+        assertThrows(ItemNotFound.class,
+                () -> service.modifyItem(OWNER, others, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
     }
 }

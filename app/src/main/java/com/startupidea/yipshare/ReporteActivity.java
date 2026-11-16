@@ -20,14 +20,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.feedback.EmptyReportText;
 import com.startupidea.yipshare.feedback.FeedbackService;
-import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
+import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.utils.ImageFileUtil;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
 
@@ -115,26 +114,20 @@ public class ReporteActivity extends AppCompatActivity{
     private void tryCreateReport() {
         descriptionField.setError(null);
 
-        try {
-            String storedImage = null;
-            if (evidenceUri != null) {
-                Uri copy = ImageFileUtil.tryCopy(this, evidenceUri);
-                if (copy == null) {
-                    Toast.makeText(this, R.string.error_imagen_invalida, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                storedImage = copy.toString();
-            }
-
-            new FeedbackService(new SqliteFeedbackRepository(new DatabaseDriver(this))).createReport(
-                    new SessionRepository(this).getUserId(), loan, descriptionField.getText().toString(), storedImage);
+        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
+        String userId = new SessionRepository(this).getUserId();
+        String description = descriptionField.getText().toString();
+        String image = evidenceUri == null ? null : evidenceUri.toString();
+        new LoadingOverlay(this).run(() -> feedbackService.createReport(userId, loan, description, image), () -> {
             Toast.makeText(this, R.string.reporte_enviado, Toast.LENGTH_SHORT).show();
             finish();
-        } catch (EmptyReportText e) {
-            descriptionField.setError(getString(e.getMessageRes()));
-            descriptionField.requestFocus();
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        }, e -> {
+            if (e instanceof EmptyReportText) {
+                descriptionField.setError(getString(e.getMessageRes()));
+                descriptionField.requestFocus();
+            } else {
+                Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

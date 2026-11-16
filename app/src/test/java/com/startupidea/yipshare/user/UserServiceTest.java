@@ -8,10 +8,6 @@ import org.junit.Test;
 public class UserServiceTest {
 
     private static UserService serviceWith(User loginResult, boolean usernameExists) {
-        return serviceWith(loginResult, usernameExists, false);
-    }
-
-    private static UserService serviceWith(User loginResult, boolean usernameExists, boolean phoneExists) {
         return new UserService(new UserRepository() {
             @Override
             public User tryLogin(LoginPayload payload) {
@@ -19,32 +15,18 @@ public class UserServiceTest {
             }
 
             @Override
-            public boolean existsUsername(String username) {
-                return usernameExists;
-            }
-
-            @Override
-            public boolean existsPhoneNumber(String phoneNumber) {
-                return phoneExists;
-            }
-
-            @Override
             public User createUser(RegistrationPayload payload) {
+                if (usernameExists) throw new DuplicateUsername();
                 return new User("new", payload.getUsername());
             }
 
             @Override
             public UserProfile getUserProfileById(String id) {
-                return "1".equals(id) ? new UserProfile("1", "ana", "Ana", "Pérez", "López", "+525512345678", 45) : null;
+                return "1".equals(id) ? new UserProfile("1", "ana", "Ana", "Pérez", "López", "+525512345678", "ana@test.com", 45) : null;
             }
 
             @Override
-            public boolean matchesPassword(String id, String password) {
-                return false;
-            }
-
-            @Override
-            public void modifyUser(String id, ProfilePayload payload, String newPassword) {
+            public void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword) {
             }
 
             @Override
@@ -54,6 +36,10 @@ public class UserServiceTest {
             @Override
             public boolean isActiveUser(String id) {
                 return "1".equals(id);
+            }
+
+            @Override
+            public void logout() {
             }
         });
     }
@@ -89,12 +75,6 @@ public class UserServiceTest {
         assertEquals(user, serviceWith(user, false).login(new LoginPayload("anitas", "Secret1!")));
     }
 
-    @Test
-    public void ensureUsernameAvailableRejectsDuplicate() {
-        UserService service = serviceWith(null, true);
-        assertThrows(DuplicateUsername.class, () -> service.ensureUsernameAvailable("ana"));
-    }
-
     private static RegistrationDraft names(String paternal, String maternal, String first) {
         return RegistrationDraft.EMPTY.withNames(paternal, maternal, first);
     }
@@ -104,7 +84,7 @@ public class UserServiceTest {
     }
 
     private static RegistrationDraft credentials(String username, String password, String confirmation, String phone) {
-        return names("Pérez", "De la Cruz", "Ana María").withCredentials(username, password, confirmation, phone);
+        return names("Pérez", "De la Cruz", "Ana María").withCredentials(username, password, confirmation, phone, "ana@test.com");
     }
 
     private static RegistrationField failingField(Runnable action) {
@@ -141,7 +121,7 @@ public class UserServiceTest {
     @Test
     public void validateCredentialsEnforcesPasswordRules() {
         UserService service = serviceWith(null, false);
-        for (String password : new String[]{"Secr1!", "secret1!", "Secretos!", "Secret123", "Secret 12"}) {
+        for (String password : new String[]{"Secr1!", "secret1!", "Secretos!", "Secret123", "Secret 12", "SECRET1!"}) {
             assertEquals(password, RegistrationField.PASSWORD,
                     failingField(() -> service.validateCredentials(credentials("anitas", password, password))));
         }
@@ -166,6 +146,24 @@ public class UserServiceTest {
     }
 
     @Test
+    public void validateCredentialsRequiresValidEmail() {
+        UserService service = serviceWith(null, false);
+        for (String email : new String[]{"", "ana", "ana@test", "ana @test.com"}) {
+            RegistrationDraft draft = names("Pérez", "López", "Ana").withCredentials("anitas", "Secret1!", "Secret1!", "+525512345678", email);
+            assertEquals(email, RegistrationField.EMAIL, failingField(() -> service.validateCredentials(draft)));
+        }
+    }
+
+    @Test
+    public void validateCredentialsRejectsUsernameTheServerWouldReject() {
+        UserService service = serviceWith(null, false);
+        assertEquals(RegistrationField.USERNAME,
+                failingField(() -> service.validateCredentials(credentials("ana lopez", "Secret1!", "Secret1!"))));
+        assertEquals(RegistrationField.USERNAME,
+                failingField(() -> service.validateCredentials(credentials("a".repeat(51), "Secret1!", "Secret1!"))));
+    }
+
+    @Test
     public void toPayloadStoresPhoneInE164() {
         assertEquals("+525512345678",
                 credentials("anitas", "Secret1!", "Secret1!", "+52 55-1234-5678").toPayload().getPhoneNumber());
@@ -175,13 +173,6 @@ public class UserServiceTest {
     public void registerRejectsDuplicateUsername() {
         UserService service = serviceWith(null, true);
         assertThrows(DuplicateUsername.class,
-                () -> service.register(credentials("anitas", "Secret1!", "Secret1!")));
-    }
-
-    @Test
-    public void registerRejectsDuplicatePhoneNumber() {
-        UserService service = serviceWith(null, false, true);
-        assertThrows(DuplicatePhoneNumber.class,
                 () -> service.register(credentials("anitas", "Secret1!", "Secret1!")));
     }
 

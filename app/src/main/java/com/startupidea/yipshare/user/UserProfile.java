@@ -10,6 +10,7 @@ public final class UserProfile {
     private final String paternalLastName;
     private final String maternalLastName;
     private final String phoneNumber;
+    private final String email;
     private final int computedRating;
 
     public UserProfile(
@@ -19,6 +20,7 @@ public final class UserProfile {
             String paternalLastName,
             String maternalLastName,
             String phoneNumber,
+            String email,
             int computedRating) {
         this.id = id;
         this.username = username;
@@ -26,6 +28,7 @@ public final class UserProfile {
         this.paternalLastName = paternalLastName;
         this.maternalLastName = maternalLastName;
         this.phoneNumber = phoneNumber;
+        this.email = email;
         this.computedRating = computedRating;
     }
 
@@ -51,6 +54,10 @@ public final class UserProfile {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public float getRating() {

@@ -4,33 +4,27 @@ import java.util.List;
 
 public interface CondominiumRepository {
 
-    void createCondominiumRequest(String userId, CondominiumPayload payload);
+    void createCondominiumRequest(CondominiumPayload payload);
 
-    String getApprovedCondominiumIdByCode(String shortCode);
+    void createPendingMember(String shortCode, String unit);
 
-    boolean existsMembership(String userId, String condominiumId);
-
-    void createPendingMember(String userId, String condominiumId, String building, String apartment);
-
-    List<CondominiumMembership> getAllMembershipsByUserId(String userId);
-
-    boolean existsMembershipByUserId(String userId);
-
-    boolean isCondominiumAdmin(String userId, String condominiumId);
+    List<CondominiumMembership> getAllMemberships();
 
     List<Neighbor> getAllNeighborsByCondominiumId(String condominiumId);
 
-    List<JoinRequest> getAllJoinRequestsByAdminId(String adminId, String condominiumId);
+    List<JoinRequest> getAllJoinRequestsByCondominiumId(String condominiumId, String condominiumName);
 
-    boolean existsJoinRequest(String userId, String condominiumId);
-
-    void acceptJoinRequest(String userId, String condominiumId);
+    void acceptJoinRequest(String userId, String condominiumId, String unitId);
 
     void rejectJoinRequest(String userId, String condominiumId);
 
-    boolean canRequestLoans(String userId, String condominiumId);
-
     void modifyLoanAccess(String userId, String condominiumId, boolean allowed);
 
-    void createDemoCondominiums(String userId);
+    List<Unit> getAllUnitsByCondominiumId(String condominiumId);
+
+    void createUnit(String condominiumId, String name);
+
+    void modifyUnit(String condominiumId, String unitId, String name);
+
+    void deleteUnit(String condominiumId, String unitId);
 }

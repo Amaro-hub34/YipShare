@@ -15,10 +15,16 @@ import java.util.List;
 
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
 
-    private final List<Report> reports;
+    public interface OnReportClick {
+        void onReportClick(Report report);
+    }
 
-    public ReportAdapter(List<Report> reports) {
+    private final List<Report> reports;
+    private final OnReportClick onReportClick;
+
+    public ReportAdapter(List<Report> reports, OnReportClick onReportClick) {
         this.reports = reports;
+        this.onReportClick = onReportClick;
     }
 
     @NonNull
@@ -31,10 +37,11 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reports.get(position);
-        holder.statusLabel.setText(report.isResolved() ? R.string.reporte_resuelto : R.string.reporte_abierto);
-        holder.statusLabel.setBackgroundResource(
-                report.isResolved() ? R.drawable.bg_badge_disponible : R.drawable.bg_badge_uso);
+        holder.statusLabel.setText(report.getState().getMessageRes());
+        holder.statusLabel.setBackgroundResource(report.getState().getBadgeRes());
         holder.textLabel.setText(report.getText());
+        holder.itemView.setOnClickListener(onReportClick == null ? null : v -> onReportClick.onReportClick(report));
+        holder.itemView.setClickable(onReportClick != null);
     }
 
     @Override

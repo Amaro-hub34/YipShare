@@ -34,7 +34,7 @@ public class UserParcelTest {
     public void draftSurvivesIntentParceling() {
         RegistrationDraft draft = RegistrationDraft.EMPTY
                 .withNames("Pérez", "López", "Ana")
-                .withCredentials("anitas", "Secret1!", "Secret1!", "5512345678");
+                .withCredentials("anitas", "Secret1!", "Secret1!", "5512345678", "ana@test.com");
         Intent intent = new Intent();
         draft.putInto(intent);
 
@@ -52,5 +52,6 @@ public class UserParcelTest {
         assertEquals("anitas", result.getUsername());
         assertEquals("Secret1!", result.getPassword());
         assertEquals("Secret1!", result.getPasswordConfirmation());
+        assertEquals("ana@test.com", result.getEmail());
     }
 }

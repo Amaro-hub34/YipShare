@@ -31,25 +31,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.startupidea.yipshare.adapters.ArticuloAdapter;
+import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemService;
-import com.startupidea.yipshare.item.SqliteItemRepository;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumMembership;
 import com.startupidea.yipshare.condominium.CondominiumService;
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
-import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.error.ServerUnavailable;
+import com.startupidea.yipshare.notification.ApiNotificationRepository;
+import com.startupidea.yipshare.notification.NotificationService;
+import com.startupidea.yipshare.user.ApiUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
-import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.UserService;
+import com.startupidea.yipshare.utils.TaskUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class PantallaPrincipalActivity extends AppCompatActivity {
 
     private ItemService itemService;
     private CondominiumService condominiumService;
+    private NotificationService notificationService;
+    private UserService userService;
     private SessionRepository session;
     private String userId;
     private List<CondominiumMembership> memberships = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     private RecyclerView myItemsList;
     private RecyclerView availableItemsList;
     private EditText searchField;
@@ -87,11 +95,12 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
-        DatabaseDriver databaseDriver = new DatabaseDriver(this);
-        SqliteCondominiumRepository condominiumRepository = new SqliteCondominiumRepository(databaseDriver, this);
-        itemService = new ItemService(new SqliteItemRepository(databaseDriver, this), condominiumRepository);
-        condominiumService = new CondominiumService(condominiumRepository);
+        ApiClient apiClient = new ApiClient(this);
         session = new SessionRepository(this);
+        itemService = new ItemService(new ApiItemRepository(apiClient, this));
+        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
+        notificationService = new NotificationService(new ApiNotificationRepository(apiClient));
+        userService = new UserService(new ApiUserRepository(apiClient, session));
         userId = session.getUserId();
         showGreeting();
         myItemsList = findViewById(R.id.rv_mis_articulos);
@@ -135,19 +144,18 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         showCondominium();
-        showItems();
     }
 
     private void showCondominium() {
-        try {
-            memberships = condominiumService.getAllMemberships(userId);
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        TaskUtil.run(this, () -> condominiumService.getAllMemberships(userId), loaded -> {
+            memberships = loaded;
+            showSelectedCondominium();
+            loadItems();
+            showNotificationDot();
+        }, this::showError);
+    }
 
-        showNotificationDot();
-
+    private void showSelectedCondominium() {
         CondominiumMembership selected = selectedMembership();
         if (selected == null && !memberships.isEmpty()) selected = memberships.get(0);
         session.modifyCondominiumId(selected == null ? null : selected.getCondominiumId());
@@ -162,9 +170,14 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void showNotificationDot() {
-        int pending = 0;
-        for (CondominiumMembership membership : memberships) pending += membership.getPendingNotifications();
+        int pendingRequests = 0;
+        for (CondominiumMembership membership : memberships) pendingRequests += membership.getPendingNotifications();
+        int requests = pendingRequests;
+        TaskUtil.run(this, () -> notificationService.countUnread(), unread -> showNotificationDot(requests + unread),
+                e -> showNotificationDot(requests));
+    }
 
+    private void showNotificationDot(int pending) {
         findViewById(R.id.punto_notificaciones).setVisibility(pending > 0 ? View.VISIBLE : View.GONE);
         findViewById(R.id.iv_notificaciones).setContentDescription(
                 getString(pending > 0 ? R.string.notificaciones_pendientes : R.string.notification));
@@ -178,27 +191,34 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         return null;
     }
 
+    private void loadItems() {
+        String condominiumId = session.getCondominiumId();
+        TaskUtil.run(this, () -> itemService.getAllItems(condominiumId), loaded -> {
+            items = loaded;
+            showItems();
+        }, this::showError);
+    }
+
     private void showItems() {
         String query = searchField.getText().toString();
-        String condominiumId = session.getCondominiumId();
-        try {
-            myItemsList.setAdapter(new ArticuloAdapter(itemService.searchMyItems(userId, condominiumId, query)));
-            availableItemsList.setAdapter(new ArticuloAdapter(itemService.searchAvailableItems(userId, condominiumId, query)));
-        } catch (AppException e) {
-            Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-        }
+        myItemsList.setAdapter(new ArticuloAdapter(itemService.filterMyItems(items, userId, query)));
+        availableItemsList.setAdapter(new ArticuloAdapter(itemService.filterAvailableItems(items, userId, query)));
+    }
+
+    private void showError(AppException e) {
+        Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
     }
 
     private void showGreeting() {
-        try {
-            UserService userService = new UserService(new SqliteUserRepository(new DatabaseDriver(this)));
-            String name = userService.getUserProfile(userId).getFirstNames();
-            ((TextView) findViewById(R.id.tv_saludo)).setText(getString(R.string.saludo, name));
-        } catch (AppException e) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
+        TaskUtil.run(this, () -> userService.getUserProfile(userId).getFirstNames(),
+                name -> ((TextView) findViewById(R.id.tv_saludo)).setText(getString(R.string.saludo, name)),
+                e -> {
+                    if (e instanceof ServerUnavailable) return;
+                    session.deleteSession();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                });
     }
 
     private void showAddMenu() {
@@ -234,8 +254,19 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             dialog.dismiss();
             startActivity(new Intent(this, NeighborsActivity.class));
         });
+        View unitsButton = panel.findViewById(R.id.btn_ver_unidades);
+        unitsButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(this, UnitsActivity.class));
+        });
+        View reportsButton = panel.findViewById(R.id.btn_ver_reportes_condominio);
+        reportsButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            startActivity(new Intent(this, CondominiumFeedbackActivity.class));
+        });
+        View[] adminButtons = {neighborsButton, unitsButton, reportsButton};
         CondominiumMembership selected = selectedMembership();
-        neighborsButton.setVisibility(selected != null && selected.isAdmin() ? View.VISIBLE : View.GONE);
+        showAdminButtons(adminButtons, selected != null && selected.isAdmin());
 
         RecyclerView condominiumList = panel.findViewById(R.id.rv_condominios);
         condominiumList.setAdapter(new CondominioAdapter(memberships, Math.max(0, memberships.indexOf(selected)),
@@ -243,9 +274,9 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
                 position -> {
                     CondominiumMembership picked = memberships.get(position);
                     session.modifyCondominiumId(picked.getCondominiumId());
-                    neighborsButton.setVisibility(picked.isAdmin() ? View.VISIBLE : View.GONE);
-                    showCondominium();
-                    showItems();
+                    showAdminButtons(adminButtons, picked.isAdmin());
+                    showSelectedCondominium();
+                    loadItems();
                 }));
 
         Window window = dialog.getWindow();
@@ -259,12 +290,17 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private static void showAdminButtons(View[] buttons, boolean admin) {
+        for (View button : buttons) button.setVisibility(admin ? View.VISIBLE : View.GONE);
+    }
+
     private void confirmLogout() {
-        ConfirmDialogUtil.show(this, getString(R.string.confirmar_cerrar_sesion), () -> {
-            new SessionRepository(this).deleteSession();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
+        ConfirmDialogUtil.show(this, getString(R.string.confirmar_cerrar_sesion), () ->
+                TaskUtil.run(this, userService::logout, () -> {
+                    session.deleteSession();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }, this::showError));
     }
 }

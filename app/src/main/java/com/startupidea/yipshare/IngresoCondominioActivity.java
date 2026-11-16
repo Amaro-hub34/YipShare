@@ -19,8 +19,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.startupidea.yipshare.condominium.CondominiumNotFound;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.EmptyApartment;
-import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
-import com.startupidea.yipshare.database.DatabaseDriver;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.SessionRepository;
 
@@ -38,13 +38,13 @@ public class IngresoCondominioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ingreso_condominio);
 
-        condominiumService = new CondominiumService(new SqliteCondominiumRepository(new DatabaseDriver(this), this));
+        condominiumService = new CondominiumService(new ApiCondominiumRepository(new ApiClient(this), this));
         codeField = findViewById(R.id.et_codigo_condominio);
         buildingField = findViewById(R.id.et_direccion_edificio);
         apartmentField = findViewById(R.id.et_direccion_departamento);
         codeErrorLabel = findViewById(R.id.tv_error_codigo);
 
-        findViewById(R.id.btn_unirse).setOnClickListener(v -> new LoadingOverlay(this).run(this::tryJoinCondominium));
+        findViewById(R.id.btn_unirse).setOnClickListener(v -> tryJoinCondominium());
 
         Guideline guidelineHeader = findViewById(R.id.guideline_header);
         View bottomNav = findViewById(R.id.bottom_nav);
@@ -80,21 +80,24 @@ public class IngresoCondominioActivity extends AppCompatActivity {
     private void tryJoinCondominium() {
         cleanGUI();
 
-        try {
-            condominiumService.joinCondominium(
-                    new SessionRepository(this).getUserId(),
-                    codeField.getText().toString(),
-                    buildingField.getText().toString(),
-                    apartmentField.getText().toString());
+        String userId = new SessionRepository(this).getUserId();
+        String code = codeField.getText().toString();
+        String building = buildingField.getText().toString();
+        String apartment = apartmentField.getText().toString();
+        new LoadingOverlay(this).run(() -> condominiumService.joinCondominium(userId, code, building, apartment), () -> {
             Toast.makeText(this, R.string.solicitud_union_enviada, Toast.LENGTH_LONG).show();
             finish();
-        } catch (CondominiumNotFound e) {
+        }, this::showJoinError);
+    }
+
+    private void showJoinError(AppException e) {
+        if (e instanceof CondominiumNotFound) {
             codeErrorLabel.setText(e.getMessageRes());
             codeErrorLabel.setVisibility(View.VISIBLE);
-        } catch (EmptyApartment e) {
+        } else if (e instanceof EmptyApartment) {
             apartmentField.setError(getString(e.getMessageRes()));
             apartmentField.requestFocus();
-        } catch (AppException e) {
+        } else {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
         }
     }

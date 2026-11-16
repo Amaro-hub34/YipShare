@@ -4,19 +4,15 @@ import java.util.List;
 
 public interface LoanRepository {
 
-    List<Loan> getAllLoansByUserId(String userId, String condominiumId);
+    List<Loan> getAllLoansByCondominiumId(String condominiumId);
 
-    List<LoanRequest> getAllLoanRequestsByLenderId(String lenderId, String condominiumId);
+    List<LoanRequest> getAllLoanRequestsByCondominiumId(String condominiumId);
 
-    boolean existsLoanByUserId(String userId);
+    void createLoanRequest(String articleId, String requestText, int days);
 
-    Loan getLoanById(String loanId, String userId);
+    void modifyLoanStatus(String loanId, LoanStatus answer);
 
-    void modifyLoanStatus(String loanId, LoanStatus status);
+    String createCode(String loanId);
 
-    boolean existsPendingRequest(String userId, String articleId);
-
-    void createLoanRequest(String lenderId, String borrowerId, String articleId, String requestText, int days);
-
-    void createDemoLoans(String userId, String administeredId, String livedId);
+    Loan confirmCode(String loanId, String code);
 }

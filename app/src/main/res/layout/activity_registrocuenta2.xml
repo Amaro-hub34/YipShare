@@ -197,6 +197,15 @@
                     android:minHeight="48dp" />
             </LinearLayout>
 
+            <EditText
+                android:id="@+id/et_correo"
+                style="@style/InputBrand"
+                android:autofillHints="emailAddress"
+                android:hint="@string/correo_hint"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp"
+                android:layout_marginTop="14dp" />
+
             <ProgressBar
                 android:id="@+id/pbSubida"
                 style="?android:attr/progressBarStyleHorizontal"

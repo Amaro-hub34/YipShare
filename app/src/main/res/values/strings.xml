@@ -135,7 +135,7 @@
     <string name="error_contrasena_vacia">Enter your password</string>
     <string name="error_cuenta_no_existe">Account does not exist</string>
     <string name="error_usuario_duplicado">That username is already taken</string>
-    <string name="error_bd_no_disponible">Could not connect. Try again later</string>
+    <string name="error_servidor_no_disponible">Could not connect. Try again later</string>
 
     <string name="error_campo_obligatorio">This field is required</string>
     <string name="error_nombre_largo">Maximum 150 characters</string>
@@ -240,10 +240,6 @@
     <string name="te_prestaron">Lent to you by</string>
     <string name="error_codigo_longitud">Must be 6 digits</string>
     <string name="codigo_confirmado">Code confirmed</string>
-    <string name="demo_taladro">Electric drill</string>
-    <string name="demo_escalera">Folding ladder</string>
-    <string name="demo_bocina">Portable speaker</string>
-    <string name="demo_direccion">Building B, Apt. 302</string>
 
     <!--activity_terms_and_conditions-->
     <string name="terms_titulo">Terms and Conditions</string>
@@ -305,9 +301,6 @@
     <string name="fechas_prestamo">Start: %1$s\nEnd: %2$s</string>
     <string name="btn_reportar_vecino">Report neighbor</string>
     <string name="btn_introducir_codigo">Enter code</string>
-    <string name="demo_desc_taladro">Cordless drill with two batteries and a set of bits.</string>
-    <string name="demo_desc_escalera">Aluminum folding ladder, 6 steps.</string>
-    <string name="demo_desc_bocina">Bluetooth speaker with about 10 hours of battery.</string>
     <string name="reporte_bloqueado">To report a neighbor, open one of your loans</string>
     <string name="error_ya_unido">You already joined or asked to join this condominium</string>
     <string name="solicitud_union_enviada">Request sent. The condominium administrator will review it</string>
@@ -352,11 +345,6 @@
     <string name="confirmar_denegar_solicitud">Deny %1$s’s request for %2$s?</string>
     <string name="solicitud_aceptada">Request accepted. You\'ll find it in Loans</string>
     <string name="solicitud_denegada">Request denied</string>
-    <string name="demo_bicicleta">Mountain bike</string>
-    <string name="demo_desc_bicicleta">Mountain bike, size M, with helmet.</string>
-    <string name="demo_casa_campana">Camping tent</string>
-    <string name="demo_desc_casa_campana">Tent for 4 people, easy to set up.</string>
-    <string name="demo_texto_solicitud">Could you lend it to me this weekend?</string>
     <string name="confirmar_nueva_contrasena">Confirm new password</string>
     <string name="error_contrasena_igual_actual">The new password must be different from the current one</string>
     <string name="rol_admin_condominio">Condominium admin</string>
@@ -385,12 +373,33 @@
     <string name="confirmar_solicitar_articulo">Request %1$s for %2$s?</string>
     <string name="texto_solicitud">Could you lend it to me for %1$s?</string>
     <string name="solicitud_enviada">Request sent to the owner</string>
-    <string name="demo_podadora">Lawn mower</string>
-    <string name="demo_desc_podadora">Electric lawn mower, works great.</string>
-    <string name="demo_licuadora">Blender</string>
-    <string name="demo_desc_licuadora">Blender with glass jar.</string>
-    <string name="demo_aspiradora">Vacuum cleaner</string>
-    <string name="demo_desc_aspiradora">Small vacuum, ideal for cars.</string>
     <string name="condominio_con_pendientes" translatable="false">%1$s (%2$d)</string>
     <string name="notificaciones_pendientes">Notifications, some are pending</string>
+    <string name="error_servidor">Something went wrong on the server. Try again</string>
+    <string name="error_correo_duplicado">That email is already registered</string>
+    <string name="error_correo_formato">Enter a valid email</string>
+    <string name="error_usuario_formato">Use only letters, numbers, - or _ (50 max)</string>
+    <string name="correo_hint">Email</string>
+    <string name="error_unidad_ocupada">Can\'t delete it: neighbors live in that unit</string>
+    <string name="error_ya_reportado">You already reported this loan</string>
+    <string name="error_descripcion_corta">Write at least %1$d characters</string>
+    <string name="reporte_en_revision">In review</string>
+    <string name="btn_ver_unidades">Units</string>
+    <string name="btn_ver_reportes_condominio">Reports and reviews</string>
+    <string name="aviso_leido">Read</string>
+    <string name="aviso_nuevo">New</string>
+    <string name="aviso_texto">%1$s\n%2$s</string>
+    <string name="confirmar_eliminar_aviso">Delete the notification «%1$s»?</string>
+    <string name="aviso_eliminado">Notification deleted</string>
+    <string name="sin_unidades">Create the condominium units first</string>
+    <string name="elegir_unidad">Unit for %1$s (wrote: %2$s)</string>
+    <string name="titulo_unidades">Units</string>
+    <string name="agregar_unidad">Add unit</string>
+    <string name="editar_unidad">Edit unit</string>
+    <string name="nombre_unidad">Name or number</string>
+    <string name="eliminar_unidad">Delete</string>
+    <string name="confirmar_eliminar_unidad">Delete unit «%1$s»?</string>
+    <string name="unidad_guardada">Unit saved</string>
+    <string name="unidad_eliminada">Unit deleted</string>
+    <string name="cambiar_estado_reporte">Report status</string>
 </resources>

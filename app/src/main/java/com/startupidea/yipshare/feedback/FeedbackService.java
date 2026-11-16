@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FeedbackService {
 
-    private static final int RATING_SCALE = 10;
+    private static final int MAX_STARS = 5;
 
     private final FeedbackRepository feedbackRepository;
 
@@ -26,15 +26,26 @@ public class FeedbackService {
     }
 
     public void createReview(String authorId, Loan loan, float stars, String text) {
-        int rating = Math.round(stars * RATING_SCALE);
-        if (rating < 1) throw new EmptyRating();
-        if (feedbackRepository.existsReview(authorId, loan.getId())) throw new AlreadyReviewed();
-
-        feedbackRepository.createReview(authorId, loan.getId(), loan.getOtherUserId(), Math.min(rating, 50), text.trim());
+        if (stars <= 0) throw new EmptyRating();
+        feedbackRepository.createReview(loan.getId(), Math.max(1, Math.min(MAX_STARS, Math.round(stars))), text.trim());
     }
 
     public void createReport(String authorId, Loan loan, String text, String imageUri) {
         if (text.trim().isEmpty()) throw new EmptyReportText();
-        feedbackRepository.createReport(authorId, loan.getId(), text.trim(), imageUri);
+        feedbackRepository.createReport(loan.getId(), text.trim(), imageUri);
+    }
+
+    public List<Review> getAllReviewsByCondominiumId(String condominiumId) {
+        if (condominiumId == null) return Collections.emptyList();
+        return feedbackRepository.getAllReviewsByCondominiumId(condominiumId);
+    }
+
+    public List<Report> getAllReportsByCondominiumId(String condominiumId) {
+        if (condominiumId == null) return Collections.emptyList();
+        return feedbackRepository.getAllReportsByCondominiumId(condominiumId);
+    }
+
+    public void modifyReportState(String condominiumId, Report report, ReportState state) {
+        feedbackRepository.modifyReportState(condominiumId, report.getId(), state);
     }
 }

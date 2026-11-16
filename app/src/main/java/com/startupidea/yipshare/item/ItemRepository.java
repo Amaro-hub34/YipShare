@@ -6,11 +6,9 @@ public interface ItemRepository {
 
     List<Item> getAllItemsByCondominiumId(String condominiumId);
 
-    Item getItemById(String id);
+    Item createItem(String condominiumId, ItemPayload payload);
 
-    Item createItem(String ownerId, String condominiumId, ItemPayload payload);
+    Item modifyItem(Item item, ItemPayload payload);
 
-    Item modifyItem(String id, ItemPayload payload);
-
-    void deleteItem(String id);
+    void deleteItem(Item item);
 }

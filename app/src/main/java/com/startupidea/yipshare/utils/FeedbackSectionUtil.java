@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.adapters.ReportAdapter;
 import com.startupidea.yipshare.adapters.ReviewAdapter;
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.feedback.Report;
 import com.startupidea.yipshare.feedback.Review;
-import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
+import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
 
 import java.util.List;
 
@@ -27,22 +26,22 @@ public final class FeedbackSectionUtil {
     }
 
     public static void attach(Activity activity, String userId) {
+        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(activity), activity));
+        TaskUtil.run(activity, () -> feedbackService.getAllReviewsByUserId(userId),
+                reviews -> TaskUtil.run(activity, () -> feedbackService.getAllReportsByUserId(userId),
+                        reports -> show(activity, reviews, reports, null),
+                        e -> Toast.makeText(activity, e.getMessageRes(), Toast.LENGTH_SHORT).show()),
+                e -> Toast.makeText(activity, e.getMessageRes(), Toast.LENGTH_SHORT).show());
+    }
+
+    public static void show(Activity activity, List<Review> reviews, List<Report> reports,
+                            ReportAdapter.OnReportClick onReportClick) {
         Button reviewsButton = activity.findViewById(R.id.btn_ver_calificaciones);
         Button reportsButton = activity.findViewById(R.id.btn_ver_reportes);
         TextView emptyLabel = activity.findViewById(R.id.tv_lista_vacia);
         RecyclerView list = activity.findViewById(R.id.rv_feedback);
         list.setLayoutManager(new LinearLayoutManager(activity));
-
-        List<Review> reviews;
-        List<Report> reports;
-        try {
-            FeedbackService feedbackService = new FeedbackService(new SqliteFeedbackRepository(new DatabaseDriver(activity)));
-            reviews = feedbackService.getAllReviewsByUserId(userId);
-            reports = feedbackService.getAllReportsByUserId(userId);
-        } catch (AppException e) {
-            Toast.makeText(activity, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-            return;
-        }
+        boolean showingReports = list.getAdapter() instanceof ReportAdapter;
 
         reviewsButton.setOnClickListener(v -> {
             select(reviewsButton, reportsButton);
@@ -50,9 +49,9 @@ public final class FeedbackSectionUtil {
         });
         reportsButton.setOnClickListener(v -> {
             select(reportsButton, reviewsButton);
-            show(list, emptyLabel, new ReportAdapter(reports), reports.isEmpty(), R.string.sin_reportes);
+            show(list, emptyLabel, new ReportAdapter(reports, onReportClick), reports.isEmpty(), R.string.sin_reportes);
         });
-        reviewsButton.performClick();
+        (showingReports ? reportsButton : reviewsButton).performClick();
     }
 
     private static void select(Button selected, Button other) {

@@ -14,12 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.user.SqliteUserRepository;
-import com.startupidea.yipshare.user.UserProfile;
+import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
+import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.Locale;
 
@@ -53,18 +53,16 @@ public class UserFeedbackActivity extends AppCompatActivity {
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
         String userId = getIntent().getStringExtra(EXTRA_USER_ID);
-        try {
-            UserProfile profile = new UserService(new SqliteUserRepository(new DatabaseDriver(this))).getUserProfile(userId);
+        UserService userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
+        TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
             ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.getUsername());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(profile.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));
-        } catch (AppException e) {
+            FeedbackSectionUtil.attach(this, userId);
+        }, e -> {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
             finish();
-            return;
-        }
-
-        FeedbackSectionUtil.attach(this, userId);
+        });
     }
 }

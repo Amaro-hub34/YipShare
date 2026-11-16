@@ -3,13 +3,14 @@ package com.startupidea.yipshare.condominium;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 public class CondominiumService {
 
     private static final Pattern ZIP_CODE = Pattern.compile("\\d{5}");
-    private static final Pattern SHORT_CODE = Pattern.compile("[A-Z0-9]{6}");
+    private static final Pattern SHORT_CODE = Pattern.compile("[A-Z0-9]{6,8}");
 
     private final CondominiumRepository condominiumRepository;
 
@@ -38,32 +39,24 @@ public class CondominiumService {
 
     public void createCondominiumRequest(String userId, CondominiumPayload payload) {
         validate(payload);
-        condominiumRepository.createCondominiumRequest(userId, payload);
+        condominiumRepository.createCondominiumRequest(payload);
     }
 
     public void joinCondominium(String userId, String shortCode, String building, String apartment) {
-        String code = shortCode.trim().toUpperCase();
+        String code = shortCode.trim().toUpperCase(Locale.ROOT).replace("-", "");
         if (!SHORT_CODE.matcher(code).matches()) throw new CondominiumNotFound();
         if (apartment.trim().isEmpty()) throw new EmptyApartment();
-
-        String condominiumId = condominiumRepository.getApprovedCondominiumIdByCode(code);
-        if (condominiumId == null) throw new CondominiumNotFound();
-        if (condominiumRepository.existsMembership(userId, condominiumId)) throw new AlreadyJoined();
-
-        condominiumRepository.createPendingMember(userId, condominiumId, building.trim(), apartment.trim());
+        String unit = building.trim().isEmpty() ? apartment.trim() : building.trim() + " " + apartment.trim();
+        condominiumRepository.createPendingMember(code, unit);
     }
 
     public List<CondominiumMembership> getAllMemberships(String userId) {
-        if (!condominiumRepository.existsMembershipByUserId(userId)) condominiumRepository.createDemoCondominiums(userId);
-        return condominiumRepository.getAllMembershipsByUserId(userId);
+        return condominiumRepository.getAllMemberships();
     }
 
     public boolean isAdmin(String userId, String condominiumId) {
-        return condominiumId != null && condominiumRepository.isCondominiumAdmin(userId, condominiumId);
-    }
-
-    public boolean canRequestLoans(String userId, String condominiumId) {
-        return condominiumRepository.canRequestLoans(userId, condominiumId);
+        CondominiumMembership membership = findMembership(condominiumId);
+        return membership != null && membership.isAdmin();
     }
 
     public List<Neighbor> getAllNeighbors(String adminId, String condominiumId) {
@@ -72,32 +65,53 @@ public class CondominiumService {
     }
 
     public List<JoinRequest> getAllJoinRequests(String adminId, String condominiumId) {
-        if (condominiumId == null) return new ArrayList<>();
-        return condominiumRepository.getAllJoinRequestsByAdminId(adminId, condominiumId);
+        CondominiumMembership membership = findMembership(condominiumId);
+        if (membership == null || !membership.isAdmin()) return new ArrayList<>();
+        return condominiumRepository.getAllJoinRequestsByCondominiumId(condominiumId, membership.getName());
     }
 
-    public void acceptJoinRequest(String adminId, String userId, String condominiumId) {
-        ensureJoinRequest(adminId, userId, condominiumId);
-        condominiumRepository.acceptJoinRequest(userId, condominiumId);
+    public void acceptJoinRequest(String adminId, JoinRequest request, String unitId) {
+        condominiumRepository.acceptJoinRequest(request.getUserId(), request.getCondominiumId(),
+                unitId == null ? request.getSuggestedUnitId() : unitId);
     }
 
     public void rejectJoinRequest(String adminId, String userId, String condominiumId) {
-        ensureJoinRequest(adminId, userId, condominiumId);
         condominiumRepository.rejectJoinRequest(userId, condominiumId);
     }
 
     public void modifyLoanAccess(String adminId, String userId, String condominiumId, boolean allowed) {
-        ensureAdmin(adminId, condominiumId);
         if (adminId.equals(userId)) throw new NotCondominiumAdmin();
         condominiumRepository.modifyLoanAccess(userId, condominiumId, allowed);
     }
 
-    private void ensureAdmin(String adminId, String condominiumId) {
-        if (!isAdmin(adminId, condominiumId)) throw new NotCondominiumAdmin();
+    public List<Unit> getAllUnits(String condominiumId) {
+        if (condominiumId == null) return new ArrayList<>();
+        return condominiumRepository.getAllUnitsByCondominiumId(condominiumId);
     }
 
-    private void ensureJoinRequest(String adminId, String userId, String condominiumId) {
-        ensureAdmin(adminId, condominiumId);
-        if (!condominiumRepository.existsJoinRequest(userId, condominiumId)) throw new JoinRequestNotFound();
+    public void createUnit(String condominiumId, String name) {
+        if (name.trim().isEmpty()) throw new EmptyApartment();
+        condominiumRepository.createUnit(condominiumId, name.trim());
+    }
+
+    public void modifyUnit(String condominiumId, Unit unit, String name) {
+        if (name.trim().isEmpty()) throw new EmptyApartment();
+        condominiumRepository.modifyUnit(condominiumId, unit.getId(), name.trim());
+    }
+
+    public void deleteUnit(String condominiumId, Unit unit) {
+        condominiumRepository.deleteUnit(condominiumId, unit.getId());
+    }
+
+    private CondominiumMembership findMembership(String condominiumId) {
+        if (condominiumId == null) return null;
+        for (CondominiumMembership membership : condominiumRepository.getAllMemberships()) {
+            if (membership.getCondominiumId().equals(condominiumId)) return membership;
+        }
+        return null;
+    }
+
+    private void ensureAdmin(String adminId, String condominiumId) {
+        if (!isAdmin(adminId, condominiumId)) throw new NotCondominiumAdmin();
     }
 }

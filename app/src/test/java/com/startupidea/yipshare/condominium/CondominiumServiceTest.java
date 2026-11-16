@@ -15,14 +15,8 @@ public class CondominiumServiceTest {
 
     private static final String PDF = "content://docs/1";
 
-    private static final String APPROVED_CODE = "ABC234";
-
     private final FakeCondominiumRepository repository = new FakeCondominiumRepository();
     private final CondominiumService service = new CondominiumService(repository);
-
-    {
-        repository.approvedCode = APPROVED_CODE;
-    }
 
     private static CondominiumPayload payload(String zipCode, int units, String deed) {
         return new CondominiumPayload("Torres", "Av. 1", "Centro", zipCode, "Cuauhtémoc", "CDMX", "CDMX",
@@ -42,7 +36,6 @@ public class CondominiumServiceTest {
         service.createCondominiumRequest("user", payload);
 
         assertSame(payload, repository.sent);
-        assertEquals("user", repository.sentUserId);
     }
 
     @Test
@@ -65,81 +58,75 @@ public class CondominiumServiceTest {
     }
 
     @Test
-    public void joinsWithApprovedCodeIgnoringCaseAndSpaces() {
-        service.joinCondominium("user", " abc234 ", " Torre B ", " 302 ");
+    public void joinsWithCodeIgnoringCaseSpacesAndDash() {
+        service.joinCondominium("user", " abc-234 ", " Torre B ", " 302 ");
 
-        assertEquals("Torre B|302", repository.joinedUnit);
+        assertEquals("ABC234", repository.joinedCode);
+        assertEquals("Torre B 302", repository.joinedUnit);
     }
 
     @Test
-    public void rejectsUnknownOrMalformedCode() {
-        assertThrows(CondominiumNotFound.class, () -> service.joinCondominium("user", "ZZZ999", "", "302"));
+    public void unitIsJustTheApartmentWithoutBuilding() {
+        service.joinCondominium("user", "ABC234", "  ", "302");
+
+        assertEquals("302", repository.joinedUnit);
+    }
+
+    @Test
+    public void rejectsMalformedCode() {
         assertThrows(CondominiumNotFound.class, () -> service.joinCondominium("user", "ABC", "", "302"));
+        assertThrows(CondominiumNotFound.class, () -> service.joinCondominium("user", "ABC 2345 67", "", "302"));
         assertNull(repository.joinedUnit);
     }
 
     @Test
     public void rejectsEmptyApartment() {
-        assertThrows(EmptyApartment.class, () -> service.joinCondominium("user", APPROVED_CODE, "Torre B", " "));
+        assertThrows(EmptyApartment.class, () -> service.joinCondominium("user", "ABC234", "Torre B", " "));
     }
 
     @Test
-    public void rejectsJoiningTwice() {
-        repository.members.add(FakeCondominiumRepository.key("user", "condo"));
+    public void onlyTheAdminSeesNeighborsAndJoinRequests() {
+        repository.memberships.add(new CondominiumMembership("lived", "Torres", false, 0));
+        repository.memberships.add(new CondominiumMembership("administered", "Pinos", true, 0));
 
-        assertThrows(AlreadyJoined.class, () -> service.joinCondominium("user", APPROVED_CODE, "", "302"));
-        assertNull(repository.joinedUnit);
+        assertThrows(NotCondominiumAdmin.class, () -> service.getAllNeighbors("user", "lived"));
+        assertTrue(service.getAllJoinRequests("user", "lived").isEmpty());
+        assertEquals("Pinos", service.getAllJoinRequests("user", "administered").get(0).getCondominiumName());
+        assertTrue(service.isAdmin("user", "administered"));
+        assertFalse(service.isAdmin("user", null));
     }
 
     @Test
-    public void createsDemoCondominiumsOnlyOnce() {
-        service.getAllMemberships("user");
-        service.getAllMemberships("user");
+    public void acceptsWithTheSuggestedUnitOrThePickedOne() {
+        JoinRequest suggested = new JoinRequest("maria", "maria", "María", null, "c", "Pinos", "5", "unit-5", 0);
+        JoinRequest withoutUnit = new JoinRequest("jorge", "jorge", "Jorge", null, "c", "Pinos", "Torre A 8", null, 0);
 
-        assertEquals(1, repository.demoCalls);
+        service.acceptJoinRequest("admin", suggested, null);
+        assertEquals("unit-5", repository.acceptedUnitId);
+
+        service.acceptJoinRequest("admin", withoutUnit, "unit-8");
+        assertEquals("unit-8", repository.acceptedUnitId);
     }
 
     @Test
-    public void onlyTheAdminSeesNeighborsAndAnswersJoinRequests() {
-        repository.joinRequests.add(FakeCondominiumRepository.key("maria", "condo"));
-
-        assertThrows(NotCondominiumAdmin.class, () -> service.getAllNeighbors("resident", "condo"));
-        assertThrows(NotCondominiumAdmin.class, () -> service.acceptJoinRequest("resident", "maria", "condo"));
-
-        repository.admins.add(FakeCondominiumRepository.key("admin", "condo"));
-        service.acceptJoinRequest("admin", "maria", "condo");
-        assertTrue(repository.members.contains(FakeCondominiumRepository.key("maria", "condo")));
-    }
-
-    @Test
-    public void answeredJoinRequestCannotBeAnsweredAgain() {
-        repository.admins.add(FakeCondominiumRepository.key("admin", "condo"));
-
-        assertThrows(JoinRequestNotFound.class, () -> service.rejectJoinRequest("admin", "maria", "condo"));
-    }
-
-    @Test
-    public void adminTakesAwayAndGivesBackLoanAccess() {
-        repository.admins.add(FakeCondominiumRepository.key("admin", "condo"));
-        repository.members.add(FakeCondominiumRepository.key("luis", "condo"));
+    public void adminCannotChangeTheirOwnLoanAccess() {
+        assertThrows(NotCondominiumAdmin.class, () -> service.modifyLoanAccess("admin", "admin", "condo", false));
 
         service.modifyLoanAccess("admin", "luis", "condo", false);
-        assertFalse(service.canRequestLoans("luis", "condo"));
-
-        service.modifyLoanAccess("admin", "luis", "condo", true);
-        assertTrue(service.canRequestLoans("luis", "condo"));
+        assertEquals("luis", repository.loanAccessUserId);
     }
 
     @Test
-    public void residentCannotChangeLoanAccessNorAdminTheirOwn() {
-        assertThrows(NotCondominiumAdmin.class, () -> service.modifyLoanAccess("resident", "luis", "condo", false));
+    public void unitNeedsAName() {
+        assertThrows(EmptyApartment.class, () -> service.createUnit("condo", "  "));
 
-        repository.admins.add(FakeCondominiumRepository.key("admin", "condo"));
-        assertThrows(NotCondominiumAdmin.class, () -> service.modifyLoanAccess("admin", "admin", "condo", false));
+        service.createUnit("condo", " 101 ");
+        assertEquals("101", repository.createdUnit);
     }
 
     @Test
-    public void joinRequestsNeedASelectedCondominium() {
+    public void listsNeedASelectedCondominium() {
         assertTrue(service.getAllJoinRequests("admin", null).isEmpty());
+        assertTrue(service.getAllUnits(null).isEmpty());
     }
 }

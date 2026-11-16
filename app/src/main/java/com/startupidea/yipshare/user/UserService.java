@@ -40,6 +40,7 @@ public class UserService {
         if (UserRules.normalizePhoneNumber(draft.getPhoneNumber()) == null) {
             throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
         }
+        validateEmail(draft.getEmail().trim());
     }
 
     public boolean isActiveSession(String userId) {
@@ -55,16 +56,11 @@ public class UserService {
     public User register(RegistrationDraft draft) {
         validateNames(draft);
         validateCredentials(draft);
-
-        RegistrationPayload payload = draft.toPayload();
-        ensureUsernameAvailable(payload.getUsername());
-        ensurePhoneNumberAvailable(payload.getPhoneNumber());
-        return userRepository.createUser(payload);
+        return userRepository.createUser(draft.toPayload());
     }
 
     public void modifyProfile(String userId, ProfilePayload payload, String newPassword,
                               String passwordConfirmation, String currentPassword) {
-        UserProfile current = getUserProfile(userId);
         String username = payload.getUsername().trim();
 
         validateUsername(username);
@@ -75,6 +71,8 @@ public class UserService {
         if (phoneNumber == null) {
             throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
         }
+        String email = payload.getEmail().trim();
+        validateEmail(email);
 
         boolean changesPassword = !newPassword.isEmpty() || !passwordConfirmation.isEmpty();
         if (changesPassword) {
@@ -82,33 +80,26 @@ public class UserService {
             if (!newPassword.equals(passwordConfirmation)) {
                 throw new InvalidField(RegistrationField.PASSWORD_CONFIRMATION, R.string.error_contrasena_no_coincide);
             }
-            if (!userRepository.matchesPassword(userId, currentPassword)) throw new WrongPassword();
+            if (currentPassword.isEmpty()) throw new WrongPassword();
             if (newPassword.equals(currentPassword)) {
                 throw new InvalidField(RegistrationField.PASSWORD, R.string.error_contrasena_igual_actual);
             }
         }
-        if (!username.equals(current.getUsername())) ensureUsernameAvailable(username);
-        if (!phoneNumber.equals(current.getPhoneNumber())) ensurePhoneNumberAvailable(phoneNumber);
-
         userRepository.modifyUser(userId, new ProfilePayload(
                 username,
                 payload.getFirstNames().trim(),
                 payload.getPaternalLastName().trim(),
                 payload.getMaternalLastName().trim(),
-                phoneNumber), changesPassword ? newPassword : null);
+                phoneNumber,
+                email), changesPassword ? newPassword : null, changesPassword ? currentPassword : null);
     }
 
     public void deleteAccount(String userId) {
-        getUserProfile(userId);
         userRepository.deleteUser(userId);
     }
 
-    public void ensureUsernameAvailable(String username) {
-        if (userRepository.existsUsername(username)) throw new DuplicateUsername();
-    }
-
-    public void ensurePhoneNumberAvailable(String phoneNumber) {
-        if (userRepository.existsPhoneNumber(phoneNumber)) throw new DuplicatePhoneNumber();
+    public void logout() {
+        userRepository.logout();
     }
 
     private void validateUsername(String username) {
@@ -116,6 +107,14 @@ public class UserService {
         if (username.length() < UserRules.USERNAME_MIN_LENGTH) {
             throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_corto);
         }
+        if (username.length() > UserRules.USERNAME_MAX_LENGTH || !UserRules.USERNAME.matcher(username).matches()) {
+            throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_formato);
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email.isEmpty()) throw new InvalidField(RegistrationField.EMAIL, R.string.error_campo_obligatorio);
+        if (!UserRules.EMAIL.matcher(email).matches()) throw new InvalidField(RegistrationField.EMAIL, R.string.error_correo_formato);
     }
 
     private void validatePassword(String password) {
