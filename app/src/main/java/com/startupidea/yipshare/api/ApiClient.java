@@ -22,9 +22,8 @@ import java.nio.charset.StandardCharsets;
 
 public class ApiClient {
 
-    // Emulador de Android Studio -> backend corriendo en tu PC (PORT=4600 del .env del backend).
-    // Para usar el servidor desplegado cambia esta constante por su URL, por ejemplo "https://yipshare.oelohey.dev".
-    public static final String BASE_URL = "http://10.0.2.2:4600";
+//important change this url if we're going to use the api
+    public static final String BASE_URL = "http://localhost:4600";
 
     private static final String JSON_TYPE = "application/json";
     private static final int TIMEOUT_MS = 15000;

@@ -211,7 +211,7 @@ public class ApiCondominiumRepository implements CondominiumRepository {
             String condominiumId = json.getString("condominiumId");
             if (memberships.containsKey(condominiumId)) continue;
             memberships.put(condominiumId, new CondominiumMembership(
-                    condominiumId, json.optString("name"), admin, json.optInt("pendingCount")));
+                    condominiumId, json.optString("name"), admin, json.optInt("pendingCount"), ApiClient.text(json, "code")));
         }
     }
 

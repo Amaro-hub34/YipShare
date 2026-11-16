@@ -394,4 +394,5 @@
     <string name="unidad_guardada">Unidad guardada</string>
     <string name="unidad_eliminada">Unidad eliminada</string>
     <string name="cambiar_estado_reporte">Estado del reporte</string>
+    <string name="codigo_condominio">Código para unirse: %1$s</string>
 </resources>

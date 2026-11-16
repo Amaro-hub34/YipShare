@@ -86,8 +86,8 @@ public class CondominiumServiceTest {
 
     @Test
     public void onlyTheAdminSeesNeighborsAndJoinRequests() {
-        repository.memberships.add(new CondominiumMembership("lived", "Torres", false, 0));
-        repository.memberships.add(new CondominiumMembership("administered", "Pinos", true, 0));
+        repository.memberships.add(new CondominiumMembership("lived", "Torres", false, 0, null));
+        repository.memberships.add(new CondominiumMembership("administered", "Pinos", true, 0, "ABC-234"));
 
         assertThrows(NotCondominiumAdmin.class, () -> service.getAllNeighbors("user", "lived"));
         assertTrue(service.getAllJoinRequests("user", "lived").isEmpty());

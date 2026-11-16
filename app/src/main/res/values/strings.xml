@@ -402,4 +402,5 @@
     <string name="unidad_guardada">Unit saved</string>
     <string name="unidad_eliminada">Unit deleted</string>
     <string name="cambiar_estado_reporte">Report status</string>
+    <string name="codigo_condominio">Join code: %1$s</string>
 </resources>

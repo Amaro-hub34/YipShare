@@ -266,7 +266,8 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         });
         View[] adminButtons = {neighborsButton, unitsButton, reportsButton};
         CondominiumMembership selected = selectedMembership();
-        showAdminButtons(adminButtons, selected != null && selected.isAdmin());
+        TextView codeLabel = panel.findViewById(R.id.tv_codigo_condominio);
+        showAdminOptions(adminButtons, codeLabel, selected);
 
         RecyclerView condominiumList = panel.findViewById(R.id.rv_condominios);
         condominiumList.setAdapter(new CondominioAdapter(memberships, Math.max(0, memberships.indexOf(selected)),
@@ -274,7 +275,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
                 position -> {
                     CondominiumMembership picked = memberships.get(position);
                     session.modifyCondominiumId(picked.getCondominiumId());
-                    showAdminButtons(adminButtons, picked.isAdmin());
+                    showAdminOptions(adminButtons, codeLabel, picked);
                     showSelectedCondominium();
                     loadItems();
                 }));
@@ -290,8 +291,12 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private static void showAdminButtons(View[] buttons, boolean admin) {
+    private void showAdminOptions(View[] buttons, TextView codeLabel, CondominiumMembership membership) {
+        boolean admin = membership != null && membership.isAdmin();
         for (View button : buttons) button.setVisibility(admin ? View.VISIBLE : View.GONE);
+        boolean hasCode = admin && membership.getCode() != null;
+        codeLabel.setVisibility(hasCode ? View.VISIBLE : View.GONE);
+        if (hasCode) codeLabel.setText(getString(R.string.codigo_condominio, membership.getCode()));
     }
 
     private void confirmLogout() {
