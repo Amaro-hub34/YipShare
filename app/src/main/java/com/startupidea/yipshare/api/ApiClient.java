@@ -2,6 +2,7 @@ package com.startupidea.yipshare.api;
 
 import android.content.Context;
 
+import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.FileTooLarge;
 import com.startupidea.yipshare.error.ServerError;
 import com.startupidea.yipshare.error.ServerUnavailable;
@@ -32,20 +33,35 @@ public class ApiClient {
     private static final int PAYLOAD_TOO_LARGE = 413;
 
     private final SessionRepository sessionRepository;
+    private final DatabaseDriver databaseDriver;
 
     public ApiClient(Context context) {
         this.sessionRepository = new SessionRepository(context);
+        this.databaseDriver = DatabaseDriver.getInstance(context);
     }
 
     public JSONObject getObject(String path) {
-        return toObject(send("GET", path, null, null));
+        return toObject(get(path));
     }
 
     public JSONArray getArray(String path) {
         try {
-            return new JSONArray(send("GET", path, null, null));
+            return new JSONArray(get(path));
         } catch (JSONException e) {
             throw new ServerUnavailable();
+        }
+    }
+
+    private String get(String path) {
+        String userId = sessionRepository.getUserId() == null ? "" : sessionRepository.getUserId();
+        try {
+            String response = send("GET", path, null, null);
+            databaseDriver.saveResponse(userId, path, response);
+            return response;
+        } catch (ServerUnavailable e) {
+            String cached = databaseDriver.getResponse(userId, path);
+            if (cached == null) throw e;
+            return cached;
         }
     }
 
