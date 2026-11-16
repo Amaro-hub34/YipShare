@@ -27,7 +27,6 @@ public final class ImageFileUtil {
     private ImageFileUtil() {
     }
 
-    // The server keeps the file and the database only its path; the phone keeps a copy with the same name.
     public static String upload(Context context, ApiClient apiClient, String imageUri) {
         if (imageUri == null) return null;
         File stored = storedFile(context, Uri.parse(imageUri));

@@ -45,7 +45,6 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- Highlight that slides behind the selected condominium -->
         <View
             android:id="@+id/resaltado_condominio"
             android:layout_width="match_parent"
@@ -76,7 +75,6 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <!-- Only for the admin of the selected condominium -->
     <Button
         android:id="@+id/btn_ver_vecinos"
         style="@style/ButtonPrimary"

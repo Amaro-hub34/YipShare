@@ -19,7 +19,6 @@ import java.util.Locale;
 
 public class ApiItemRepository implements ItemRepository {
 
-    // Same order as R.array.categorias_articulo and R.array.opciones_estado_fisico; the server stores these values.
     private static final String[] CATEGORIES = {
             "Herramientas", "Electrodomésticos", "Jardinería", "Cocina", "Limpieza", "Electrónica", "Automotriz", "Otros"};
     private static final String[] CONDITIONS = {"excellent", "good", "medium", "bad"};
