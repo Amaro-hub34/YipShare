@@ -108,6 +108,7 @@
     <string name="tv_tiempo_prestamo">Loan duration</string>
     <string name="iv_preview_imagen">Image preview</string>
     <string name="btn_cambiar_imagen">Change image</string>
+    <string name="btn_agregar_imagen">Add image</string>
     <string name="FA_formatos">Formats: PNG, JPG, JPEG</string>
     <string name="btn_accion_principal">Post</string>
     <string name="btn_borrar_objeto">Delete item</string>

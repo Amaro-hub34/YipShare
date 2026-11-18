@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
@@ -29,21 +30,26 @@ import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ReporteActivity extends AppCompatActivity{
 
     private static final int PREVIEW_MAX_SIZE_PX = 1080;
+    private static final int EVIDENCE_HEIGHT_DP = 140;
+    private static final int EVIDENCE_MARGIN_DP = 16;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> imagePicker = registerForActivityResult(
-            new ActivityResultContracts.PickVisualMedia(),
-            uri -> {
-                if (uri != null) showEvidence(uri);
+            new ActivityResultContracts.PickMultipleVisualMedia(),
+            uris -> {
+                for (Uri uri : uris) addEvidence(uri);
             });
 
     private Loan loan;
     private EditText descriptionField;
-    private ImageView evidenceImage;
-    private Uri evidenceUri;
+    private LinearLayout evidenceList;
+    private final List<String> evidenceUris = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +68,8 @@ public class ReporteActivity extends AppCompatActivity{
         neighborField.setText(loan.getOtherUsername());
         neighborField.setEnabled(false);
         descriptionField = findViewById(R.id.et_descripcion);
-        evidenceImage = findViewById(R.id.iv_preview_imagen);
-        findViewById(R.id.btn_cambiar_imagen2).setOnClickListener(v -> imagePicker.launch(
+        evidenceList = findViewById(R.id.ll_evidencias);
+        findViewById(R.id.btn_agregar_imagen).setOnClickListener(v -> imagePicker.launch(
                 new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                         .build()));
@@ -100,15 +106,25 @@ public class ReporteActivity extends AppCompatActivity{
                 startActivity(new Intent(ReporteActivity.this, FormularioArticuloActivity.class)));
     }
 
-    private void showEvidence(Uri uri) {
+    private void addEvidence(Uri uri) {
         Bitmap preview = ImagePreviewUtil.tryLoad(this, uri, PREVIEW_MAX_SIZE_PX);
         if (preview == null) {
             Toast.makeText(this, R.string.error_imagen_invalida, Toast.LENGTH_SHORT).show();
             return;
         }
-        evidenceUri = uri;
+        evidenceUris.add(uri.toString());
+        ImageView evidenceImage = new ImageView(this);
+        evidenceImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        evidenceImage.setContentDescription(getString(R.string.iv_preview_imagen));
         evidenceImage.setImageBitmap(preview);
-        evidenceImage.setVisibility(View.VISIBLE);
+        evidenceImage.setOnClickListener(v -> {
+            evidenceUris.remove(evidenceList.indexOfChild(v));
+            evidenceList.removeView(v);
+        });
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, (int) (EVIDENCE_HEIGHT_DP * getResources().getDisplayMetrics().density));
+        params.topMargin = (int) (EVIDENCE_MARGIN_DP * getResources().getDisplayMetrics().density);
+        evidenceList.addView(evidenceImage, params);
     }
 
     private void tryCreateReport() {
@@ -117,8 +133,7 @@ public class ReporteActivity extends AppCompatActivity{
         FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
         String userId = new SessionRepository(this).getUserId();
         String description = descriptionField.getText().toString();
-        String image = evidenceUri == null ? null : evidenceUri.toString();
-        new LoadingOverlay(this).run(() -> feedbackService.createReport(userId, loan, description, image), () -> {
+        new LoadingOverlay(this).run(() -> feedbackService.createReport(userId, loan, description, evidenceUris), () -> {
             Toast.makeText(this, R.string.reporte_enviado, Toast.LENGTH_SHORT).show();
             finish();
         }, e -> {

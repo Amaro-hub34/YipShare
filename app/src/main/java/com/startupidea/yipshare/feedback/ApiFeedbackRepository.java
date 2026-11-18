@@ -71,10 +71,11 @@ public class ApiFeedbackRepository implements FeedbackRepository {
     }
 
     @Override
-    public void createReport(String loanId, String text, String imageUri) {
+    public void createReport(String loanId, String text, List<String> imageUris) {
         try {
-            JSONObject body = new JSONObject().put("loanId", loanId).put("text", text);
-            if (imageUri != null) body.put("image", ImageFileUtil.upload(context, apiClient, imageUri));
+            JSONArray images = new JSONArray();
+            for (String imageUri : imageUris) images.put(ImageFileUtil.upload(context, apiClient, imageUri));
+            JSONObject body = new JSONObject().put("loanId", loanId).put("text", text).put("images", images);
             apiClient.post("/reports", body);
         } catch (ServerError e) {
             if (e.getStatus() == CONFLICT) throw new AlreadyReported();

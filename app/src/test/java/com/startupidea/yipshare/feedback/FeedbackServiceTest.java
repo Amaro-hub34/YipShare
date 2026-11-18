@@ -10,6 +10,7 @@ import com.startupidea.yipshare.loan.LoanStatus;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FeedbackServiceTest {
@@ -41,7 +42,7 @@ public class FeedbackServiceTest {
         }
 
         @Override
-        public void createReport(String loanId, String text, String imageUri) {
+        public void createReport(String loanId, String text, List<String> imageUris) {
             savedText = text;
         }
 
@@ -81,10 +82,10 @@ public class FeedbackServiceTest {
 
     @Test
     public void reportNeedsText() {
-        assertThrows(EmptyReportText.class, () -> service.createReport("me", LOAN, "   ", null));
+        assertThrows(EmptyReportText.class, () -> service.createReport("me", LOAN, "   ", Collections.emptyList()));
         assertNull(savedText);
 
-        service.createReport("me", LOAN, " Llegó tarde ", null);
+        service.createReport("me", LOAN, " Llegó tarde ", Collections.emptyList());
         assertEquals("Llegó tarde", savedText);
     }
 

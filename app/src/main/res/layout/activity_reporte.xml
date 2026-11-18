@@ -125,29 +125,20 @@
                         android:textSize="20sp"
                         android:layout_marginTop="14dp" />
 
-                    <FrameLayout
+                    <LinearLayout
+                        android:id="@+id/ll_evidencias"
                         android:layout_width="match_parent"
-                        android:layout_height="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/btn_agregar_imagen"
+                        style="@style/ButtonPrimary"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_marginTop="16dp"
-                        android:background="@drawable/bg_placeholder_imagen">
-
-                        <ImageView
-                            android:id="@+id/iv_preview_imagen"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:contentDescription="@string/iv_preview_imagen"
-                            android:visibility="gone" />
-
-                        <Button
-                            android:id="@+id/btn_cambiar_imagen2"
-                            style="@style/ButtonPrimary"
-                            android:layout_width="300dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/btn_cambiar_imagen" />
-
-                    </FrameLayout>
+                        android:text="@string/btn_agregar_imagen" />
 
 
                     <Button

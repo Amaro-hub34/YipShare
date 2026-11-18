@@ -30,9 +30,9 @@ public class FeedbackService {
         feedbackRepository.createReview(loan.getId(), Math.max(1, Math.min(MAX_STARS, Math.round(stars))), text.trim());
     }
 
-    public void createReport(String authorId, Loan loan, String text, String imageUri) {
+    public void createReport(String authorId, Loan loan, String text, List<String> imageUris) {
         if (text.trim().isEmpty()) throw new EmptyReportText();
-        feedbackRepository.createReport(loan.getId(), text.trim(), imageUri);
+        feedbackRepository.createReport(loan.getId(), text.trim(), imageUris);
     }
 
     public List<Review> getAllReviewsByCondominiumId(String condominiumId) {

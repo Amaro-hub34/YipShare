@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
 import com.startupidea.yipshare.utils.ConfirmDialogUtil;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -85,11 +86,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
             return insets;
         });
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            bottomNav.setVisibility(View.GONE);
-            findViewById(R.id.tv_condominio).setVisibility(View.GONE);
-            findViewById(R.id.tv_saludo).setVisibility(View.GONE);
-        }
+        showForOrientation(getResources().getConfiguration());
 
         boolean articlesExist = true;
         findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
@@ -289,6 +286,19 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         }
 
         dialog.show();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        showForOrientation(newConfig);
+    }
+
+    private void showForOrientation(Configuration config) {
+        int visibility = config.orientation == Configuration.ORIENTATION_LANDSCAPE ? View.GONE : View.VISIBLE;
+        findViewById(R.id.bottom_nav).setVisibility(visibility);
+        findViewById(R.id.tv_condominio).setVisibility(visibility);
+        findViewById(R.id.tv_saludo).setVisibility(visibility);
     }
 
     private void showAdminOptions(View[] buttons, TextView codeLabel, CondominiumMembership membership) {

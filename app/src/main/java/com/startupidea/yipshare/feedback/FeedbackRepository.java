@@ -10,7 +10,7 @@ public interface FeedbackRepository {
 
     void createReview(String loanId, int stars, String text);
 
-    void createReport(String loanId, String text, String imageUri);
+    void createReport(String loanId, String text, List<String> imageUris);
 
     List<Review> getAllReviewsByCondominiumId(String condominiumId);
 

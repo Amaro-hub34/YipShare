@@ -107,6 +107,7 @@
     <string name="tv_tiempo_prestamo">Tiempo de préstamo</string>
     <string name="iv_preview_imagen">Vista previa de la imagen</string>
     <string name="btn_cambiar_imagen">Cambiar imagen</string>
+    <string name="btn_agregar_imagen">Agregar imagen</string>
     <string name="FA_formatos">Formatos: PNG, JPG, JPEG</string>
     <string name="btn_accion_principal">Publicar</string>
     <string name="btn_borrar_objeto">Borrar objeto</string>
