@@ -45,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         SessionRepository session = new SessionRepository(this);
         boolean active;
         try {
-            active = new UserService(new ApiUserRepository(new ApiClient(this), session)).isActiveSession(session.getUserId());
+            active = new UserService(new ApiUserRepository(new ApiClient(this), session, this)).isActiveSession(session.getUserId());
         } catch (ServerUnavailable e) {
             active = session.getUserId() != null;
         } catch (AppException e) {

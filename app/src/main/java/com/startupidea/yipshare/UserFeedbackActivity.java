@@ -53,7 +53,7 @@ public class UserFeedbackActivity extends AppCompatActivity {
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
         String userId = getIntent().getStringExtra(EXTRA_USER_ID);
-        UserService userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
+        UserService userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
             ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.getUsername());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(profile.getRating());

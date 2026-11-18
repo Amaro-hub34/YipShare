@@ -1,6 +1,7 @@
 package com.startupidea.yipshare.user;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.InvalidImage;
 
 public class UserService {
 
@@ -92,6 +93,11 @@ public class UserService {
                 payload.getMaternalLastName().trim(),
                 phoneNumber,
                 email), changesPassword ? newPassword : null, changesPassword ? currentPassword : null);
+    }
+
+    public void modifyProfilePicture(String userId, String imageUri) {
+        if (imageUri == null) throw new InvalidImage();
+        userRepository.modifyProfilePicture(userId, imageUri);
     }
 
     public void deleteAccount(String userId) {

@@ -106,7 +106,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         itemService = new ItemService(new ApiItemRepository(apiClient, this));
         condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
         loanService = new LoanService(new ApiLoanRepository(apiClient, this));
-        userService = new UserService(new ApiUserRepository(apiClient, session));
+        userService = new UserService(new ApiUserRepository(apiClient, session, this));
         userId = session.getUserId();
 
         Item received = Item.fromIntent(getIntent());

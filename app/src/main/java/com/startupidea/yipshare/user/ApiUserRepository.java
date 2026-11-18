@@ -1,8 +1,11 @@
 package com.startupidea.yipshare.user;
 
+import android.content.Context;
+
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.ServerError;
 import com.startupidea.yipshare.error.ServerUnavailable;
+import com.startupidea.yipshare.utils.ImageFileUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,10 +19,12 @@ public class ApiUserRepository implements UserRepository {
 
     private final ApiClient apiClient;
     private final SessionRepository sessionRepository;
+    private final Context context;
 
-    public ApiUserRepository(ApiClient apiClient, SessionRepository sessionRepository) {
+    public ApiUserRepository(ApiClient apiClient, SessionRepository sessionRepository, Context context) {
         this.apiClient = apiClient;
         this.sessionRepository = sessionRepository;
+        this.context = context;
     }
 
     @Override
@@ -71,7 +76,8 @@ public class ApiUserRepository implements UserRepository {
                     ApiClient.text(json, "maternalSurname"),
                     ApiClient.text(json, "phoneNumber"),
                     ApiClient.text(json, "email"),
-                    json.optInt("computedRating"));
+                    json.optInt("computedRating"),
+                    ImageFileUtil.toLocalUri(context, apiClient, ApiClient.text(json, "profilePicture")));
         } catch (ServerError e) {
             if (e.getStatus() == NOT_FOUND) return null;
             throw e;
@@ -95,6 +101,16 @@ public class ApiUserRepository implements UserRepository {
         } catch (ServerError e) {
             if (e.getStatus() == UNAUTHORIZED && e.messageContains("password")) throw new WrongPassword();
             throw duplicateOr(e);
+        } catch (JSONException e) {
+            throw new ServerUnavailable();
+        }
+    }
+
+    @Override
+    public void modifyProfilePicture(String id, String imageUri) {
+        try {
+            String path = ImageFileUtil.uploadProfilePicture(context, apiClient, imageUri);
+            apiClient.patch("/users/me", new JSONObject().put("profilePicture", path));
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }

@@ -10,6 +10,8 @@ public interface UserRepository {
 
     void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword);
 
+    void modifyProfilePicture(String id, String imageUri);
+
     void deleteUser(String id);
 
     boolean isActiveUser(String id);

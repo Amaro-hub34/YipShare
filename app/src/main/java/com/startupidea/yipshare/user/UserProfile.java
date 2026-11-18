@@ -12,6 +12,7 @@ public final class UserProfile {
     private final String phoneNumber;
     private final String email;
     private final int computedRating;
+    private final String profilePictureUri;
 
     public UserProfile(
             String id,
@@ -21,7 +22,8 @@ public final class UserProfile {
             String maternalLastName,
             String phoneNumber,
             String email,
-            int computedRating) {
+            int computedRating,
+            String profilePictureUri) {
         this.id = id;
         this.username = username;
         this.firstNames = firstNames;
@@ -30,6 +32,7 @@ public final class UserProfile {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.computedRating = computedRating;
+        this.profilePictureUri = profilePictureUri;
     }
 
     public String getId() {
@@ -62,5 +65,9 @@ public final class UserProfile {
 
     public float getRating() {
         return computedRating / RATING_SCALE;
+    }
+
+    public String getProfilePictureUri() {
+        return profilePictureUri;
     }
 }

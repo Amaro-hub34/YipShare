@@ -100,7 +100,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         itemService = new ItemService(new ApiItemRepository(apiClient, this));
         condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
         notificationService = new NotificationService(new ApiNotificationRepository(apiClient));
-        userService = new UserService(new ApiUserRepository(apiClient, session));
+        userService = new UserService(new ApiUserRepository(apiClient, session, this));
         userId = session.getUserId();
         showGreeting();
         myItemsList = findViewById(R.id.rv_mis_articulos);

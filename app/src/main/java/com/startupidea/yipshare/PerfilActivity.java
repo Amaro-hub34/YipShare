@@ -1,5 +1,8 @@
 package com.startupidea.yipshare;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import com.startupidea.yipshare.utils.ConfirmDialogUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
@@ -8,7 +11,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,6 +41,7 @@ import com.startupidea.yipshare.user.UserProfile;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.user.WrongPassword;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
+import com.startupidea.yipshare.utils.ImagePreviewUtil;
 import com.startupidea.yipshare.utils.PhoneInputUtil;
 import com.startupidea.yipshare.utils.TaskUtil;
 
@@ -45,6 +52,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class PerfilActivity extends AppCompatActivity {
 
+    private static final int PROFILE_PICTURE_SIZE_PX = 320;
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> profilePicturePicker = registerForActivityResult(
+            new ActivityResultContracts.PickVisualMedia(),
+            uri -> {
+                if (uri != null) tryChangeProfilePicture(uri);
+            });
+
     private UserService userService;
     private String userId;
 
@@ -53,7 +68,7 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
+        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
         userId = new SessionRepository(this).getUserId();
         showProfile();
 
@@ -90,6 +105,9 @@ public class PerfilActivity extends AppCompatActivity {
         findViewById(R.id.nav_perfil).setOnClickListener(v ->
                 startActivity(new Intent(PerfilActivity.this, PerfilActivity.class)));
 
+        findViewById(R.id.iv_foto_perfil).setOnClickListener(v -> profilePicturePicker.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build()));
         findViewById(R.id.btn_actualizar_datos).setOnClickListener(v -> showUpdateSheet());
         findViewById(R.id.btn_eliminar_cuenta).setOnClickListener(v -> confirm(
                 R.string.confirmar_eliminar_cuenta, this::tryDeleteAccount));
@@ -205,6 +223,13 @@ public class PerfilActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void tryChangeProfilePicture(Uri uri) {
+        new LoadingOverlay(this).run(() -> userService.modifyProfilePicture(userId, uri.toString()), () -> {
+            Toast.makeText(this, R.string.foto_perfil_actualizada, Toast.LENGTH_SHORT).show();
+            showProfile();
+        }, this::showError);
+    }
+
     private void tryDeleteAccount() {
         new LoadingOverlay(this).run(() -> userService.deleteAccount(userId), () -> {
             new SessionRepository(this).deleteSession();
@@ -232,6 +257,7 @@ public class PerfilActivity extends AppCompatActivity {
     private void showProfile() {
         FeedbackSectionUtil.attach(this, userId);
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
+            showProfilePicture(profile.getProfilePictureUri());
             ((TextView) findViewById(R.id.et_correo_electronico)).setText(profile.getUsername());
             ((TextView) findViewById(R.id.tv_correo)).setText(profile.getEmail());
             ((TextView) findViewById(R.id.apellido_paterno)).setText(profile.getPaternalLastName());
@@ -242,5 +268,12 @@ public class PerfilActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));
         }, this::showError);
+    }
+
+    private void showProfilePicture(String pictureUri) {
+        ImageView profilePictureImage = findViewById(R.id.iv_foto_perfil);
+        Bitmap picture = pictureUri == null ? null : ImagePreviewUtil.tryLoad(this, Uri.parse(pictureUri), PROFILE_PICTURE_SIZE_PX);
+        if (picture == null) profilePictureImage.setImageResource(R.drawable.ic_person);
+        else profilePictureImage.setImageBitmap(picture);
     }
 }

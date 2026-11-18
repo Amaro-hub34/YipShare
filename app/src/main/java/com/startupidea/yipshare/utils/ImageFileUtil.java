@@ -1,6 +1,7 @@
 package com.startupidea.yipshare.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
@@ -8,6 +9,7 @@ import android.webkit.MimeTypeMap;
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.InvalidImage;
 import com.startupidea.yipshare.error.ServerUnavailable;
+import com.startupidea.yipshare.user.ProfilePictureTooLarge;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,10 @@ public final class ImageFileUtil {
     private static final String TYPE_PNG = "image/png";
     private static final String TYPE_JPEG = "image/jpeg";
     private static final int BUFFER_SIZE = 8192;
+    private static final long PROFILE_PICTURE_MAX_BYTES = 10L * 1024 * 1024;
+    private static final int PROFILE_PICTURE_SIZE_PX = 320;
+    private static final int PROFILE_PICTURE_DECODE_MAX_PX = 1280;
+    private static final int JPEG_QUALITY = 90;
 
     private ImageFileUtil() {
     }
@@ -47,6 +53,28 @@ public final class ImageFileUtil {
         return path;
     }
 
+    public static String uploadProfilePicture(Context context, ApiClient apiClient, String imageUri) {
+        Uri source = Uri.parse(imageUri);
+        if (isLargerThan(context, source, PROFILE_PICTURE_MAX_BYTES)) throw new ProfilePictureTooLarge();
+        Bitmap picture = ImagePreviewUtil.tryLoad(context, source, PROFILE_PICTURE_DECODE_MAX_PX);
+        if (picture == null) throw new InvalidImage();
+
+        int side = Math.min(picture.getWidth(), picture.getHeight());
+        Bitmap square = Bitmap.createBitmap(picture, (picture.getWidth() - side) / 2, (picture.getHeight() - side) / 2, side, side);
+        Bitmap scaled = Bitmap.createScaledBitmap(square, PROFILE_PICTURE_SIZE_PX, PROFILE_PICTURE_SIZE_PX, true);
+        File file = new File(context.getCacheDir(), UUID.randomUUID() + ".jpg");
+        try {
+            try (OutputStream output = new FileOutputStream(file)) {
+                if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) throw new InvalidImage();
+            }
+            return upload(context, apiClient, Uri.fromFile(file).toString());
+        } catch (IOException e) {
+            throw new InvalidImage();
+        } finally {
+            file.delete();
+        }
+    }
+
     public static String toLocalUri(Context context, ApiClient apiClient, String path) {
         if (path == null) return null;
         File file = new File(folder(context), nameOf(path));
@@ -59,6 +87,22 @@ public final class ImageFileUtil {
             }
         }
         return Uri.fromFile(file).toString();
+    }
+
+    private static boolean isLargerThan(Context context, Uri uri, long maxBytes) {
+        try (InputStream input = context.getContentResolver().openInputStream(uri)) {
+            if (input == null) return false;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            long total = 0;
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                total += read;
+                if (total > maxBytes) return true;
+            }
+            return false;
+        } catch (IOException | RuntimeException e) {
+            throw new InvalidImage();
+        }
     }
 
     private static Uri tryCopy(Context context, Uri source) {

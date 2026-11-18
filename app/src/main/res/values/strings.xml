@@ -336,6 +336,9 @@
     <string name="error_contrasena_actual">Your current password is not correct</string>
     <string name="confirmar_actualizar_perfil">Save the changes to your profile?</string>
     <string name="perfil_actualizado">Profile updated</string>
+    <string name="foto_perfil_actualizada">Profile picture updated</string>
+    <string name="foto_perfil_descripcion">Profile picture. Tap to change it</string>
+    <string name="error_foto_perfil_grande">The picture is larger than 10 MB. Choose a smaller one</string>
     <string name="confirmar_eliminar_cuenta">Delete your account? You won\'t be able to log in again.</string>
     <string name="cuenta_eliminada">Account deleted</string>
     <string name="estado_rechazado">Rejected</string>

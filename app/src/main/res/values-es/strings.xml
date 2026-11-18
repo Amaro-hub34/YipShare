@@ -330,6 +330,9 @@
     <string name="error_contrasena_actual">Tu contraseña actual no es correcta</string>
     <string name="confirmar_actualizar_perfil">¿Seguro que quieres guardar los cambios de tu perfil?</string>
     <string name="perfil_actualizado">Perfil actualizado</string>
+    <string name="foto_perfil_actualizada">Foto de perfil actualizada</string>
+    <string name="foto_perfil_descripcion">Foto de perfil. Toca para cambiarla</string>
+    <string name="error_foto_perfil_grande">La foto pesa más de 10 MB. Elige una más ligera</string>
     <string name="confirmar_eliminar_cuenta">¿Seguro que quieres eliminar tu cuenta? Ya no podrás iniciar sesión con ella.</string>
     <string name="cuenta_eliminada">Cuenta eliminada</string>
     <string name="estado_rechazado">Rechazado</string>

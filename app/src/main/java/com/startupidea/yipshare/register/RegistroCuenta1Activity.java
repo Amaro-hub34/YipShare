@@ -41,7 +41,7 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this)));
+        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
         setContentView(R.layout.activity_registrocuenta1);
 
         if (savedInstanceState != null) {

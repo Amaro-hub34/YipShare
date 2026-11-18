@@ -29,7 +29,7 @@ public class UserProfileServiceTest {
 
         @Override
         public UserProfile getUserProfileById(String id) {
-            return "1".equals(id) ? new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@test.com", 0) : null;
+            return "1".equals(id) ? new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@test.com", 0, null) : null;
         }
 
         @Override
@@ -39,6 +39,10 @@ public class UserProfileServiceTest {
             if (newPassword != null && !CURRENT_PASSWORD.equals(currentPassword)) throw new WrongPassword();
             savedProfile = payload;
             savedPassword = newPassword;
+        }
+
+        @Override
+        public void modifyProfilePicture(String id, String imageUri) {
         }
 
         @Override

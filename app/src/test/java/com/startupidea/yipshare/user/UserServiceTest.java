@@ -22,11 +22,15 @@ public class UserServiceTest {
 
             @Override
             public UserProfile getUserProfileById(String id) {
-                return "1".equals(id) ? new UserProfile("1", "ana", "Ana", "Pérez", "López", "+525512345678", "ana@test.com", 45) : null;
+                return "1".equals(id) ? new UserProfile("1", "ana", "Ana", "Pérez", "López", "+525512345678", "ana@test.com", 45, null) : null;
             }
 
             @Override
             public void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword) {
+            }
+
+            @Override
+            public void modifyProfilePicture(String id, String imageUri) {
             }
 
             @Override
