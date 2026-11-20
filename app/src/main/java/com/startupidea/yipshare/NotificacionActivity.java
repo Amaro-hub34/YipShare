@@ -22,16 +22,15 @@ import androidx.appcompat.app.AlertDialog;
 import com.startupidea.yipshare.adapters.InboxAdapter;
 import com.startupidea.yipshare.adapters.JoinRequestAdapter;
 import com.startupidea.yipshare.adapters.NotificacionAdapter;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.JoinRequest;
 import com.startupidea.yipshare.condominium.Unit;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.loan.ApiLoanRepository;
+import com.startupidea.yipshare.loan.SqliteLoanRepository;
 import com.startupidea.yipshare.loan.LoanRequest;
 import com.startupidea.yipshare.loan.LoanService;
-import com.startupidea.yipshare.notification.ApiNotificationRepository;
+import com.startupidea.yipshare.notification.SqliteNotificationRepository;
 import com.startupidea.yipshare.notification.Notification;
 import com.startupidea.yipshare.notification.NotificationService;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -92,10 +91,9 @@ public class NotificacionActivity extends AppCompatActivity {
         findViewById(R.id.nav_agregar).setOnClickListener(v ->
                 startActivity(new Intent(NotificacionActivity.this, FormularioArticuloActivity.class)));
 
-        ApiClient apiClient = new ApiClient(this);
-        loanService = new LoanService(new ApiLoanRepository(apiClient, this));
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
-        notificationService = new NotificationService(new ApiNotificationRepository(apiClient));
+        loanService = new LoanService(new SqliteLoanRepository(this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
+        notificationService = new NotificationService(new SqliteNotificationRepository(this));
         SessionRepository session = new SessionRepository(this);
         userId = session.getUserId();
         condominiumId = session.getCondominiumId();

@@ -17,6 +17,4 @@ public interface UserRepository {
     void deleteUser(String id);
 
     boolean isActiveUser(String id);
-
-    void logout();
 }

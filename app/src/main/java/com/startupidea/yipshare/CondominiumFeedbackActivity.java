@@ -13,9 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
 import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.feedback.Report;
 import com.startupidea.yipshare.feedback.ReportState;
@@ -51,7 +50,7 @@ public class CondominiumFeedbackActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(R.string.btn_ver_reportes_condominio);
         ((View) findViewById(R.id.rb_calificacion).getParent()).setVisibility(View.GONE);
 
-        feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
+        feedbackService = new FeedbackService(new SqliteFeedbackRepository(this));
         condominiumId = new SessionRepository(this).getCondominiumId();
         showFeedback();
     }

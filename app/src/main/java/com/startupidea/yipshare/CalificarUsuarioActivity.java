@@ -13,8 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
 import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -46,7 +45,7 @@ public class CalificarUsuarioActivity extends AppCompatActivity {
     }
 
     private void tryCreateReview() {
-        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
+        FeedbackService feedbackService = new FeedbackService(new SqliteFeedbackRepository(this));
         String userId = new SessionRepository(this).getUserId();
         float stars = ratingBar.getRating();
         String comment = commentField.getText().toString();

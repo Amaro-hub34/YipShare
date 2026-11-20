@@ -28,10 +28,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.error.UnauthorizedException;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.ProfilePayload;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -65,7 +64,7 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
+        userService = new UserService(new SqliteUserRepository(this));
         userId = new SessionRepository(this).getUserId();
         showProfile();
 

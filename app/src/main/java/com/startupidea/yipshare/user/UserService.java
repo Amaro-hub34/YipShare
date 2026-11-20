@@ -101,10 +101,6 @@ public class UserService {
         userRepository.deleteUser(userId);
     }
 
-    public void logout() {
-        userRepository.logout();
-    }
-
     private void validateUsername(String username) {
         if (username.isEmpty()) throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_vacio);
         if (username.length() < UserRules.USERNAME_MIN_LENGTH) {

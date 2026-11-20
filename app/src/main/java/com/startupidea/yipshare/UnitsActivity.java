@@ -16,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.adapters.UnitAdapter;
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.Unit;
 import com.startupidea.yipshare.error.AppException;
@@ -56,7 +55,7 @@ public class UnitsActivity extends AppCompatActivity {
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
         findViewById(R.id.btn_agregar_unidad).setOnClickListener(v -> askUnitName(null));
 
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(new ApiClient(this), this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
         condominiumId = new SessionRepository(this).getCondominiumId();
         showUnits();
     }

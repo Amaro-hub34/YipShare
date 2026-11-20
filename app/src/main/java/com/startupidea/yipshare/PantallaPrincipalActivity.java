@@ -32,18 +32,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.startupidea.yipshare.adapters.ArticuloAdapter;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumMembership;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.error.ServerUnavailable;
-import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.item.SqliteItemRepository;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemService;
-import com.startupidea.yipshare.notification.ApiNotificationRepository;
+import com.startupidea.yipshare.notification.SqliteNotificationRepository;
 import com.startupidea.yipshare.notification.NotificationService;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.TaskUtil;
@@ -92,12 +90,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.group_empty_state).setVisibility(articlesExist ? View.GONE : View.VISIBLE);
         findViewById(R.id.group_content_state).setVisibility(articlesExist ? View.VISIBLE : View.GONE);
 
-        ApiClient apiClient = new ApiClient(this);
         session = new SessionRepository(this);
-        itemService = new ItemService(new ApiItemRepository(apiClient, this));
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
-        notificationService = new NotificationService(new ApiNotificationRepository(apiClient));
-        userService = new UserService(new ApiUserRepository(apiClient, session, this));
+        itemService = new ItemService(new SqliteItemRepository(this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
+        notificationService = new NotificationService(new SqliteNotificationRepository(this));
+        userService = new UserService(new SqliteUserRepository(this));
         userId = session.getUserId();
         showGreeting();
         myItemsList = findViewById(R.id.rv_mis_articulos);
@@ -210,7 +207,6 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         TaskUtil.run(this, () -> userService.getUserProfile(userId).firstNames(),
                 name -> ((TextView) findViewById(R.id.tv_saludo)).setText(getString(R.string.saludo, name)),
                 e -> {
-                    if (e instanceof ServerUnavailable) return;
                     session.deleteSession();
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -310,12 +306,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void confirmLogout() {
-        ConfirmDialogUtil.show(this, getString(R.string.confirmar_cerrar_sesion), () ->
-                TaskUtil.run(this, userService::logout, () -> {
-                    session.deleteSession();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }, this::showError));
+        ConfirmDialogUtil.show(this, getString(R.string.confirmar_cerrar_sesion), () -> {
+            session.deleteSession();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 }

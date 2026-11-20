@@ -16,9 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.loan.ApiLoanRepository;
+import com.startupidea.yipshare.loan.SqliteLoanRepository;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.loan.LoanService;
 import com.startupidea.yipshare.loan.LoanStatus;
@@ -42,7 +41,7 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        loanService = new LoanService(new ApiLoanRepository(new ApiClient(this), this));
+        loanService = new LoanService(new SqliteLoanRepository(this));
         loan = Loan.fromIntent(getIntent());
         TextView itemLabel = findViewById(R.id.tv_articulo_codigo);
         TextView codeLabel = findViewById(R.id.tv_codigo_generado);

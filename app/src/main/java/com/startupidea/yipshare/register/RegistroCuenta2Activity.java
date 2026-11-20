@@ -15,9 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
@@ -44,7 +43,7 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
+        userService = new UserService(new SqliteUserRepository(this));
         setContentView(R.layout.activity_registrocuenta2);
 
         draft = RegistrationDraft.fromIntent(getIntent());

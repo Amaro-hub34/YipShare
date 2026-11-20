@@ -18,8 +18,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -38,7 +37,7 @@ public class IngresoCondominioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_ingreso_condominio);
 
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(new ApiClient(this), this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
         codeField = findViewById(R.id.et_codigo_condominio);
         buildingField = findViewById(R.id.et_direccion_edificio);
         apartmentField = findViewById(R.id.et_direccion_departamento);

@@ -22,8 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumField;
 import com.startupidea.yipshare.condominium.CondominiumPayload;
 import com.startupidea.yipshare.condominium.CondominiumService;
@@ -72,7 +71,7 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registrar_condominio);
 
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(new ApiClient(this), this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
         nameField = findViewById(R.id.et_nombre_condominio);
         streetField = findViewById(R.id.et_direccion_condominio1);
         neighborhoodField = findViewById(R.id.et_direccion_condominio2);

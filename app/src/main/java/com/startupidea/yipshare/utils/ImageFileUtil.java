@@ -8,11 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.error.ServerUnavailable;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +18,6 @@ import java.util.UUID;
 public final class ImageFileUtil {
 
     private static final String IMAGES_FOLDER = "item_images";
-    private static final String TYPE_PNG = "image/png";
-    private static final String TYPE_JPEG = "image/jpeg";
     private static final int BUFFER_SIZE = 8192;
     private static final long PROFILE_PICTURE_MAX_BYTES = 10L * 1024 * 1024;
     private static final int PROFILE_PICTURE_SIZE_PX = 320;
@@ -33,27 +27,16 @@ public final class ImageFileUtil {
     private ImageFileUtil() {
     }
 
-    public static String upload(Context context, ApiClient apiClient, String imageUri) {
+    public static String save(Context context, String imageUri) {
         if (imageUri == null) return null;
-        File stored = storedFile(context, Uri.parse(imageUri));
-        if (stored != null) return "/uploads/" + stored.getName();
+        if (storedFile(context, Uri.parse(imageUri)) != null) return imageUri;
 
         Uri copy = tryCopy(context, Uri.parse(imageUri));
         if (copy == null) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
-        File file = new File(copy.getPath());
-        String path;
-        try (InputStream input = new FileInputStream(file)) {
-            path = apiClient.upload(input, file.getName().endsWith(".png") ? TYPE_PNG : TYPE_JPEG);
-        } catch (IOException e) {
-            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
-        } finally {
-            file.delete();
-        }
-        copyTo(context, Uri.parse(imageUri), new File(folder(context), nameOf(path)));
-        return path;
+        return copy.toString();
     }
 
-    public static String uploadProfilePicture(Context context, ApiClient apiClient, String imageUri) {
+    public static String saveProfilePicture(Context context, String imageUri) {
         Uri source = Uri.parse(imageUri);
         if (isLargerThan(context, source, PROFILE_PICTURE_MAX_BYTES)) throw new BadRequestException("Profile picture is larger than 10 MB", R.string.error_foto_perfil_grande);
         Bitmap picture = ImagePreviewUtil.tryLoad(context, source, PROFILE_PICTURE_DECODE_MAX_PX);
@@ -62,31 +45,16 @@ public final class ImageFileUtil {
         int side = Math.min(picture.getWidth(), picture.getHeight());
         Bitmap square = Bitmap.createBitmap(picture, (picture.getWidth() - side) / 2, (picture.getHeight() - side) / 2, side, side);
         Bitmap scaled = Bitmap.createScaledBitmap(square, PROFILE_PICTURE_SIZE_PX, PROFILE_PICTURE_SIZE_PX, true);
-        File file = new File(context.getCacheDir(), UUID.randomUUID() + ".jpg");
-        try {
-            try (OutputStream output = new FileOutputStream(file)) {
-                if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
-            }
-            return upload(context, apiClient, Uri.fromFile(file).toString());
+        File folder = folder(context);
+        if (!folder.isDirectory() && !folder.mkdirs()) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
+        File file = new File(folder, UUID.randomUUID() + ".jpg");
+        try (OutputStream output = new FileOutputStream(file)) {
+            if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) throw new IOException("JPEG compression failed");
+            return Uri.fromFile(file).toString();
         } catch (IOException e) {
-            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
-        } finally {
             file.delete();
+            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         }
-    }
-
-    public static String toLocalUri(Context context, ApiClient apiClient, String path) {
-        if (path == null) return null;
-        File file = new File(folder(context), nameOf(path));
-        if (!file.exists()) {
-            try {
-                if (!folder(context).isDirectory() && !folder(context).mkdirs()) return null;
-                apiClient.download(path, file);
-            } catch (ServerUnavailable e) {
-                return null;
-            }
-        }
-        return Uri.fromFile(file).toString();
     }
 
     private static boolean isLargerThan(Context context, Uri uri, long maxBytes) {
@@ -109,7 +77,7 @@ public final class ImageFileUtil {
         File folder = folder(context);
         if (!folder.isDirectory() && !folder.mkdirs()) return null;
 
-        File target = new File(context.getCacheDir(), UUID.randomUUID().toString());
+        File target = new File(folder, UUID.randomUUID().toString());
         if (!copyTo(context, source, target)) return null;
         return Uri.fromFile(withExtension(target));
     }
@@ -137,10 +105,6 @@ public final class ImageFileUtil {
 
     private static File folder(Context context) {
         return new File(context.getFilesDir(), IMAGES_FOLDER);
-    }
-
-    private static String nameOf(String path) {
-        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     private static File withExtension(File file) {

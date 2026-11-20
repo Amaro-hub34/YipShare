@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.adapters.ReportAdapter;
 import com.startupidea.yipshare.adapters.ReviewAdapter;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.feedback.Report;
 import com.startupidea.yipshare.feedback.Review;
-import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public final class FeedbackSectionUtil {
     }
 
     public static void attach(Activity activity, String userId) {
-        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(activity), activity));
+        FeedbackService feedbackService = new FeedbackService(new SqliteFeedbackRepository(activity));
         TaskUtil.run(activity, () -> feedbackService.getAllReviewsByUserId(userId),
                 reviews -> TaskUtil.run(activity, () -> feedbackService.getAllReportsByUserId(userId),
                         reports -> show(activity, reviews, reports, null),

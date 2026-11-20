@@ -22,8 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.SqliteFeedbackRepository;
 import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -129,7 +128,7 @@ public class ReporteActivity extends AppCompatActivity{
     private void tryCreateReport() {
         descriptionField.setError(null);
 
-        FeedbackService feedbackService = new FeedbackService(new ApiFeedbackRepository(new ApiClient(this), this));
+        FeedbackService feedbackService = new FeedbackService(new SqliteFeedbackRepository(this));
         String userId = new SessionRepository(this).getUserId();
         String description = descriptionField.getText().toString();
         new LoadingOverlay(this).run(() -> feedbackService.createReport(userId, loan, description, evidenceUris), () -> {

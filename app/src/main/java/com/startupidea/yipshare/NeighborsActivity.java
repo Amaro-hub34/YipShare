@@ -14,8 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.adapters.NeighborAdapter;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.Neighbor;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -51,7 +50,7 @@ public class NeighborsActivity extends AppCompatActivity {
         });
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(new ApiClient(this), this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
         SessionRepository session = new SessionRepository(this);
         userId = session.getUserId();
         condominiumId = session.getCondominiumId();

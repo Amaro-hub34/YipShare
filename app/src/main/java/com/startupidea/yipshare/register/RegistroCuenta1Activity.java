@@ -13,12 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.TermsAndConditionsActivity;
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
-import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 
 public class RegistroCuenta1Activity extends AppCompatActivity {
@@ -41,7 +39,7 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
+        userService = new UserService(new SqliteUserRepository(this));
         setContentView(R.layout.activity_registrocuenta1);
 
         if (savedInstanceState != null) {

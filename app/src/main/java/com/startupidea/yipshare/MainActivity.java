@@ -15,10 +15,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.register.RegistroCuenta1Activity;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.LoginPayload;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.User;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
+        userService = new UserService(new SqliteUserRepository(this));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

@@ -14,9 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.user.ApiUserRepository;
-import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
 import com.startupidea.yipshare.utils.TaskUtil;
@@ -53,7 +51,7 @@ public class UserFeedbackActivity extends AppCompatActivity {
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
         String userId = getIntent().getStringExtra(EXTRA_USER_ID);
-        UserService userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
+        UserService userService = new UserService(new SqliteUserRepository(this));
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
             ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.username());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(profile.getRating());

@@ -31,9 +31,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.item.SqliteItemRepository;
 import com.startupidea.yipshare.item.InvalidItem;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemField;
@@ -78,7 +77,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_formulario_articulo);
 
-        itemService = new ItemService(new ApiItemRepository(new ApiClient(this), this));
+        itemService = new ItemService(new SqliteItemRepository(this));
         nameField = findViewById(R.id.et_nombre_articulo);
         descriptionField = findViewById(R.id.et_descripcion);
         categorySpinner = findViewById(R.id.spinner_categoria);

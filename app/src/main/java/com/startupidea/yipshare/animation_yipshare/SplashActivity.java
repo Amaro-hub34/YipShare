@@ -10,10 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.startupidea.yipshare.PantallaPrincipalActivity;
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.error.ServerUnavailable;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.TaskUtil;
@@ -45,9 +43,7 @@ public class SplashActivity extends AppCompatActivity {
         SessionRepository session = new SessionRepository(this);
         boolean active;
         try {
-            active = new UserService(new ApiUserRepository(new ApiClient(this), session, this)).isActiveSession(session.getUserId());
-        } catch (ServerUnavailable e) {
-            active = session.getUserId() != null;
+            active = new UserService(new SqliteUserRepository(this)).isActiveSession(session.getUserId());
         } catch (AppException e) {
             active = false;
         }

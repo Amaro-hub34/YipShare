@@ -55,10 +55,6 @@ public class UserProfileServiceTest {
         }
 
         @Override
-        public void logout() {
-        }
-
-        @Override
         public boolean isActiveUser(String id) {
             return "1".equals(id);
         }

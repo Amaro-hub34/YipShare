@@ -1,10 +1,12 @@
 package com.startupidea.yipshare.utils;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteException;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.error.DatabaseUnavailable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,6 +31,10 @@ public final class TaskUtil {
             } catch (AppException e) {
                 MAIN.post(() -> {
                     if (!activity.isDestroyed()) onError.accept(e);
+                });
+            } catch (SQLiteException e) {
+                MAIN.post(() -> {
+                    if (!activity.isDestroyed()) onError.accept(new DatabaseUnavailable());
                 });
             }
         });

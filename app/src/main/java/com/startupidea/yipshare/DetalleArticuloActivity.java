@@ -25,20 +25,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
-import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.item.SqliteItemRepository;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.item.LoanDuration;
-import com.startupidea.yipshare.loan.ApiLoanRepository;
+import com.startupidea.yipshare.loan.SqliteLoanRepository;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.loan.LoanService;
 import com.startupidea.yipshare.loan.LoanStatus;
-import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
@@ -101,12 +100,11 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
             return insets;
         });
-        ApiClient apiClient = new ApiClient(this);
         SessionRepository session = new SessionRepository(this);
-        itemService = new ItemService(new ApiItemRepository(apiClient, this));
-        condominiumService = new CondominiumService(new ApiCondominiumRepository(apiClient, this));
-        loanService = new LoanService(new ApiLoanRepository(apiClient, this));
-        userService = new UserService(new ApiUserRepository(apiClient, session, this));
+        itemService = new ItemService(new SqliteItemRepository(this));
+        condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
+        loanService = new LoanService(new SqliteLoanRepository(this));
+        userService = new UserService(new SqliteUserRepository(this));
         userId = session.getUserId();
 
         Item received = Item.fromIntent(getIntent());

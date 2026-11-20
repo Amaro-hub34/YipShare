@@ -15,9 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.utils.TaskUtil;
 import com.startupidea.yipshare.adapters.PrestamoAdapter;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.loan.LoanService;
-import com.startupidea.yipshare.loan.ApiLoanRepository;
+import com.startupidea.yipshare.loan.SqliteLoanRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 
 import android.widget.Toast;
@@ -53,7 +52,7 @@ public class PrestamoActivity extends AppCompatActivity {
             return insets;
         });
 
-        loanService = new LoanService(new ApiLoanRepository(new ApiClient(this), this));
+        loanService = new LoanService(new SqliteLoanRepository(this));
         loanList = findViewById(R.id.rv_prestamos);
 
         findViewById(R.id.nav_inicio).setOnClickListener(v ->

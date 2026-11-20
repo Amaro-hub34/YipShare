@@ -1,18 +1,10 @@
 package com.startupidea.yipshare.item;
-import com.startupidea.yipshare.R;
 
 public final class LoanDuration {
 
     private static final int[] DAYS = {1, 2, 3, 7, 14, 30};
 
     private LoanDuration() {
-    }
-
-    public static int indexOf(int days) {
-        for (int index = 0; index < DAYS.length; index++) {
-            if (DAYS[index] == days) return index;
-        }
-        return -1;
     }
 
     public static int daysOf(int index) {

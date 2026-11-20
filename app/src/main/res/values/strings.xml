@@ -136,7 +136,7 @@
     <string name="error_contrasena_vacia">Enter your password</string>
     <string name="error_cuenta_no_existe">Account does not exist</string>
     <string name="error_usuario_duplicado">That username is already taken</string>
-    <string name="error_servidor_no_disponible">Could not connect. Try again later</string>
+    <string name="error_bd_no_disponible">Could not open the local database. Try again</string>
 
     <string name="error_campo_obligatorio">This field is required</string>
     <string name="error_nombre_largo">Maximum 150 characters</string>
@@ -379,7 +379,6 @@
     <string name="solicitud_enviada">Request sent to the owner</string>
     <string name="condominio_con_pendientes" translatable="false">%1$s (%2$d)</string>
     <string name="notificaciones_pendientes">Notifications, some are pending</string>
-    <string name="error_servidor">Something went wrong on the server. Try again</string>
     <string name="error_correo_duplicado">That email is already registered</string>
     <string name="error_correo_formato">Enter a valid email</string>
     <string name="error_usuario_formato">Use only letters, numbers, - or _ (50 max)</string>
@@ -407,5 +406,10 @@
     <string name="unidad_eliminada">Unit deleted</string>
     <string name="cambiar_estado_reporte">Report status</string>
     <string name="codigo_condominio">Join code: %1$s</string>
-    <string name="error_archivo_grande">The file is larger than 50 MB. Choose a smaller one</string>
+    <string name="notif_prestamo_aceptado">Loan accepted</string>
+    <string name="notif_prestamo_aceptado_cuerpo">%1$s accepted your request for %2$s</string>
+    <string name="notif_prestamo_rechazado">Loan rejected</string>
+    <string name="notif_prestamo_rechazado_cuerpo">%1$s rejected your request for %2$s</string>
+    <string name="notif_union_aceptada">Request accepted</string>
+    <string name="notif_union_aceptada_cuerpo">You are now a member of %1$s</string>
 </resources>
