@@ -37,9 +37,9 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reports.get(position);
-        holder.statusLabel.setText(report.getState().getMessageRes());
-        holder.statusLabel.setBackgroundResource(report.getState().getBadgeRes());
-        holder.textLabel.setText(report.getText());
+        holder.statusLabel.setText(report.state().getMessageRes());
+        holder.statusLabel.setBackgroundResource(report.state().getBadgeRes());
+        holder.textLabel.setText(report.text());
         holder.itemView.setOnClickListener(onReportClick == null ? null : v -> onReportClick.onReportClick(report));
         holder.itemView.setClickable(onReportClick != null);
     }

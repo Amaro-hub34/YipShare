@@ -46,13 +46,13 @@ public class JoinRequestAdapter extends RecyclerView.Adapter<JoinRequestAdapter.
     public void onBindViewHolder(@NonNull JoinRequestViewHolder holder, int position) {
         JoinRequest request = requests.get(position);
         Context context = holder.itemView.getContext();
-        holder.messageLabel.setText(context.getString(R.string.notif_quiere_unirse, request.getCondominiumName()));
-        holder.requesterLabel.setText(request.getUsername());
-        holder.fullNameLabel.setText(request.getFullName());
-        PhoneUtil.attach(holder.phoneLabel, request.getPhoneNumber());
+        holder.messageLabel.setText(context.getString(R.string.notif_quiere_unirse, request.condominiumName()));
+        holder.requesterLabel.setText(request.username());
+        holder.fullNameLabel.setText(request.fullName());
+        PhoneUtil.attach(holder.phoneLabel, request.phoneNumber());
         holder.ratingBar.setRating(request.getRating());
         holder.ratingLabel.setText(String.format(Locale.getDefault(), "%.1f", request.getRating()));
-        holder.unitLabel.setText(context.getString(R.string.notif_unidad, request.getUnit()));
+        holder.unitLabel.setText(context.getString(R.string.notif_unidad, request.unit()));
 
         holder.requesterArea.setOnClickListener(v -> listener.onRequesterClick(request));
         holder.acceptButton.setOnClickListener(v -> listener.onAccept(request));

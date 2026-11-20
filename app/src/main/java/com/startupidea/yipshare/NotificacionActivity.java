@@ -120,19 +120,19 @@ public class NotificacionActivity extends AppCompatActivity {
         notificationList.setAdapter(new ConcatAdapter(joinAdapter(joinRequests), new NotificacionAdapter(requests, new NotificacionAdapter.OnLoanRequestAction() {
             @Override
             public void onAccept(LoanRequest request) {
-                confirm(getString(R.string.confirmar_aceptar_solicitud, request.getRequesterUsername(), request.getItemName()),
-                        () -> loanService.acceptLoanRequest(userId, request.getLoanId()), R.string.solicitud_aceptada);
+                confirm(getString(R.string.confirmar_aceptar_solicitud, request.requesterUsername(), request.itemName()),
+                        () -> loanService.acceptLoanRequest(userId, request.loanId()), R.string.solicitud_aceptada);
             }
 
             @Override
             public void onReject(LoanRequest request) {
-                confirm(getString(R.string.confirmar_denegar_solicitud, request.getRequesterUsername(), request.getItemName()),
-                        () -> loanService.rejectLoanRequest(userId, request.getLoanId()), R.string.solicitud_denegada);
+                confirm(getString(R.string.confirmar_denegar_solicitud, request.requesterUsername(), request.itemName()),
+                        () -> loanService.rejectLoanRequest(userId, request.loanId()), R.string.solicitud_denegada);
             }
 
             @Override
             public void onRequesterClick(LoanRequest request) {
-                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.getRequesterId()));
+                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.requesterId()));
             }
         }), inboxAdapter(inbox.notifications)));
     }
@@ -147,7 +147,7 @@ public class NotificacionActivity extends AppCompatActivity {
 
             @Override
             public void onDelete(Notification notification) {
-                confirm(getString(R.string.confirmar_eliminar_aviso, notification.getHeader()),
+                confirm(getString(R.string.confirmar_eliminar_aviso, notification.header()),
                         () -> notificationService.deleteNotification(notification), R.string.aviso_eliminado);
             }
         });
@@ -157,25 +157,25 @@ public class NotificacionActivity extends AppCompatActivity {
         return new JoinRequestAdapter(joinRequests, new JoinRequestAdapter.OnJoinRequestAction() {
             @Override
             public void onAccept(JoinRequest request) {
-                if (request.getSuggestedUnitId() != null) {
-                    confirm(getString(R.string.confirmar_aceptar_union, request.getUsername(), request.getCondominiumName()),
+                if (request.suggestedUnitId() != null) {
+                    confirm(getString(R.string.confirmar_aceptar_union, request.username(), request.condominiumName()),
                             () -> condominiumService.acceptJoinRequest(userId, request, null), R.string.union_aceptada);
                     return;
                 }
-                TaskUtil.run(NotificacionActivity.this, () -> condominiumService.getAllUnits(request.getCondominiumId()),
+                TaskUtil.run(NotificacionActivity.this, () -> condominiumService.getAllUnits(request.condominiumId()),
                         units -> pickUnit(request, units), NotificacionActivity.this::showError);
             }
 
             @Override
             public void onReject(JoinRequest request) {
-                confirm(getString(R.string.confirmar_denegar_union, request.getUsername(), request.getCondominiumName()),
-                        () -> condominiumService.rejectJoinRequest(userId, request.getUserId(), request.getCondominiumId()),
+                confirm(getString(R.string.confirmar_denegar_union, request.username(), request.condominiumName()),
+                        () -> condominiumService.rejectJoinRequest(userId, request.userId(), request.condominiumId()),
                         R.string.union_denegada);
             }
 
             @Override
             public void onRequesterClick(JoinRequest request) {
-                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.getUserId()));
+                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.userId()));
             }
         });
     }
@@ -186,9 +186,9 @@ public class NotificacionActivity extends AppCompatActivity {
             return;
         }
         new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.elegir_unidad, request.getUsername(), request.getUnit()))
-                .setItems(units.stream().map(Unit::getName).toArray(String[]::new), (dialog, which) ->
-                        answer(() -> condominiumService.acceptJoinRequest(userId, request, units.get(which).getId()),
+                .setTitle(getString(R.string.elegir_unidad, request.username(), request.unit()))
+                .setItems(units.stream().map(Unit::name).toArray(String[]::new), (dialog, which) ->
+                        answer(() -> condominiumService.acceptJoinRequest(userId, request, units.get(which).id()),
                                 R.string.union_aceptada))
                 .setNegativeButton(R.string.opcion_cancelar, null)
                 .show();

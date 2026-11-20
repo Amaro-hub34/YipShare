@@ -71,7 +71,7 @@ public class CondominiumFeedbackActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.cambiar_estado_reporte)
-                .setSingleChoiceItems(labels, report.getState().ordinal(), (dialog, which) -> {
+                .setSingleChoiceItems(labels, report.state().ordinal(), (dialog, which) -> {
                     dialog.dismiss();
                     TaskUtil.run(this, () -> feedbackService.modifyReportState(condominiumId, report, states[which]),
                             this::showFeedback, this::showError);

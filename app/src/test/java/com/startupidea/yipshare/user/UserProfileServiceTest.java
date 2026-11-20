@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.user;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.UnauthorizedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -7,6 +9,8 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import java.util.Optional;
 
 public class UserProfileServiceTest {
 
@@ -18,8 +22,8 @@ public class UserProfileServiceTest {
 
     private final UserService service = new UserService(new UserRepository() {
         @Override
-        public User tryLogin(LoginPayload payload) {
-            return null;
+        public Optional<User> tryLogin(LoginPayload payload) {
+            return Optional.empty();
         }
 
         @Override
@@ -28,15 +32,15 @@ public class UserProfileServiceTest {
         }
 
         @Override
-        public UserProfile getUserProfileById(String id) {
-            return "1".equals(id) ? new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@test.com", 0, null) : null;
+        public Optional<UserProfile> getUserProfileById(String id) {
+            return "1".equals(id) ? Optional.of(new UserProfile("1", "ana_lopez", "Ana", "López", "Pérez", "+525512345678", "ana@test.com", 0, null)) : Optional.empty();
         }
 
         @Override
         public void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword) {
-            if ("taken_user".equals(payload.getUsername())) throw new DuplicateUsername();
-            if ("+525598765432".equals(payload.getPhoneNumber())) throw new DuplicatePhoneNumber();
-            if (newPassword != null && !CURRENT_PASSWORD.equals(currentPassword)) throw new WrongPassword();
+            if ("taken_user".equals(payload.username())) throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_duplicado);
+            if ("+525598765432".equals(payload.phoneNumber())) throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_duplicado);
+            if (newPassword != null && !CURRENT_PASSWORD.equals(currentPassword)) throw new UnauthorizedException("Current password does not match", R.string.error_contrasena_actual);
             savedProfile = payload;
             savedPassword = newPassword;
         }
@@ -68,9 +72,9 @@ public class UserProfileServiceTest {
     public void keepsOwnUsernameAndPasswordWhenUnchanged() {
         service.modifyProfile("1", profile("ana_lopez"), "", "", "");
 
-        assertEquals("ana_lopez", savedProfile.getUsername());
-        assertEquals("Ana María", savedProfile.getFirstNames());
-        assertEquals("ana@test.com", savedProfile.getEmail());
+        assertEquals("ana_lopez", savedProfile.username());
+        assertEquals("Ana María", savedProfile.firstNames());
+        assertEquals("ana@test.com", savedProfile.email());
         assertNull(savedPassword);
     }
 
@@ -78,12 +82,12 @@ public class UserProfileServiceTest {
     public void changesUsernameWhenFree() {
         service.modifyProfile("1", profile(" nueva_ana "), "", "", "");
 
-        assertEquals("nueva_ana", savedProfile.getUsername());
+        assertEquals("nueva_ana", savedProfile.username());
     }
 
     @Test
     public void validatesAndNormalizesPhoneNumber() {
-        assertThrows(DuplicatePhoneNumber.class, () -> service.modifyProfile(
+        assertThrows(InvalidField.class, () -> service.modifyProfile(
                 "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 9876 5432", "ana@test.com"), "", "", ""));
         InvalidField badPhone = assertThrows(InvalidField.class, () -> service.modifyProfile(
                 "1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "123", "ana@test.com"), "", "", ""));
@@ -91,12 +95,12 @@ public class UserProfileServiceTest {
         assertNull(savedProfile);
 
         service.modifyProfile("1", new ProfilePayload("ana_lopez", "Ana", "López", "Pérez", "+52 55 1111 2222", "ana@test.com"), "", "", "");
-        assertEquals("+525511112222", savedProfile.getPhoneNumber());
+        assertEquals("+525511112222", savedProfile.phoneNumber());
     }
 
     @Test
     public void rejectsUsernameOfAnotherUser() {
-        assertThrows(DuplicateUsername.class, () -> service.modifyProfile("1", profile("taken_user"), "", "", ""));
+        assertThrows(InvalidField.class, () -> service.modifyProfile("1", profile("taken_user"), "", "", ""));
         assertNull(savedProfile);
     }
 
@@ -113,8 +117,8 @@ public class UserProfileServiceTest {
 
     @Test
     public void newPasswordNeedsTheCurrentOne() {
-        assertThrows(WrongPassword.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", ""));
-        assertThrows(WrongPassword.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", "otra"));
+        assertThrows(UnauthorizedException.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", ""));
+        assertThrows(UnauthorizedException.class, () -> service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", "otra"));
         assertNull(savedProfile);
 
         service.modifyProfile("1", profile("ana_lopez"), "Nueva123!", "Nueva123!", CURRENT_PASSWORD);

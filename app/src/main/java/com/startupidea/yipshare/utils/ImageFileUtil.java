@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.utils;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,9 +9,7 @@ import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
 import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.error.InvalidImage;
 import com.startupidea.yipshare.error.ServerUnavailable;
-import com.startupidea.yipshare.user.ProfilePictureTooLarge;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,13 +39,13 @@ public final class ImageFileUtil {
         if (stored != null) return "/uploads/" + stored.getName();
 
         Uri copy = tryCopy(context, Uri.parse(imageUri));
-        if (copy == null) throw new InvalidImage();
+        if (copy == null) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         File file = new File(copy.getPath());
         String path;
         try (InputStream input = new FileInputStream(file)) {
             path = apiClient.upload(input, file.getName().endsWith(".png") ? TYPE_PNG : TYPE_JPEG);
         } catch (IOException e) {
-            throw new InvalidImage();
+            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         } finally {
             file.delete();
         }
@@ -55,9 +55,9 @@ public final class ImageFileUtil {
 
     public static String uploadProfilePicture(Context context, ApiClient apiClient, String imageUri) {
         Uri source = Uri.parse(imageUri);
-        if (isLargerThan(context, source, PROFILE_PICTURE_MAX_BYTES)) throw new ProfilePictureTooLarge();
+        if (isLargerThan(context, source, PROFILE_PICTURE_MAX_BYTES)) throw new BadRequestException("Profile picture is larger than 10 MB", R.string.error_foto_perfil_grande);
         Bitmap picture = ImagePreviewUtil.tryLoad(context, source, PROFILE_PICTURE_DECODE_MAX_PX);
-        if (picture == null) throw new InvalidImage();
+        if (picture == null) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
 
         int side = Math.min(picture.getWidth(), picture.getHeight());
         Bitmap square = Bitmap.createBitmap(picture, (picture.getWidth() - side) / 2, (picture.getHeight() - side) / 2, side, side);
@@ -65,11 +65,11 @@ public final class ImageFileUtil {
         File file = new File(context.getCacheDir(), UUID.randomUUID() + ".jpg");
         try {
             try (OutputStream output = new FileOutputStream(file)) {
-                if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) throw new InvalidImage();
+                if (!scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
             }
             return upload(context, apiClient, Uri.fromFile(file).toString());
         } catch (IOException e) {
-            throw new InvalidImage();
+            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         } finally {
             file.delete();
         }
@@ -101,7 +101,7 @@ public final class ImageFileUtil {
             }
             return false;
         } catch (IOException | RuntimeException e) {
-            throw new InvalidImage();
+            throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         }
     }
 

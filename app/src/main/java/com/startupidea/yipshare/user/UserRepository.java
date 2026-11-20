@@ -1,12 +1,14 @@
 package com.startupidea.yipshare.user;
 
+import java.util.Optional;
+
 public interface UserRepository {
 
-    User tryLogin(LoginPayload payload);
+    Optional<User> tryLogin(LoginPayload payload);
 
     User createUser(RegistrationPayload payload);
 
-    UserProfile getUserProfileById(String id);
+    Optional<UserProfile> getUserProfileById(String id);
 
     void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword);
 

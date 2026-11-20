@@ -14,8 +14,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
 
@@ -39,7 +39,7 @@ public class CalificarUsuarioActivity extends AppCompatActivity {
         loan = Loan.fromIntent(getIntent());
         ratingBar = findViewById(R.id.ratingBar);
         commentField = findViewById(R.id.etComentario);
-        ((TextView) findViewById(R.id.tvNombreUsuario)).setText(loan.getOtherUsername());
+        ((TextView) findViewById(R.id.tvNombreUsuario)).setText(loan.otherUsername());
 
         findViewById(R.id.btnRegresar).setOnClickListener(v -> finish());
         findViewById(R.id.btnEnviarCalificacion).setOnClickListener(v -> tryCreateReview());

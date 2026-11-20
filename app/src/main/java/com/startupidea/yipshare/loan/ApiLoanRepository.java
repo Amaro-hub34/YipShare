@@ -1,11 +1,14 @@
 package com.startupidea.yipshare.loan;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.UnauthorizedException;
 import android.content.Context;
 
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.ServerError;
 import com.startupidea.yipshare.error.ServerUnavailable;
-import com.startupidea.yipshare.item.ItemNotAvailable;
 import com.startupidea.yipshare.utils.ImageFileUtil;
 
 import org.json.JSONArray;
@@ -74,10 +77,11 @@ public class ApiLoanRepository implements LoanRepository {
                     .put("requestText", requestText)
                     .put("days", days));
         } catch (ServerError e) {
-            if (e.getStatus() == FORBIDDEN) throw new LoanAccessRevoked();
-            if (e.getStatus() == CONFLICT && e.messageContains("pending")) throw new AlreadyRequested();
-            if (e.getStatus() == CONFLICT) throw new ItemNotAvailable();
-            throw e;
+            throw switch (e.getStatus()) {
+                case FORBIDDEN -> new UnauthorizedException("Condominium admin took away this user's loan access", R.string.error_sin_acceso_prestamos);
+                case CONFLICT -> e.messageContains("pending") ? new ConflictException("User already has a pending request for this item", R.string.error_ya_solicitado) : new ConflictException("Only an available item can be modified or deleted", R.string.error_articulo_no_disponible);
+                default -> e;
+            };
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }
@@ -88,7 +92,7 @@ public class ApiLoanRepository implements LoanRepository {
         try {
             apiClient.patch("/loans/me/" + loanId + (answer == LoanStatus.ACCEPTED ? "/accept" : "/reject"), null);
         } catch (ServerError e) {
-            if (e.getStatus() == CONFLICT) throw new LoanRequestNotPending();
+            if (e.getStatus() == CONFLICT) throw new ConflictException("Loan request was already answered or is not addressed to this user", R.string.error_solicitud_respondida);
             throw e;
         }
     }
@@ -107,9 +111,11 @@ public class ApiLoanRepository implements LoanRepository {
         try {
             return readLoan(apiClient.patch("/loans/me/" + loanId + "/confirm", new JSONObject().put("code", code)));
         } catch (ServerError e) {
-            if (e.getStatus() == FORBIDDEN) throw new InvalidCode();
-            if (e.getStatus() == CONFLICT) throw new LoanNotActive();
-            throw e;
+            throw switch (e.getStatus()) {
+                case FORBIDDEN -> new BadRequestException("Loan code is wrong or must have 6 digits", R.string.error_codigo_longitud);
+                case CONFLICT -> new ConflictException("Loan does not take codes in its current state", R.string.error_prestamo_no_activo);
+                default -> e;
+            };
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }

@@ -46,17 +46,17 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
     @Override
     public void onBindViewHolder(@NonNull PrestamoViewHolder holder, int position) {
         Loan loan = loans.get(position);
-        holder.typeLabel.setText(loan.isLentByMe() ? R.string.prestaste_a : R.string.te_prestaron);
-        String imageUri = loan.getImageUri();
+        holder.typeLabel.setText(loan.lentByMe() ? R.string.prestaste_a : R.string.te_prestaron);
+        String imageUri = loan.imageUri();
         holder.itemImage.setImageBitmap(imageUri == null
                 ? null : ImagePreviewUtil.tryLoad(holder.itemView.getContext(), Uri.parse(imageUri), CARD_IMAGE_MAX_SIZE_PX));
-        holder.itemLabel.setText(loan.getItemName());
-        holder.personLabel.setText(loan.getOtherUsername());
-        holder.statusLabel.setText(loan.getStatus().getMessageRes());
-        holder.statusLabel.setBackgroundResource(loan.getStatus().getBadgeRes());
+        holder.itemLabel.setText(loan.itemName());
+        holder.personLabel.setText(loan.otherUsername());
+        holder.statusLabel.setText(loan.status().getMessageRes());
+        holder.statusLabel.setBackgroundResource(loan.status().getBadgeRes());
         String message = whatsAppMessage(holder.itemView.getContext(), loan);
-        if (message != null) PhoneUtil.attachWhatsApp(holder.phoneLabel, loan.getOtherPhoneNumber(), message, loan.getImageUri());
-        else PhoneUtil.attach(holder.phoneLabel, loan.getOtherPhoneNumber());
+        if (message != null) PhoneUtil.attachWhatsApp(holder.phoneLabel, loan.otherPhoneNumber(), message, loan.imageUri());
+        else PhoneUtil.attach(holder.phoneLabel, loan.otherPhoneNumber());
 
         holder.itemView.setOnClickListener(v -> {
             int current = holder.getBindingAdapterPosition();
@@ -70,9 +70,9 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
     }
 
     private static String whatsAppMessage(Context context, Loan loan) {
-        if (!loan.isLentByMe() && loan.getStatus() == LoanStatus.ACCEPTED)
-            return context.getString(R.string.mensaje_interes_articulo, loan.getItemName());
-        if (loan.getStatus() == LoanStatus.ON_LOAN && isToday(loan.getEndDate()))
+        if (!loan.lentByMe() && loan.status() == LoanStatus.ACCEPTED)
+            return context.getString(R.string.mensaje_interes_articulo, loan.itemName());
+        if (loan.status() == LoanStatus.ON_LOAN && isToday(loan.endDate()))
             return context.getString(R.string.mensaje_dia_entrega);
         return null;
     }

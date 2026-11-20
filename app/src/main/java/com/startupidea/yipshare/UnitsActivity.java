@@ -74,7 +74,7 @@ public class UnitsActivity extends AppCompatActivity {
         EditText nameField = new EditText(this);
         nameField.setInputType(InputType.TYPE_CLASS_TEXT);
         nameField.setHint(R.string.nombre_unidad);
-        if (unit != null) nameField.setText(unit.getName());
+        if (unit != null) nameField.setText(unit.name());
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle(unit == null ? R.string.agregar_unidad : R.string.editar_unidad)
@@ -88,7 +88,7 @@ public class UnitsActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.opcion_cancelar, null);
         if (unit != null) {
             dialog.setNeutralButton(R.string.eliminar_unidad, (d, which) -> ConfirmDialogUtil.show(this,
-                    getString(R.string.confirmar_eliminar_unidad, unit.getName()),
+                    getString(R.string.confirmar_eliminar_unidad, unit.name()),
                     () -> save(() -> condominiumService.deleteUnit(condominiumId, unit), R.string.unidad_eliminada)));
         }
         dialog.show();

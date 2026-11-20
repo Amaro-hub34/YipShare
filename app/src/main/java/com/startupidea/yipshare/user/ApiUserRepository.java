@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.user;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.UnauthorizedException;
 import android.content.Context;
 
 import com.startupidea.yipshare.api.ApiClient;
@@ -9,6 +11,8 @@ import com.startupidea.yipshare.utils.ImageFileUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Optional;
 
 public class ApiUserRepository implements UserRepository {
 
@@ -28,16 +32,18 @@ public class ApiUserRepository implements UserRepository {
     }
 
     @Override
-    public User tryLogin(LoginPayload payload) {
+    public Optional<User> tryLogin(LoginPayload payload) {
         try {
             JSONObject body = new JSONObject()
-                    .put("username", payload.getUsername())
-                    .put("password", payload.getPassword());
+                    .put("username", payload.username())
+                    .put("password", payload.password());
             sessionRepository.saveToken(apiClient.post("/auth/login", body).getString("token"));
-            return currentUser();
+            return Optional.of(currentUser());
         } catch (ServerError e) {
-            if (e.getStatus() == UNAUTHORIZED || e.getStatus() == NOT_FOUND || e.getStatus() == BAD_REQUEST) return null;
-            throw e;
+            return switch (e.getStatus()) {
+                case UNAUTHORIZED, NOT_FOUND, BAD_REQUEST -> Optional.empty();
+                default -> throw e;
+            };
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }
@@ -47,13 +53,13 @@ public class ApiUserRepository implements UserRepository {
     public User createUser(RegistrationPayload payload) {
         try {
             JSONObject body = new JSONObject()
-                    .put("name", payload.getFirstNames())
-                    .put("paternalSurname", payload.getPaternalLastName())
-                    .put("maternalSurname", payload.getMaternalLastName())
-                    .put("email", payload.getEmail())
-                    .put("phoneNumber", payload.getPhoneNumber())
-                    .put("username", payload.getUsername())
-                    .put("password", payload.getPassword());
+                    .put("name", payload.firstNames())
+                    .put("paternalSurname", payload.paternalLastName())
+                    .put("maternalSurname", payload.maternalLastName())
+                    .put("email", payload.email())
+                    .put("phoneNumber", payload.phoneNumber())
+                    .put("username", payload.username())
+                    .put("password", payload.password());
             sessionRepository.saveToken(apiClient.post("/auth/register", body).getString("token"));
             return currentUser();
         } catch (ServerError e) {
@@ -64,11 +70,11 @@ public class ApiUserRepository implements UserRepository {
     }
 
     @Override
-    public UserProfile getUserProfileById(String id) {
+    public Optional<UserProfile> getUserProfileById(String id) {
         try {
             boolean self = id.equals(sessionRepository.getUserId());
             JSONObject json = apiClient.getObject(self ? "/users/me" : "/users/" + id + "/profile");
-            return new UserProfile(
+            return Optional.of(new UserProfile(
                     json.getString("userId"),
                     ApiClient.text(json, "username"),
                     ApiClient.text(json, "name"),
@@ -77,9 +83,9 @@ public class ApiUserRepository implements UserRepository {
                     ApiClient.text(json, "phoneNumber"),
                     ApiClient.text(json, "email"),
                     json.optInt("computedRating"),
-                    ImageFileUtil.toLocalUri(context, apiClient, ApiClient.text(json, "profilePicture")));
+                    ImageFileUtil.toLocalUri(context, apiClient, ApiClient.text(json, "profilePicture"))));
         } catch (ServerError e) {
-            if (e.getStatus() == NOT_FOUND) return null;
+            if (e.getStatus() == NOT_FOUND) return Optional.empty();
             throw e;
         } catch (JSONException e) {
             throw new ServerUnavailable();
@@ -90,16 +96,16 @@ public class ApiUserRepository implements UserRepository {
     public void modifyUser(String id, ProfilePayload payload, String newPassword, String currentPassword) {
         try {
             JSONObject body = new JSONObject()
-                    .put("username", payload.getUsername())
-                    .put("name", payload.getFirstNames())
-                    .put("paternalSurname", payload.getPaternalLastName())
-                    .put("maternalSurname", payload.getMaternalLastName())
-                    .put("phoneNumber", payload.getPhoneNumber())
-                    .put("email", payload.getEmail());
+                    .put("username", payload.username())
+                    .put("name", payload.firstNames())
+                    .put("paternalSurname", payload.paternalLastName())
+                    .put("maternalSurname", payload.maternalLastName())
+                    .put("phoneNumber", payload.phoneNumber())
+                    .put("email", payload.email());
             if (newPassword != null) body.put("password", newPassword).put("currentPassword", currentPassword);
             apiClient.patch("/users/me", body);
         } catch (ServerError e) {
-            if (e.getStatus() == UNAUTHORIZED && e.messageContains("password")) throw new WrongPassword();
+            if (e.getStatus() == UNAUTHORIZED && e.messageContains("password")) throw new UnauthorizedException("Current password does not match", R.string.error_contrasena_actual);
             throw duplicateOr(e);
         } catch (JSONException e) {
             throw new ServerUnavailable();
@@ -124,10 +130,12 @@ public class ApiUserRepository implements UserRepository {
     @Override
     public boolean isActiveUser(String id) {
         try {
-            return id.equals(currentUser().getId());
+            return id.equals(currentUser().id());
         } catch (ServerError e) {
-            if (e.getStatus() == UNAUTHORIZED || e.getStatus() == NOT_FOUND) return false;
-            throw e;
+            return switch (e.getStatus()) {
+                case UNAUTHORIZED, NOT_FOUND -> false;
+                default -> throw e;
+            };
         }
     }
 
@@ -150,9 +158,9 @@ public class ApiUserRepository implements UserRepository {
 
     private static RuntimeException duplicateOr(ServerError e) {
         if (e.getStatus() != CONFLICT) return e;
-        if (e.messageContains("username")) return new DuplicateUsername();
-        if (e.messageContains("email")) return new DuplicateEmail();
-        if (e.messageContains("phone")) return new DuplicatePhoneNumber();
+        if (e.messageContains("username")) return new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_duplicado);
+        if (e.messageContains("email")) return new InvalidField(RegistrationField.EMAIL, R.string.error_correo_duplicado);
+        if (e.messageContains("phone")) return new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_duplicado);
         return e;
     }
 }

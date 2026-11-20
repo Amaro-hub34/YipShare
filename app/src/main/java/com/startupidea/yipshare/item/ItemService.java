@@ -1,5 +1,8 @@
 package com.startupidea.yipshare.item;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -32,7 +35,7 @@ public class ItemService {
     public List<Item> filterAvailableItems(List<Item> items, String userId, String query) {
         List<Item> matches = new ArrayList<>();
         for (Item item : search(items, query)) {
-            if (!item.isOwnedBy(userId) && item.getAvailability() == ItemAvailability.AVAILABLE) matches.add(item);
+            if (!item.isOwnedBy(userId) && item.availability() == ItemAvailability.AVAILABLE) matches.add(item);
         }
         return matches;
     }
@@ -49,7 +52,7 @@ public class ItemService {
     }
 
     public Item createItem(String condominiumId, ItemPayload payload) {
-        if (condominiumId == null) throw new NoCondominiumSelected();
+        if (condominiumId == null) throw new ConflictException("User has no condominium to publish in", R.string.error_sin_condominio);
         validate(payload);
         return itemRepository.createItem(condominiumId, payload);
     }
@@ -69,13 +72,13 @@ public class ItemService {
         String needle = query.trim().toLowerCase(Locale.ROOT);
         List<Item> matches = new ArrayList<>();
         for (Item item : items) {
-            if (item.getPayload().getName().toLowerCase(Locale.ROOT).contains(needle)) matches.add(item);
+            if (item.payload().getName().toLowerCase(Locale.ROOT).contains(needle)) matches.add(item);
         }
         return matches;
     }
 
     private void ensureOwnerCanChange(String userId, Item item) {
-        if (item == null || !item.isOwnedBy(userId)) throw new ItemNotFound();
-        if (item.getAvailability() != ItemAvailability.AVAILABLE) throw new ItemNotAvailable();
+        if (item == null || !item.isOwnedBy(userId)) throw new ResourceNotFound("Item does not exist or belongs to another user", R.string.error_articulo_no_existe);
+        if (item.availability() != ItemAvailability.AVAILABLE) throw new ConflictException("Only an available item can be modified or deleted", R.string.error_articulo_no_disponible);
     }
 }

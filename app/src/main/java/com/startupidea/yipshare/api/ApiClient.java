@@ -1,9 +1,10 @@
 package com.startupidea.yipshare.api;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
 import android.content.Context;
 
 import com.startupidea.yipshare.database.DatabaseDriver;
-import com.startupidea.yipshare.error.FileTooLarge;
 import com.startupidea.yipshare.error.ServerError;
 import com.startupidea.yipshare.error.ServerUnavailable;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -85,7 +86,7 @@ public class ApiClient {
         try {
             return toObject(send("POST", "/uploads", contentType, readAll(input))).getString("path");
         } catch (ServerError e) {
-            if (e.getStatus() == PAYLOAD_TOO_LARGE) throw new FileTooLarge();
+            if (e.getStatus() == PAYLOAD_TOO_LARGE) throw new BadRequestException("File is larger than the server allows", R.string.error_archivo_grande);
             throw e;
         } catch (IOException | JSONException e) {
             throw new ServerUnavailable();

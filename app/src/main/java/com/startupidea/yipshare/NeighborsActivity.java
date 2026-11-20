@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import com.startupidea.yipshare.utils.TaskUtil;
 import com.startupidea.yipshare.utils.ConfirmDialogUtil;
+import com.startupidea.yipshare.utils.TaskUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
@@ -14,10 +14,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.adapters.NeighborAdapter;
+import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.Neighbor;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.user.SessionRepository;
 
 public class NeighborsActivity extends AppCompatActivity {
@@ -64,7 +64,7 @@ public class NeighborsActivity extends AppCompatActivity {
                     new NeighborAdapter.OnNeighborAction() {
                         @Override
                         public void onNeighborClick(Neighbor neighbor) {
-                            startActivity(UserFeedbackActivity.intentFor(NeighborsActivity.this, neighbor.getUserId()));
+                            startActivity(UserFeedbackActivity.intentFor(NeighborsActivity.this, neighbor.userId()));
                         }
 
                         @Override
@@ -80,9 +80,9 @@ public class NeighborsActivity extends AppCompatActivity {
     private void confirmLoanAccess(Neighbor neighbor, boolean allowed) {
         ConfirmDialogUtil.show(this,
                 getString(allowed ? R.string.confirmar_dar_acceso : R.string.confirmar_quitar_acceso,
-                        neighbor.getUsername()),
+                        neighbor.username()),
                 () -> TaskUtil.run(this,
-                        () -> condominiumService.modifyLoanAccess(userId, neighbor.getUserId(), condominiumId, allowed),
+                        () -> condominiumService.modifyLoanAccess(userId, neighbor.userId(), condominiumId, allowed),
                         this::showNeighbors,
                         e -> {
                             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();

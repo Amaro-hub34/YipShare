@@ -30,16 +30,13 @@ import android.widget.Toast;
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
+import com.startupidea.yipshare.error.UnauthorizedException;
 import com.startupidea.yipshare.user.ApiUserRepository;
-import com.startupidea.yipshare.user.DuplicateEmail;
-import com.startupidea.yipshare.user.DuplicatePhoneNumber;
-import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.ProfilePayload;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserProfile;
 import com.startupidea.yipshare.user.UserService;
-import com.startupidea.yipshare.user.WrongPassword;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 import com.startupidea.yipshare.utils.PhoneInputUtil;
@@ -134,24 +131,24 @@ public class PerfilActivity extends AppCompatActivity {
         EditText emailField = sheet.findViewById(R.id.et_correo);
         PhoneInputUtil phoneInput = PhoneInputUtil.attach(sheet.findViewById(R.id.spinner_codigo_pais), phoneNumberField);
 
-        usernameField.setText(profile.getUsername());
-        paternalLastNameField.setText(profile.getPaternalLastName());
-        maternalLastNameField.setText(profile.getMaternalLastName());
-        firstNamesField.setText(profile.getFirstNames());
-        phoneInput.setPhoneNumber(profile.getPhoneNumber());
-        emailField.setText(profile.getEmail());
+        usernameField.setText(profile.username());
+        paternalLastNameField.setText(profile.paternalLastName());
+        maternalLastNameField.setText(profile.maternalLastName());
+        firstNamesField.setText(profile.firstNames());
+        phoneInput.setPhoneNumber(profile.phoneNumber());
+        emailField.setText(profile.email());
 
         View updateButton = sheet.findViewById(R.id.btn_actualizar_datos);
         EditText[] fields = {usernameField, firstNamesField, paternalLastNameField, maternalLastNameField,
                 passwordField, passwordConfirmationField, currentPasswordField, emailField};
-        String[] saved = {profile.getUsername(), profile.getFirstNames(), profile.getPaternalLastName(),
-                profile.getMaternalLastName(), "", "", "", profile.getEmail()};
+        String[] saved = {profile.username(), profile.firstNames(), profile.paternalLastName(),
+                profile.maternalLastName(), "", "", "", profile.email()};
         TextWatcher changeWatcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                boolean changed = !phoneInput.getPhoneNumber().equals(profile.getPhoneNumber());
+                boolean changed = !phoneInput.getPhoneNumber().equals(profile.phoneNumber());
                 for (int i = 0; i < fields.length; i++) {
                     changed |= !fields[i].getText().toString().trim().equals(saved[i] == null ? "" : saved[i].trim());
                 }
@@ -193,26 +190,19 @@ public class PerfilActivity extends AppCompatActivity {
                         showProfile();
                     },
                     e -> {
-                        if (e instanceof InvalidField) {
-                            EditText field;
-                            switch (((InvalidField) e).getField()) {
-                                case USERNAME: field = usernameField; break;
-                                case PASSWORD: field = passwordField; break;
-                                case PASSWORD_CONFIRMATION: field = passwordConfirmationField; break;
-                                case PATERNAL_LAST_NAME: field = paternalLastNameField; break;
-                                case MATERNAL_LAST_NAME: field = maternalLastNameField; break;
-                                case PHONE_NUMBER: field = phoneNumberField; break;
-                                case EMAIL: field = emailField; break;
-                                default: field = firstNamesField; break;
-                            }
+                        if (e instanceof InvalidField invalidField) {
+                            EditText field = switch (invalidField.getField()) {
+                                case USERNAME -> usernameField;
+                                case PASSWORD -> passwordField;
+                                case PASSWORD_CONFIRMATION -> passwordConfirmationField;
+                                case PATERNAL_LAST_NAME -> paternalLastNameField;
+                                case MATERNAL_LAST_NAME -> maternalLastNameField;
+                                case PHONE_NUMBER -> phoneNumberField;
+                                case EMAIL -> emailField;
+                                default -> firstNamesField;
+                            };
                             showInputError(field, e);
-                        } else if (e instanceof DuplicateUsername) {
-                            showInputError(usernameField, e);
-                        } else if (e instanceof DuplicatePhoneNumber) {
-                            showInputError(phoneNumberField, e);
-                        } else if (e instanceof DuplicateEmail) {
-                            showInputError(emailField, e);
-                        } else if (e instanceof WrongPassword) {
+                        } else if (e instanceof UnauthorizedException) {
                             showInputError(currentPasswordField, e);
                         } else {
                             showError(e);
@@ -257,13 +247,13 @@ public class PerfilActivity extends AppCompatActivity {
     private void showProfile() {
         FeedbackSectionUtil.attach(this, userId);
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
-            showProfilePicture(profile.getProfilePictureUri());
-            ((TextView) findViewById(R.id.et_correo_electronico)).setText(profile.getUsername());
-            ((TextView) findViewById(R.id.tv_correo)).setText(profile.getEmail());
-            ((TextView) findViewById(R.id.apellido_paterno)).setText(profile.getPaternalLastName());
-            ((TextView) findViewById(R.id.apellido_materno)).setText(profile.getMaternalLastName());
-            ((TextView) findViewById(R.id.nombres)).setText(profile.getFirstNames());
-            ((TextView) findViewById(R.id.telefono)).setText(profile.getPhoneNumber());
+            showProfilePicture(profile.profilePictureUri());
+            ((TextView) findViewById(R.id.et_correo_electronico)).setText(profile.username());
+            ((TextView) findViewById(R.id.tv_correo)).setText(profile.email());
+            ((TextView) findViewById(R.id.apellido_paterno)).setText(profile.paternalLastName());
+            ((TextView) findViewById(R.id.apellido_materno)).setText(profile.maternalLastName());
+            ((TextView) findViewById(R.id.nombres)).setText(profile.firstNames());
+            ((TextView) findViewById(R.id.telefono)).setText(profile.phoneNumber());
             ((RatingBar) findViewById(R.id.rb_mi_calificacion)).setRating(profile.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));

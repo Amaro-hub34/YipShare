@@ -44,11 +44,11 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
         LoanRequest request = requests.get(position);
-        holder.itemNameLabel.setText(request.getItemName());
-        holder.requesterLabel.setText(request.getRequesterUsername());
+        holder.itemNameLabel.setText(request.itemName());
+        holder.requesterLabel.setText(request.requesterUsername());
         holder.ratingBar.setRating(request.getRequesterRating());
         holder.ratingLabel.setText(String.format(Locale.getDefault(), "%.1f", request.getRequesterRating()));
-        holder.requestTextLabel.setText(request.getRequestText());
+        holder.requestTextLabel.setText(request.requestText());
 
         holder.requesterLabel.setOnClickListener(v -> listener.onRequesterClick(request));
         holder.ratingRow.setOnClickListener(v -> listener.onRequesterClick(request));

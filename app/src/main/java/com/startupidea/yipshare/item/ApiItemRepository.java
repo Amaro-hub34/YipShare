@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.item;
 
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import android.content.Context;
 
 import com.startupidea.yipshare.R;
@@ -66,7 +68,7 @@ public class ApiItemRepository implements ItemRepository {
     public Item modifyItem(Item item, ItemPayload payload) {
         try {
             JSONObject json = apiClient.patch(articlePath(item), toJson(payload));
-            return new Item(item.getId(), item.getOwnerId(), item.getCondominiumId(), item.getAvailability(),
+            return new Item(item.id(), item.ownerId(), item.condominiumId(), item.availability(),
                     withLocalImage(payload, json));
         } catch (ServerError e) {
             throw translate(e);
@@ -137,12 +139,14 @@ public class ApiItemRepository implements ItemRepository {
     }
 
     private static String articlePath(Item item) {
-        return "/condominiums/" + item.getCondominiumId() + "/articles/" + item.getId();
+        return "/condominiums/" + item.condominiumId() + "/articles/" + item.id();
     }
 
     private static RuntimeException translate(ServerError e) {
-        if (e.getStatus() == CONFLICT) return new ItemNotAvailable();
-        if (e.getStatus() == NOT_FOUND) return new ItemNotFound();
-        return e;
+        return switch (e.getStatus()) {
+            case CONFLICT -> new ConflictException("Only an available item can be modified or deleted", R.string.error_articulo_no_disponible);
+            case NOT_FOUND -> new ResourceNotFound("Item does not exist or belongs to another user", R.string.error_articulo_no_existe);
+            default -> e;
+        };
     }
 }

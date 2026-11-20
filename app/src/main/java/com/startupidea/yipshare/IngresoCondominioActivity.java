@@ -1,6 +1,8 @@
 package com.startupidea.yipshare;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,11 +18,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.startupidea.yipshare.condominium.CondominiumNotFound;
-import com.startupidea.yipshare.condominium.CondominiumService;
-import com.startupidea.yipshare.condominium.EmptyApartment;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.SessionRepository;
 
@@ -91,10 +91,10 @@ public class IngresoCondominioActivity extends AppCompatActivity {
     }
 
     private void showJoinError(AppException e) {
-        if (e instanceof CondominiumNotFound) {
+        if (e instanceof ResourceNotFound) {
             codeErrorLabel.setText(e.getMessageRes());
             codeErrorLabel.setVisibility(View.VISIBLE);
-        } else if (e instanceof EmptyApartment) {
+        } else if (e instanceof BadRequestException) {
             apartmentField.setError(getString(e.getMessageRes()));
             apartmentField.requestFocus();
         } else {

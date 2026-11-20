@@ -17,16 +17,16 @@ public class NotificationService {
     public int countUnread() {
         int unread = 0;
         for (Notification notification : notificationRepository.getAllNotifications()) {
-            if (!notification.isRead()) unread++;
+            if (!notification.read()) unread++;
         }
         return unread;
     }
 
     public void markAsRead(Notification notification) {
-        if (!notification.isRead()) notificationRepository.markAsRead(notification.getId());
+        if (!notification.read()) notificationRepository.markAsRead(notification.id());
     }
 
     public void deleteNotification(Notification notification) {
-        notificationRepository.deleteNotification(notification.getId());
+        notificationRepository.deleteNotification(notification.id());
     }
 }

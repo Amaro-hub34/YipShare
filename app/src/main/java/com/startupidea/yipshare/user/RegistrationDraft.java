@@ -9,7 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.core.content.IntentCompat;
 import androidx.core.os.BundleCompat;
 
-public final class RegistrationDraft implements Parcelable {
+public record RegistrationDraft(
+        String paternalLastName,
+        String maternalLastName,
+        String firstNames,
+        String username,
+        String password,
+        String passwordConfirmation,
+        String phoneNumber,
+        String email) implements Parcelable {
 
     private static final String KEY_DRAFT = "com.startupidea.yipshare.extra.REGISTRATION_DRAFT";
 
@@ -34,34 +42,6 @@ public final class RegistrationDraft implements Parcelable {
             return new RegistrationDraft[size];
         }
     };
-
-    private final String paternalLastName;
-    private final String maternalLastName;
-    private final String firstNames;
-    private final String username;
-    private final String password;
-    private final String passwordConfirmation;
-    private final String phoneNumber;
-    private final String email;
-
-    private RegistrationDraft(
-            String paternalLastName,
-            String maternalLastName,
-            String firstNames,
-            String username,
-            String password,
-            String passwordConfirmation,
-            String phoneNumber,
-            String email) {
-        this.paternalLastName = paternalLastName;
-        this.maternalLastName = maternalLastName;
-        this.firstNames = firstNames;
-        this.username = username;
-        this.password = password;
-        this.passwordConfirmation = passwordConfirmation;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
 
     public static RegistrationDraft fromIntent(Intent intent) {
         return IntentCompat.getParcelableExtra(intent, KEY_DRAFT, RegistrationDraft.class);
@@ -111,40 +91,8 @@ public final class RegistrationDraft implements Parcelable {
                 firstNames.trim(),
                 username.trim(),
                 password,
-                UserRules.normalizePhoneNumber(phoneNumber),
+                UserRules.normalizePhoneNumber(phoneNumber).orElse(null),
                 email.trim());
-    }
-
-    public String getPaternalLastName() {
-        return paternalLastName;
-    }
-
-    public String getMaternalLastName() {
-        return maternalLastName;
-    }
-
-    public String getFirstNames() {
-        return firstNames;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getPasswordConfirmation() {
-        return passwordConfirmation;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     @Override

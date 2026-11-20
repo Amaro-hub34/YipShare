@@ -39,11 +39,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
     @Override
     public void onBindViewHolder(@NonNull InboxViewHolder holder, int position) {
         Notification notification = notifications.get(position);
-        holder.statusLabel.setText(notification.isRead() ? R.string.aviso_leido : R.string.aviso_nuevo);
+        holder.statusLabel.setText(notification.read() ? R.string.aviso_leido : R.string.aviso_nuevo);
         holder.statusLabel.setBackgroundResource(
-                notification.isRead() ? R.drawable.bg_badge_disponible : R.drawable.bg_badge_uso);
+                notification.read() ? R.drawable.bg_badge_disponible : R.drawable.bg_badge_uso);
         holder.textLabel.setText(holder.itemView.getContext()
-                .getString(R.string.aviso_texto, notification.getHeader(), notification.getBody()));
+                .getString(R.string.aviso_texto, notification.header(), notification.body()));
         holder.itemView.setOnClickListener(v -> listener.onRead(notification));
         holder.itemView.setOnLongClickListener(v -> {
             listener.onDelete(notification);

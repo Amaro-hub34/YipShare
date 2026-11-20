@@ -34,7 +34,7 @@ public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitViewHolder
     @Override
     public void onBindViewHolder(@NonNull UnitViewHolder holder, int position) {
         Unit unit = units.get(position);
-        holder.nameLabel.setText(unit.getName());
+        holder.nameLabel.setText(unit.name());
         holder.itemView.setOnClickListener(v -> onUnitClick.accept(unit));
     }
 

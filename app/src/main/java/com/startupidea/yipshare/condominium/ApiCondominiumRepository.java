@@ -1,5 +1,8 @@
 package com.startupidea.yipshare.condominium;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import android.content.Context;
 import android.net.Uri;
 
@@ -36,18 +39,18 @@ public class ApiCondominiumRepository implements CondominiumRepository {
     public void createCondominiumRequest(CondominiumPayload payload) {
         try {
             apiClient.post("/condominiums", new JSONObject()
-                    .put("name", payload.getName())
-                    .put("street", payload.getStreet())
-                    .put("neighborhood", payload.getNeighborhood())
-                    .put("postalCode", payload.getZipCode())
-                    .put("municipality", payload.getMunicipality())
-                    .put("city", payload.getCity())
-                    .put("state", payload.getState())
-                    .put("units", payload.getUnits())
-                    .put("deed", uploadDocument(payload.getDeedUri()))
-                    .put("minutes", uploadDocument(payload.getMinutesUri()))
-                    .put("taxId", uploadDocument(payload.getTaxIdUri()))
-                    .put("identification", uploadDocument(payload.getIdentificationUri())));
+                    .put("name", payload.name())
+                    .put("street", payload.street())
+                    .put("neighborhood", payload.neighborhood())
+                    .put("postalCode", payload.zipCode())
+                    .put("municipality", payload.municipality())
+                    .put("city", payload.city())
+                    .put("state", payload.state())
+                    .put("units", payload.units())
+                    .put("deed", uploadDocument(payload.deedUri()))
+                    .put("minutes", uploadDocument(payload.minutesUri()))
+                    .put("taxId", uploadDocument(payload.taxIdUri()))
+                    .put("identification", uploadDocument(payload.identificationUri())));
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }
@@ -58,9 +61,11 @@ public class ApiCondominiumRepository implements CondominiumRepository {
         try {
             apiClient.post("/condominiums/join", new JSONObject().put("code", shortCode).put("unit", unit));
         } catch (ServerError e) {
-            if (e.getStatus() == NOT_FOUND) throw new CondominiumNotFound();
-            if (e.getStatus() == CONFLICT) throw new AlreadyJoined();
-            throw e;
+            throw switch (e.getStatus()) {
+                case NOT_FOUND -> new ResourceNotFound("No approved condominium has that code", R.string.tv_error_codigo);
+                case CONFLICT -> new ConflictException("User already joined or asked to join this condominium", R.string.error_ya_unido);
+                default -> e;
+            };
         } catch (JSONException e) {
             throw new ServerUnavailable();
         }
@@ -88,7 +93,7 @@ public class ApiCondominiumRepository implements CondominiumRepository {
                 JSONObject json = array.getJSONObject(i);
                 String userId = json.getString("userId");
                 Neighbor known = neighbors.get(userId);
-                String unit = known == null ? json.optString("unitName") : known.getUnit() + ", " + json.optString("unitName");
+                String unit = known == null ? json.optString("unitName") : known.unit() + ", " + json.optString("unitName");
                 neighbors.put(userId, new Neighbor(userId, json.optString("username"), unit,
                         ApiClient.text(json, "phoneNumber"), json.optInt("computedRating"),
                         json.optBoolean("isAdmin"), json.optBoolean("canRequestLoans", true)));
@@ -125,7 +130,7 @@ public class ApiCondominiumRepository implements CondominiumRepository {
             if (unitId != null) body.put("unitId", unitId);
             apiClient.post(memberPath(condominiumId, userId) + "/approve", body);
         } catch (ServerError e) {
-            if (e.getStatus() == NOT_FOUND) throw new JoinRequestNotFound();
+            if (e.getStatus() == NOT_FOUND) throw new ResourceNotFound("Join request was already answered", R.string.error_solicitud_respondida);
             throw e;
         } catch (JSONException e) {
             throw new ServerUnavailable();
@@ -137,7 +142,7 @@ public class ApiCondominiumRepository implements CondominiumRepository {
         try {
             apiClient.delete(memberPath(condominiumId, userId) + "/pending");
         } catch (ServerError e) {
-            if (e.getStatus() == NOT_FOUND) throw new JoinRequestNotFound();
+            if (e.getStatus() == NOT_FOUND) throw new ResourceNotFound("Join request was already answered", R.string.error_solicitud_respondida);
             throw e;
         }
     }
@@ -189,7 +194,7 @@ public class ApiCondominiumRepository implements CondominiumRepository {
         try {
             apiClient.delete("/condominiums/" + condominiumId + "/units/" + unitId);
         } catch (ServerError e) {
-            if (e.getStatus() == CONFLICT) throw new UnitInUse();
+            if (e.getStatus() == CONFLICT) throw new ConflictException("Unit has members assigned", R.string.error_unidad_ocupada);
             throw e;
         }
     }

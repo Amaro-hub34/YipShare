@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.feedback;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.ConflictException;
 import android.content.Context;
 
 import com.startupidea.yipshare.api.ApiClient;
@@ -63,7 +65,7 @@ public class ApiFeedbackRepository implements FeedbackRepository {
         try {
             apiClient.post("/reviews", new JSONObject().put("loanId", loanId).put("stars", stars).put("comment", text));
         } catch (ServerError e) {
-            if (e.getStatus() == CONFLICT) throw new AlreadyReviewed();
+            if (e.getStatus() == CONFLICT) throw new ConflictException("User already reviewed this loan", R.string.error_ya_calificaste);
             throw e;
         } catch (JSONException e) {
             throw new ServerUnavailable();
@@ -78,7 +80,7 @@ public class ApiFeedbackRepository implements FeedbackRepository {
             JSONObject body = new JSONObject().put("loanId", loanId).put("text", text).put("images", images);
             apiClient.post("/reports", body);
         } catch (ServerError e) {
-            if (e.getStatus() == CONFLICT) throw new AlreadyReported();
+            if (e.getStatus() == CONFLICT) throw new ConflictException("User already reported this loan", R.string.error_ya_reportado);
             throw e;
         } catch (JSONException e) {
             throw new ServerUnavailable();

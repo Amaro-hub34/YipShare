@@ -10,16 +10,16 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.startupidea.yipshare.MainActivity;
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.TermsAndConditionsActivity;
 import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.ApiUserRepository;
-import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.user.InvalidField;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
-import com.startupidea.yipshare.MainActivity;
-import com.startupidea.yipshare.TermsAndConditionsActivity;
 
 public class RegistroCuenta1Activity extends AppCompatActivity {
 
@@ -87,13 +87,10 @@ public class RegistroCuenta1Activity extends AppCompatActivity {
     }
 
     private EditText inputFor(RegistrationField field) {
-        switch (field) {
-            case PATERNAL_LAST_NAME:
-                return paternalLastNameField;
-            case MATERNAL_LAST_NAME:
-                return maternalLastNameField;
-            default:
-                return firstNamesField;
-        }
+        return switch (field) {
+            case PATERNAL_LAST_NAME -> paternalLastNameField;
+            case MATERNAL_LAST_NAME -> maternalLastNameField;
+            default -> firstNamesField;
+        };
     }
 }

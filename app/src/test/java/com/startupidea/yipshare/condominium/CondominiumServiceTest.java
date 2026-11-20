@@ -1,5 +1,9 @@
 package com.startupidea.yipshare.condominium;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ResourceNotFound;
+import com.startupidea.yipshare.error.UnauthorizedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -74,14 +78,14 @@ public class CondominiumServiceTest {
 
     @Test
     public void rejectsMalformedCode() {
-        assertThrows(CondominiumNotFound.class, () -> service.joinCondominium("user", "ABC", "", "302"));
-        assertThrows(CondominiumNotFound.class, () -> service.joinCondominium("user", "ABC 2345 67", "", "302"));
+        assertThrows(ResourceNotFound.class, () -> service.joinCondominium("user", "ABC", "", "302"));
+        assertThrows(ResourceNotFound.class, () -> service.joinCondominium("user", "ABC 2345 67", "", "302"));
         assertNull(repository.joinedUnit);
     }
 
     @Test
     public void rejectsEmptyApartment() {
-        assertThrows(EmptyApartment.class, () -> service.joinCondominium("user", "ABC234", "Torre B", " "));
+        assertThrows(BadRequestException.class, () -> service.joinCondominium("user", "ABC234", "Torre B", " "));
     }
 
     @Test
@@ -89,9 +93,9 @@ public class CondominiumServiceTest {
         repository.memberships.add(new CondominiumMembership("lived", "Torres", false, 0, null));
         repository.memberships.add(new CondominiumMembership("administered", "Pinos", true, 0, "ABC-234"));
 
-        assertThrows(NotCondominiumAdmin.class, () -> service.getAllNeighbors("user", "lived"));
+        assertThrows(UnauthorizedException.class, () -> service.getAllNeighbors("user", "lived"));
         assertTrue(service.getAllJoinRequests("user", "lived").isEmpty());
-        assertEquals("Pinos", service.getAllJoinRequests("user", "administered").get(0).getCondominiumName());
+        assertEquals("Pinos", service.getAllJoinRequests("user", "administered").get(0).condominiumName());
         assertTrue(service.isAdmin("user", "administered"));
         assertFalse(service.isAdmin("user", null));
     }
@@ -110,7 +114,7 @@ public class CondominiumServiceTest {
 
     @Test
     public void adminCannotChangeTheirOwnLoanAccess() {
-        assertThrows(NotCondominiumAdmin.class, () -> service.modifyLoanAccess("admin", "admin", "condo", false));
+        assertThrows(UnauthorizedException.class, () -> service.modifyLoanAccess("admin", "admin", "condo", false));
 
         service.modifyLoanAccess("admin", "luis", "condo", false);
         assertEquals("luis", repository.loanAccessUserId);
@@ -118,7 +122,7 @@ public class CondominiumServiceTest {
 
     @Test
     public void unitNeedsAName() {
-        assertThrows(EmptyApartment.class, () -> service.createUnit("condo", "  "));
+        assertThrows(BadRequestException.class, () -> service.createUnit("condo", "  "));
 
         service.createUnit("condo", " 101 ");
         assertEquals("101", repository.createdUnit);

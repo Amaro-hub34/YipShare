@@ -55,7 +55,7 @@ public class UserFeedbackActivity extends AppCompatActivity {
         String userId = getIntent().getStringExtra(EXTRA_USER_ID);
         UserService userService = new UserService(new ApiUserRepository(new ApiClient(this), new SessionRepository(this), this));
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
-            ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.getUsername());
+            ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.username());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(profile.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", profile.getRating()));

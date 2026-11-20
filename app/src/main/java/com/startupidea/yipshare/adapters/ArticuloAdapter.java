@@ -73,12 +73,12 @@ public class ArticuloAdapter extends RecyclerView.Adapter<ArticuloAdapter.Articu
         }
 
         void bind(Item item) {
-            String imageUri = item.getPayload().getImageUri();
+            String imageUri = item.payload().getImageUri();
             Bitmap image = imageUri == null
                     ? null : ImagePreviewUtil.tryLoad(itemView.getContext(), Uri.parse(imageUri), CARD_IMAGE_MAX_SIZE_PX);
 
             itemImage.setImageBitmap(image);
-            nameLabel.setText(item.getPayload().getName());
+            nameLabel.setText(item.payload().getName());
             lenderLabel.setVisibility(View.GONE);
             ratingLabel.setVisibility(View.GONE);
         }

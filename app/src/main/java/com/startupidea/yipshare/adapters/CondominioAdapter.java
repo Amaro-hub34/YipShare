@@ -59,11 +59,11 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
     public void onBindViewHolder(@NonNull CondominioViewHolder holder, int position) {
         boolean active = position == selected;
         CondominiumMembership membership = memberships.get(position);
-        int pending = membership.getPendingNotifications();
+        int pending = membership.pendingNotifications();
         holder.nameLabel.setText(pending > 0
-                ? holder.itemView.getContext().getString(R.string.condominio_con_pendientes, membership.getName(), pending)
-                : membership.getName());
-        holder.detailLabel.setText(membership.isAdmin() ? R.string.rol_admin_condominio : R.string.residente);
+                ? holder.itemView.getContext().getString(R.string.condominio_con_pendientes, membership.name(), pending)
+                : membership.name());
+        holder.detailLabel.setText(membership.admin() ? R.string.rol_admin_condominio : R.string.residente);
         holder.checkImage.animate().cancel();
         holder.checkImage.setScaleX(1f);
         holder.checkImage.setScaleY(1f);
@@ -82,8 +82,8 @@ public class CondominioAdapter extends RecyclerView.Adapter<CondominioAdapter.Co
 
     private void select(CondominioViewHolder newHolder, int pos) {
         RecyclerView.ViewHolder previousHolder = recyclerView.findViewHolderForAdapterPosition(selected);
-        if (previousHolder instanceof CondominioViewHolder) {
-            View checkImage = ((CondominioViewHolder) previousHolder).checkImage;
+        if (previousHolder instanceof CondominioViewHolder previous) {
+            View checkImage = previous.checkImage;
             previousHolder.itemView.setActivated(false);
             checkImage.animate().scaleX(0f).scaleY(0f).alpha(0f).setDuration(CHECK_DURATION_MS / 2)
                     .withEndAction(() -> checkImage.setVisibility(View.GONE));

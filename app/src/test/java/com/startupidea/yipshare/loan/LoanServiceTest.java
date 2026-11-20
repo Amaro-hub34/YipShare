@@ -1,5 +1,9 @@
 package com.startupidea.yipshare.loan;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -7,8 +11,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
-import com.startupidea.yipshare.item.ItemNotAvailable;
-import com.startupidea.yipshare.item.ItemNotFound;
 import com.startupidea.yipshare.item.ItemPayload;
 
 import org.junit.Test;
@@ -75,27 +77,27 @@ public class LoanServiceTest {
         Loan updated = service.confirmCode("user", loan(LoanStatus.ACCEPTED, false), " abc234 ");
 
         assertEquals("ABC234", sentCode);
-        assertEquals(LoanStatus.ON_LOAN, updated.getStatus());
+        assertEquals(LoanStatus.ON_LOAN, updated.status());
     }
 
     @Test
     public void malformedCodeIsNotSent() {
-        assertThrows(InvalidCode.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, false), "12a4"));
+        assertThrows(BadRequestException.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, false), "12a4"));
         assertNull(sentCode);
     }
 
     @Test
     public void onlyActiveLoansTakeACode() {
-        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.PENDING, false), "ABC234"));
-        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.FINISHED, false), "ABC234"));
+        assertThrows(ConflictException.class, () -> service.confirmCode("user", loan(LoanStatus.PENDING, false), "ABC234"));
+        assertThrows(ConflictException.class, () -> service.confirmCode("user", loan(LoanStatus.FINISHED, false), "ABC234"));
         assertNull(sentCode);
     }
 
     @Test
     public void lenderGeneratesTheCodeAndBorrowerTypesIt() {
         assertEquals("ABC234", service.createCode(loan(LoanStatus.ON_LOAN, true)));
-        assertThrows(LoanNotActive.class, () -> service.createCode(loan(LoanStatus.ACCEPTED, false)));
-        assertThrows(LoanNotActive.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, true), "ABC234"));
+        assertThrows(ConflictException.class, () -> service.createCode(loan(LoanStatus.ACCEPTED, false)));
+        assertThrows(ConflictException.class, () -> service.confirmCode("user", loan(LoanStatus.ACCEPTED, true), "ABC234"));
     }
 
     @Test
@@ -122,8 +124,8 @@ public class LoanServiceTest {
 
     @Test
     public void cannotRequestOwnOrLentItems() {
-        assertThrows(ItemNotFound.class, () -> service.requestLoan("user", item("user", ItemAvailability.AVAILABLE), "t", 1));
-        assertThrows(ItemNotAvailable.class, () -> service.requestLoan("user", item("owner", ItemAvailability.NOT_AVAILABLE), "t", 1));
+        assertThrows(ResourceNotFound.class, () -> service.requestLoan("user", item("user", ItemAvailability.AVAILABLE), "t", 1));
+        assertThrows(ConflictException.class, () -> service.requestLoan("user", item("owner", ItemAvailability.NOT_AVAILABLE), "t", 1));
         assertNull(requestedDays);
     }
 

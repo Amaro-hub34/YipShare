@@ -1,5 +1,10 @@
 package com.startupidea.yipshare.condominium;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ResourceNotFound;
+import com.startupidea.yipshare.error.UnauthorizedException;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -21,18 +26,18 @@ public class CondominiumService {
     public void validate(CondominiumPayload payload) {
         Set<CondominiumField> invalidFields = EnumSet.noneOf(CondominiumField.class);
 
-        if (payload.getName().trim().isEmpty()) invalidFields.add(CondominiumField.NAME);
-        if (payload.getStreet().trim().isEmpty()) invalidFields.add(CondominiumField.STREET);
-        if (payload.getNeighborhood().trim().isEmpty()) invalidFields.add(CondominiumField.NEIGHBORHOOD);
-        if (!ZIP_CODE.matcher(payload.getZipCode()).matches()) invalidFields.add(CondominiumField.ZIP_CODE);
-        if (payload.getMunicipality().trim().isEmpty()) invalidFields.add(CondominiumField.MUNICIPALITY);
-        if (payload.getCity().trim().isEmpty()) invalidFields.add(CondominiumField.CITY);
-        if (payload.getState().trim().isEmpty()) invalidFields.add(CondominiumField.STATE);
-        if (payload.getUnits() <= 0) invalidFields.add(CondominiumField.UNITS);
-        if (payload.getDeedUri() == null) invalidFields.add(CondominiumField.DEED);
-        if (payload.getMinutesUri() == null) invalidFields.add(CondominiumField.MINUTES);
-        if (payload.getTaxIdUri() == null) invalidFields.add(CondominiumField.TAX_ID);
-        if (payload.getIdentificationUri() == null) invalidFields.add(CondominiumField.IDENTIFICATION);
+        if (payload.name().trim().isEmpty()) invalidFields.add(CondominiumField.NAME);
+        if (payload.street().trim().isEmpty()) invalidFields.add(CondominiumField.STREET);
+        if (payload.neighborhood().trim().isEmpty()) invalidFields.add(CondominiumField.NEIGHBORHOOD);
+        if (!ZIP_CODE.matcher(payload.zipCode()).matches()) invalidFields.add(CondominiumField.ZIP_CODE);
+        if (payload.municipality().trim().isEmpty()) invalidFields.add(CondominiumField.MUNICIPALITY);
+        if (payload.city().trim().isEmpty()) invalidFields.add(CondominiumField.CITY);
+        if (payload.state().trim().isEmpty()) invalidFields.add(CondominiumField.STATE);
+        if (payload.units() <= 0) invalidFields.add(CondominiumField.UNITS);
+        if (payload.deedUri() == null) invalidFields.add(CondominiumField.DEED);
+        if (payload.minutesUri() == null) invalidFields.add(CondominiumField.MINUTES);
+        if (payload.taxIdUri() == null) invalidFields.add(CondominiumField.TAX_ID);
+        if (payload.identificationUri() == null) invalidFields.add(CondominiumField.IDENTIFICATION);
 
         if (!invalidFields.isEmpty()) throw new InvalidCondominium(invalidFields);
     }
@@ -44,8 +49,8 @@ public class CondominiumService {
 
     public void joinCondominium(String userId, String shortCode, String building, String apartment) {
         String code = shortCode.trim().toUpperCase(Locale.ROOT).replace("-", "");
-        if (!SHORT_CODE.matcher(code).matches()) throw new CondominiumNotFound();
-        if (apartment.trim().isEmpty()) throw new EmptyApartment();
+        if (!SHORT_CODE.matcher(code).matches()) throw new ResourceNotFound("No approved condominium has that code", R.string.tv_error_codigo);
+        if (apartment.trim().isEmpty()) throw new BadRequestException("Apartment is empty", R.string.error_campo_obligatorio);
         String unit = building.trim().isEmpty() ? apartment.trim() : building.trim() + " " + apartment.trim();
         condominiumRepository.createPendingMember(code, unit);
     }
@@ -55,8 +60,7 @@ public class CondominiumService {
     }
 
     public boolean isAdmin(String userId, String condominiumId) {
-        CondominiumMembership membership = findMembership(condominiumId);
-        return membership != null && membership.isAdmin();
+        return findMembership(condominiumId).map(CondominiumMembership::admin).orElse(false);
     }
 
     public List<Neighbor> getAllNeighbors(String adminId, String condominiumId) {
@@ -65,14 +69,15 @@ public class CondominiumService {
     }
 
     public List<JoinRequest> getAllJoinRequests(String adminId, String condominiumId) {
-        CondominiumMembership membership = findMembership(condominiumId);
-        if (membership == null || !membership.isAdmin()) return new ArrayList<>();
-        return condominiumRepository.getAllJoinRequestsByCondominiumId(condominiumId, membership.getName());
+        return findMembership(condominiumId)
+                .filter(CondominiumMembership::admin)
+                .map(membership -> condominiumRepository.getAllJoinRequestsByCondominiumId(condominiumId, membership.name()))
+                .orElseGet(ArrayList::new);
     }
 
     public void acceptJoinRequest(String adminId, JoinRequest request, String unitId) {
-        condominiumRepository.acceptJoinRequest(request.getUserId(), request.getCondominiumId(),
-                unitId == null ? request.getSuggestedUnitId() : unitId);
+        condominiumRepository.acceptJoinRequest(request.userId(), request.condominiumId(),
+                unitId == null ? request.suggestedUnitId() : unitId);
     }
 
     public void rejectJoinRequest(String adminId, String userId, String condominiumId) {
@@ -80,7 +85,7 @@ public class CondominiumService {
     }
 
     public void modifyLoanAccess(String adminId, String userId, String condominiumId, boolean allowed) {
-        if (adminId.equals(userId)) throw new NotCondominiumAdmin();
+        if (adminId.equals(userId)) throw new UnauthorizedException("Only the condominium admin can do this", R.string.error_no_admin);
         condominiumRepository.modifyLoanAccess(userId, condominiumId, allowed);
     }
 
@@ -90,28 +95,27 @@ public class CondominiumService {
     }
 
     public void createUnit(String condominiumId, String name) {
-        if (name.trim().isEmpty()) throw new EmptyApartment();
+        if (name.trim().isEmpty()) throw new BadRequestException("Apartment is empty", R.string.error_campo_obligatorio);
         condominiumRepository.createUnit(condominiumId, name.trim());
     }
 
     public void modifyUnit(String condominiumId, Unit unit, String name) {
-        if (name.trim().isEmpty()) throw new EmptyApartment();
-        condominiumRepository.modifyUnit(condominiumId, unit.getId(), name.trim());
+        if (name.trim().isEmpty()) throw new BadRequestException("Apartment is empty", R.string.error_campo_obligatorio);
+        condominiumRepository.modifyUnit(condominiumId, unit.id(), name.trim());
     }
 
     public void deleteUnit(String condominiumId, Unit unit) {
-        condominiumRepository.deleteUnit(condominiumId, unit.getId());
+        condominiumRepository.deleteUnit(condominiumId, unit.id());
     }
 
-    private CondominiumMembership findMembership(String condominiumId) {
-        if (condominiumId == null) return null;
-        for (CondominiumMembership membership : condominiumRepository.getAllMemberships()) {
-            if (membership.getCondominiumId().equals(condominiumId)) return membership;
-        }
-        return null;
+    private Optional<CondominiumMembership> findMembership(String condominiumId) {
+        if (condominiumId == null) return Optional.empty();
+        return condominiumRepository.getAllMemberships().stream()
+                .filter(membership -> membership.condominiumId().equals(condominiumId))
+                .findFirst();
     }
 
     private void ensureAdmin(String adminId, String condominiumId) {
-        if (!isAdmin(adminId, condominiumId)) throw new NotCondominiumAdmin();
+        if (!isAdmin(adminId, condominiumId)) throw new UnauthorizedException("Only the condominium admin can do this", R.string.error_no_admin);
     }
 }

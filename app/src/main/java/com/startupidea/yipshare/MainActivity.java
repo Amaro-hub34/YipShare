@@ -1,6 +1,8 @@
 package com.startupidea.yipshare;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.user.InvalidField;
+import com.startupidea.yipshare.user.RegistrationField;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,15 +17,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.user.EmptyPassword;
-import com.startupidea.yipshare.user.EmptyUsername;
-import com.startupidea.yipshare.user.LoginPayload;
+import com.startupidea.yipshare.register.RegistroCuenta1Activity;
 import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.LoginPayload;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.PasswordToggleUtil;
-import com.startupidea.yipshare.register.RegistroCuenta1Activity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,12 +75,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showLoginError(AppException e) {
-        if (e instanceof EmptyUsername) {
-            usernameField.setError(getString(e.getMessageRes()));
-            usernameField.requestFocus();
-        } else if (e instanceof EmptyPassword) {
-            passwordField.setError(getString(e.getMessageRes()));
-            passwordField.requestFocus();
+        if (e instanceof InvalidField invalidField) {
+            EditText field = switch (invalidField.getField()) {
+                case PASSWORD -> passwordField;
+                default -> usernameField;
+            };
+            field.setError(getString(e.getMessageRes()));
+            field.requestFocus();
         } else {
             errorLabel.setText(e.getMessageRes());
             errorLabel.setVisibility(View.VISIBLE);

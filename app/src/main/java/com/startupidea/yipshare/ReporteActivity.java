@@ -23,9 +23,8 @@ import android.widget.Toast;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.feedback.EmptyReportText;
-import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.feedback.ApiFeedbackRepository;
+import com.startupidea.yipshare.feedback.FeedbackService;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
@@ -65,7 +64,7 @@ public class ReporteActivity extends AppCompatActivity{
         setContentView(R.layout.activity_reporte);
 
         EditText neighborField = findViewById(R.id.et_nombre_vecino);
-        neighborField.setText(loan.getOtherUsername());
+        neighborField.setText(loan.otherUsername());
         neighborField.setEnabled(false);
         descriptionField = findViewById(R.id.et_descripcion);
         evidenceList = findViewById(R.id.ll_evidencias);
@@ -137,7 +136,7 @@ public class ReporteActivity extends AppCompatActivity{
             Toast.makeText(this, R.string.reporte_enviado, Toast.LENGTH_SHORT).show();
             finish();
         }, e -> {
-            if (e instanceof EmptyReportText) {
+            if (e.getMessageRes() == R.string.error_campo_obligatorio) {
                 descriptionField.setError(getString(e.getMessageRes()));
                 descriptionField.requestFocus();
             } else {

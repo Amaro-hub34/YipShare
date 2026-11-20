@@ -1,7 +1,9 @@
 package com.startupidea.yipshare.user;
 
 import com.startupidea.yipshare.R;
-import com.startupidea.yipshare.error.InvalidImage;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ResourceNotFound;
+import com.startupidea.yipshare.error.UnauthorizedException;
 
 public class UserService {
 
@@ -12,36 +14,34 @@ public class UserService {
     }
 
     public User login(LoginPayload payload) {
-        if (payload.getUsername().trim().isEmpty()) throw new EmptyUsername();
-        if (payload.getPassword().trim().isEmpty()) throw new EmptyPassword();
-        if (payload.getUsername().trim().length() < UserRules.USERNAME_MIN_LENGTH
-                || !UserRules.PASSWORD.matcher(payload.getPassword()).matches()) {
-            throw new AccountNotFound();
+        if (payload.username().trim().isEmpty()) throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_vacio);
+        if (payload.password().trim().isEmpty()) throw new InvalidField(RegistrationField.PASSWORD, R.string.error_contrasena_vacia);
+        if (payload.username().trim().length() < UserRules.USERNAME_MIN_LENGTH
+                || !UserRules.PASSWORD.matcher(payload.password()).matches()) {
+            throw new ResourceNotFound("Account does not exist", R.string.error_cuenta_no_existe);
         }
 
-        User user = userRepository.tryLogin(payload);
-        if (user == null) throw new AccountNotFound();
-        return user;
+        return userRepository.tryLogin(payload).orElseThrow(() -> new ResourceNotFound("Account does not exist", R.string.error_cuenta_no_existe));
     }
 
     public void validateNames(RegistrationDraft draft) {
-        validateName(draft.getPaternalLastName(), RegistrationField.PATERNAL_LAST_NAME);
-        validateName(draft.getMaternalLastName(), RegistrationField.MATERNAL_LAST_NAME);
-        validateName(draft.getFirstNames(), RegistrationField.FIRST_NAMES);
+        validateName(draft.paternalLastName(), RegistrationField.PATERNAL_LAST_NAME);
+        validateName(draft.maternalLastName(), RegistrationField.MATERNAL_LAST_NAME);
+        validateName(draft.firstNames(), RegistrationField.FIRST_NAMES);
     }
 
     public void validateCredentials(RegistrationDraft draft) {
-        String password = draft.getPassword();
+        String password = draft.password();
 
-        validateUsername(draft.getUsername().trim());
+        validateUsername(draft.username().trim());
         validatePassword(password);
-        if (!password.equals(draft.getPasswordConfirmation())) {
+        if (!password.equals(draft.passwordConfirmation())) {
             throw new InvalidField(RegistrationField.PASSWORD_CONFIRMATION, R.string.error_contrasena_no_coincide);
         }
-        if (UserRules.normalizePhoneNumber(draft.getPhoneNumber()) == null) {
+        if (UserRules.normalizePhoneNumber(draft.phoneNumber()).isEmpty()) {
             throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
         }
-        validateEmail(draft.getEmail().trim());
+        validateEmail(draft.email().trim());
     }
 
     public boolean isActiveSession(String userId) {
@@ -49,9 +49,8 @@ public class UserService {
     }
 
     public UserProfile getUserProfile(String id) {
-        UserProfile profile = id == null ? null : userRepository.getUserProfileById(id);
-        if (profile == null) throw new AccountNotFound();
-        return profile;
+        if (id == null) throw new ResourceNotFound("Account does not exist", R.string.error_cuenta_no_existe);
+        return userRepository.getUserProfileById(id).orElseThrow(() -> new ResourceNotFound("Account does not exist", R.string.error_cuenta_no_existe));
     }
 
     public User register(RegistrationDraft draft) {
@@ -62,17 +61,15 @@ public class UserService {
 
     public void modifyProfile(String userId, ProfilePayload payload, String newPassword,
                               String passwordConfirmation, String currentPassword) {
-        String username = payload.getUsername().trim();
+        String username = payload.username().trim();
 
         validateUsername(username);
-        validateName(payload.getPaternalLastName(), RegistrationField.PATERNAL_LAST_NAME);
-        validateName(payload.getMaternalLastName(), RegistrationField.MATERNAL_LAST_NAME);
-        validateName(payload.getFirstNames(), RegistrationField.FIRST_NAMES);
-        String phoneNumber = UserRules.normalizePhoneNumber(payload.getPhoneNumber());
-        if (phoneNumber == null) {
-            throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato);
-        }
-        String email = payload.getEmail().trim();
+        validateName(payload.paternalLastName(), RegistrationField.PATERNAL_LAST_NAME);
+        validateName(payload.maternalLastName(), RegistrationField.MATERNAL_LAST_NAME);
+        validateName(payload.firstNames(), RegistrationField.FIRST_NAMES);
+        String phoneNumber = UserRules.normalizePhoneNumber(payload.phoneNumber())
+                .orElseThrow(() -> new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_formato));
+        String email = payload.email().trim();
         validateEmail(email);
 
         boolean changesPassword = !newPassword.isEmpty() || !passwordConfirmation.isEmpty();
@@ -81,22 +78,22 @@ public class UserService {
             if (!newPassword.equals(passwordConfirmation)) {
                 throw new InvalidField(RegistrationField.PASSWORD_CONFIRMATION, R.string.error_contrasena_no_coincide);
             }
-            if (currentPassword.isEmpty()) throw new WrongPassword();
+            if (currentPassword.isEmpty()) throw new UnauthorizedException("Current password does not match", R.string.error_contrasena_actual);
             if (newPassword.equals(currentPassword)) {
                 throw new InvalidField(RegistrationField.PASSWORD, R.string.error_contrasena_igual_actual);
             }
         }
         userRepository.modifyUser(userId, new ProfilePayload(
                 username,
-                payload.getFirstNames().trim(),
-                payload.getPaternalLastName().trim(),
-                payload.getMaternalLastName().trim(),
+                payload.firstNames().trim(),
+                payload.paternalLastName().trim(),
+                payload.maternalLastName().trim(),
                 phoneNumber,
                 email), changesPassword ? newPassword : null, changesPassword ? currentPassword : null);
     }
 
     public void modifyProfilePicture(String userId, String imageUri) {
-        if (imageUri == null) throw new InvalidImage();
+        if (imageUri == null) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
         userRepository.modifyProfilePicture(userId, imageUri);
     }
 

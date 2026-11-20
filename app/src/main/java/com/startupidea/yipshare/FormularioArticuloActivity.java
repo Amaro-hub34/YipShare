@@ -1,6 +1,7 @@
 package com.startupidea.yipshare;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.error.BadRequestException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,15 +31,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
-import com.startupidea.yipshare.error.InvalidImage;
+import com.startupidea.yipshare.item.ApiItemRepository;
 import com.startupidea.yipshare.item.InvalidItem;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemField;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
-import com.startupidea.yipshare.item.ApiItemRepository;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
@@ -204,9 +204,9 @@ public class FormularioArticuloActivity extends AppCompatActivity {
     }
 
     private void showPostError(AppException e) {
-        if (e instanceof InvalidItem) {
-            showErrors(((InvalidItem) e).getFields(), e.getMessageRes());
-        } else if (e instanceof InvalidImage) {
+        if (e instanceof InvalidItem invalidItem) {
+            showErrors(invalidItem.getFields(), e.getMessageRes());
+        } else if (e instanceof BadRequestException) {
             showImageError(e.getMessageRes());
         } else {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
@@ -214,7 +214,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
     }
 
     private void showEditingItem() {
-        ItemPayload payload = editingItem.getPayload();
+        ItemPayload payload = editingItem.payload();
         nameField.setText(payload.getName());
         descriptionField.setText(payload.getDescription());
         selectValue(categorySpinner, payload.getCategory());

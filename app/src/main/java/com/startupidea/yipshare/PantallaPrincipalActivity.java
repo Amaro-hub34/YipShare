@@ -33,14 +33,14 @@ import java.util.List;
 
 import com.startupidea.yipshare.adapters.ArticuloAdapter;
 import com.startupidea.yipshare.api.ApiClient;
-import com.startupidea.yipshare.item.ApiItemRepository;
-import com.startupidea.yipshare.item.Item;
-import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumMembership;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.error.ServerUnavailable;
+import com.startupidea.yipshare.item.ApiItemRepository;
+import com.startupidea.yipshare.item.Item;
+import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.notification.ApiNotificationRepository;
 import com.startupidea.yipshare.notification.NotificationService;
 import com.startupidea.yipshare.user.ApiUserRepository;
@@ -155,20 +155,20 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     private void showSelectedCondominium() {
         CondominiumMembership selected = selectedMembership();
         if (selected == null && !memberships.isEmpty()) selected = memberships.get(0);
-        session.modifyCondominiumId(selected == null ? null : selected.getCondominiumId());
+        session.modifyCondominiumId(selected == null ? null : selected.condominiumId());
 
         TextView condominiumLabel = findViewById(R.id.tv_condominio);
         if (selected == null) {
             condominiumLabel.setText(R.string.sin_condominio);
             return;
         }
-        String role = getString(selected.isAdmin() ? R.string.rol_admin_condominio : R.string.residente);
-        condominiumLabel.setText(getString(R.string.condominio_con_rol, selected.getName(), role));
+        String role = getString(selected.admin() ? R.string.rol_admin_condominio : R.string.residente);
+        condominiumLabel.setText(getString(R.string.condominio_con_rol, selected.name(), role));
     }
 
     private void showNotificationDot() {
         int pendingRequests = 0;
-        for (CondominiumMembership membership : memberships) pendingRequests += membership.getPendingNotifications();
+        for (CondominiumMembership membership : memberships) pendingRequests += membership.pendingNotifications();
         int requests = pendingRequests;
         TaskUtil.run(this, () -> notificationService.countUnread(), unread -> showNotificationDot(requests + unread),
                 e -> showNotificationDot(requests));
@@ -183,7 +183,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     private CondominiumMembership selectedMembership() {
         String condominiumId = session.getCondominiumId();
         for (CondominiumMembership membership : memberships) {
-            if (membership.getCondominiumId().equals(condominiumId)) return membership;
+            if (membership.condominiumId().equals(condominiumId)) return membership;
         }
         return null;
     }
@@ -207,7 +207,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void showGreeting() {
-        TaskUtil.run(this, () -> userService.getUserProfile(userId).getFirstNames(),
+        TaskUtil.run(this, () -> userService.getUserProfile(userId).firstNames(),
                 name -> ((TextView) findViewById(R.id.tv_saludo)).setText(getString(R.string.saludo, name)),
                 e -> {
                     if (e instanceof ServerUnavailable) return;
@@ -271,7 +271,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
                 panel.findViewById(R.id.resaltado_condominio),
                 position -> {
                     CondominiumMembership picked = memberships.get(position);
-                    session.modifyCondominiumId(picked.getCondominiumId());
+                    session.modifyCondominiumId(picked.condominiumId());
                     showAdminOptions(adminButtons, codeLabel, picked);
                     showSelectedCondominium();
                     loadItems();
@@ -302,11 +302,11 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     }
 
     private void showAdminOptions(View[] buttons, TextView codeLabel, CondominiumMembership membership) {
-        boolean admin = membership != null && membership.isAdmin();
+        boolean admin = membership != null && membership.admin();
         for (View button : buttons) button.setVisibility(admin ? View.VISIBLE : View.GONE);
-        boolean hasCode = admin && membership.getCode() != null;
+        boolean hasCode = admin && membership.code() != null;
         codeLabel.setVisibility(hasCode ? View.VISIBLE : View.GONE);
-        if (hasCode) codeLabel.setText(getString(R.string.codigo_condominio, membership.getCode()));
+        if (hasCode) codeLabel.setText(getString(R.string.codigo_condominio, membership.code()));
     }
 
     private void confirmLogout() {

@@ -18,13 +18,10 @@ import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.user.ApiUserRepository;
-import com.startupidea.yipshare.user.DuplicateEmail;
-import com.startupidea.yipshare.user.DuplicatePhoneNumber;
-import com.startupidea.yipshare.user.DuplicateUsername;
 import com.startupidea.yipshare.user.InvalidField;
-import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.RegistrationDraft;
 import com.startupidea.yipshare.user.RegistrationField;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.PasswordToggleUtil;
 import com.startupidea.yipshare.utils.PhoneInputUtil;
@@ -63,11 +60,11 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
         PasswordToggleUtil.attach(passwordConfirmationField, findViewById(R.id.btn_toggle_password_confirmation));
 
         if (savedInstanceState == null) {
-            usernameField.setText(draft.getUsername());
-            passwordField.setText(draft.getPassword());
-            passwordConfirmationField.setText(draft.getPasswordConfirmation());
-            phoneInput.setPhoneNumber(draft.getPhoneNumber());
-            emailField.setText(draft.getEmail());
+            usernameField.setText(draft.username());
+            passwordField.setText(draft.password());
+            passwordConfirmationField.setText(draft.passwordConfirmation());
+            phoneInput.setPhoneNumber(draft.phoneNumber());
+            emailField.setText(draft.email());
         }
 
         findViewById(R.id.btn_siguiente).setOnClickListener(v -> tryRegister());
@@ -116,14 +113,8 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     }
 
     private void showRegisterError(AppException e) {
-        if (e instanceof InvalidField) {
-            showInputError(inputFor(((InvalidField) e).getField()), e);
-        } else if (e instanceof DuplicateUsername) {
-            showInputError(usernameField, e);
-        } else if (e instanceof DuplicatePhoneNumber) {
-            showInputError(phoneNumberField, e);
-        } else if (e instanceof DuplicateEmail) {
-            showInputError(emailField, e);
+        if (e instanceof InvalidField invalidField) {
+            showInputError(inputFor(invalidField.getField()), e);
         } else {
             errorLabel.setText(e.getMessageRes());
             errorLabel.setVisibility(View.VISIBLE);
@@ -136,17 +127,12 @@ public class RegistroCuenta2Activity extends AppCompatActivity {
     }
 
     private EditText inputFor(RegistrationField field) {
-        switch (field) {
-            case USERNAME:
-                return usernameField;
-            case PASSWORD:
-                return passwordField;
-            case PHONE_NUMBER:
-                return phoneNumberField;
-            case EMAIL:
-                return emailField;
-            default:
-                return passwordConfirmationField;
-        }
+        return switch (field) {
+            case USERNAME -> usernameField;
+            case PASSWORD -> passwordField;
+            case PHONE_NUMBER -> phoneNumberField;
+            case EMAIL -> emailField;
+            default -> passwordConfirmationField;
+        };
     }
 }

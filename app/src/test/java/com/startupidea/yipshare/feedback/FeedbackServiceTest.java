@@ -1,5 +1,7 @@
 package com.startupidea.yipshare.feedback;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -73,7 +75,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void reviewNeedsAtLeastOneStar() {
-        assertThrows(EmptyRating.class, () -> service.createReview("me", LOAN, 0f, "text"));
+        assertThrows(BadRequestException.class, () -> service.createReview("me", LOAN, 0f, "text"));
         assertNull(savedStars);
 
         service.createReview("me", LOAN, 0.2f, "text");
@@ -82,7 +84,7 @@ public class FeedbackServiceTest {
 
     @Test
     public void reportNeedsText() {
-        assertThrows(EmptyReportText.class, () -> service.createReport("me", LOAN, "   ", Collections.emptyList()));
+        assertThrows(BadRequestException.class, () -> service.createReport("me", LOAN, "   ", Collections.emptyList()));
         assertNull(savedText);
 
         service.createReport("me", LOAN, " Llegó tarde ", Collections.emptyList());

@@ -30,15 +30,15 @@ public class ItemParcelTest {
         parcel.recycle();
 
         Item item = Item.fromIntent(restored);
-        assertEquals("id-1", item.getId());
-        assertEquals("owner-1", item.getOwnerId());
-        assertEquals("condo-1", item.getCondominiumId());
-        assertEquals(ItemAvailability.PENDING, item.getAvailability());
-        assertEquals("Drill", item.getPayload().getName());
-        assertEquals("Tools", item.getPayload().getCategory());
-        assertEquals("Works fine", item.getPayload().getDescription());
-        assertEquals("Good", item.getPayload().getPhysicalCondition());
-        assertEquals("content://image/1", item.getPayload().getImageUri());
-        assertEquals(Arrays.asList("1 day", "1 week"), item.getPayload().getLoanDurations());
+        assertEquals("id-1", item.id());
+        assertEquals("owner-1", item.ownerId());
+        assertEquals("condo-1", item.condominiumId());
+        assertEquals(ItemAvailability.PENDING, item.availability());
+        assertEquals("Drill", item.payload().getName());
+        assertEquals("Tools", item.payload().getCategory());
+        assertEquals("Works fine", item.payload().getDescription());
+        assertEquals("Good", item.payload().getPhysicalCondition());
+        assertEquals("content://image/1", item.payload().getImageUri());
+        assertEquals(Arrays.asList("1 day", "1 week"), item.payload().getLoanDurations());
     }
 }

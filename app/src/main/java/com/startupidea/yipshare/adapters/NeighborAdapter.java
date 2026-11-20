@@ -43,20 +43,20 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
     @Override
     public void onBindViewHolder(@NonNull NeighborViewHolder holder, int position) {
         Neighbor neighbor = neighbors.get(position);
-        String unit = holder.itemView.getContext().getString(R.string.unidad_vecino, neighbor.getUnit());
-        if (neighbor.isAdmin()) {
+        String unit = holder.itemView.getContext().getString(R.string.unidad_vecino, neighbor.unit());
+        if (neighbor.admin()) {
             unit = unit + " · " + holder.itemView.getContext().getString(R.string.rol_admin_condominio);
         }
-        holder.nameLabel.setText(neighbor.getUsername());
+        holder.nameLabel.setText(neighbor.username());
         holder.unitLabel.setText(unit);
         holder.ratingBar.setRating(neighbor.getRating());
         holder.ratingLabel.setText(String.format(Locale.getDefault(), "%.1f", neighbor.getRating()));
-        PhoneUtil.attach(holder.phoneLabel, neighbor.getPhoneNumber());
+        PhoneUtil.attach(holder.phoneLabel, neighbor.phoneNumber());
         holder.neighborArea.setOnClickListener(v -> listener.onNeighborClick(neighbor));
 
         holder.loanAccess.setOnCheckedChangeListener(null);
         holder.loanAccess.setChecked(neighbor.canRequestLoans());
-        holder.loanAccess.setVisibility(neighbor.isAdmin() ? View.GONE : View.VISIBLE);
+        holder.loanAccess.setVisibility(neighbor.admin() ? View.GONE : View.VISIBLE);
         holder.loanAccess.setOnCheckedChangeListener((button, checked) -> listener.onLoanAccessChange(neighbor, checked));
     }
 

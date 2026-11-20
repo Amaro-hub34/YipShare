@@ -21,13 +21,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumField;
 import com.startupidea.yipshare.condominium.CondominiumPayload;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.InvalidCondominium;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
-import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
-import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.user.SessionRepository;
 
 import java.util.Set;
@@ -176,8 +176,8 @@ public class RegistrarCondominioActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.solicitud_condominio_enviada, Toast.LENGTH_LONG).show();
             finish();
         }, e -> {
-            if (e instanceof InvalidCondominium) {
-                showErrors(((InvalidCondominium) e).getFields(), getString(e.getMessageRes()));
+            if (e instanceof InvalidCondominium invalidCondominium) {
+                showErrors(invalidCondominium.getFields(), getString(e.getMessageRes()));
             } else {
                 Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
             }

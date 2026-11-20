@@ -26,23 +26,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.api.ApiClient;
+import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
+import com.startupidea.yipshare.condominium.CondominiumService;
+import com.startupidea.yipshare.item.ApiItemRepository;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.item.LoanDuration;
-import com.startupidea.yipshare.item.ApiItemRepository;
-import com.startupidea.yipshare.condominium.CondominiumService;
-import com.startupidea.yipshare.condominium.ApiCondominiumRepository;
-import com.startupidea.yipshare.loan.LoanService;
 import com.startupidea.yipshare.loan.ApiLoanRepository;
-import com.startupidea.yipshare.utils.PhoneUtil;
 import com.startupidea.yipshare.loan.Loan;
+import com.startupidea.yipshare.loan.LoanService;
 import com.startupidea.yipshare.loan.LoanStatus;
-import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.ApiUserRepository;
+import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
+import com.startupidea.yipshare.utils.PhoneUtil;
 import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.Arrays;
@@ -121,7 +121,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
             startActivity(intent);
         });
         findViewById(R.id.btn_introducir_codigo).setOnClickListener(v -> {
-            boolean finished = loan.getStatus() == LoanStatus.FINISHED;
+            boolean finished = loan.status() == LoanStatus.FINISHED;
             Intent intent = new Intent(this, finished ? CalificarUsuarioActivity.class : CodigoPrestamoActivity.class);
             loan.putInto(intent);
             codeScreen.launch(intent);
@@ -157,20 +157,20 @@ public class DetalleArticuloActivity extends AppCompatActivity {
     private void showItem(Item item) {
         this.item = item;
         item.putInto(getIntent());
-        ItemPayload payload = item.getPayload();
+        ItemPayload payload = item.payload();
 
         TextView statusLabel = findViewById(R.id.tv_estado_articulo);
-        statusLabel.setText(item.getAvailability().getMessageRes());
-        statusLabel.setBackgroundResource(item.getAvailability().getBadgeRes());
-        showOwner(item.getOwnerId());
+        statusLabel.setText(item.availability().getMessageRes());
+        statusLabel.setBackgroundResource(item.availability().getBadgeRes());
+        showOwner(item.ownerId());
         findViewById(R.id.layout_prestamista).setOnClickListener(v ->
-                startActivity(UserFeedbackActivity.intentFor(this, item.getOwnerId())));
+                startActivity(UserFeedbackActivity.intentFor(this, item.ownerId())));
 
         boolean own = item.isOwnedBy(userId);
         findViewById(R.id.btn_accion_articulo).setVisibility(own ? View.GONE : View.VISIBLE);
         showOwnerActions(item, false);
         if (!own) {
-            TaskUtil.run(this, () -> condominiumService.isAdmin(userId, item.getCondominiumId()),
+            TaskUtil.run(this, () -> condominiumService.isAdmin(userId, item.condominiumId()),
                     admin -> showOwnerActions(item, admin), e -> showOwnerActions(item, false));
         }
 
@@ -188,7 +188,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
     private void showOwnerActions(Item item, boolean admin) {
         boolean own = item.isOwnedBy(userId);
-        boolean editable = own && item.getAvailability() == ItemAvailability.AVAILABLE;
+        boolean editable = own && item.availability() == ItemAvailability.AVAILABLE;
         Button deleteButton = findViewById(R.id.btn_eliminar_articulo);
         findViewById(R.id.layout_acciones_dueno).setVisibility(own || admin ? View.VISIBLE : View.GONE);
         findViewById(R.id.btn_editar_articulo).setVisibility(own ? View.VISIBLE : View.GONE);
@@ -200,11 +200,11 @@ public class DetalleArticuloActivity extends AppCompatActivity {
 
     private void showOwner(String ownerId) {
         TaskUtil.run(this, () -> userService.getUserProfile(ownerId), owner -> {
-            ((TextView) findViewById(R.id.tv_prestamista)).setText(owner.getUsername());
+            ((TextView) findViewById(R.id.tv_prestamista)).setText(owner.username());
             ((RatingBar) findViewById(R.id.rb_calificacion)).setRating(owner.getRating());
             ((TextView) findViewById(R.id.tv_calificacion_numero))
                     .setText(String.format(Locale.getDefault(), "%.1f", owner.getRating()));
-            PhoneUtil.attach(findViewById(R.id.tv_telefono_prestamista), owner.getPhoneNumber());
+            PhoneUtil.attach(findViewById(R.id.tv_telefono_prestamista), owner.phoneNumber());
         }, e -> findViewById(R.id.layout_prestamista).setVisibility(View.GONE));
     }
 
@@ -216,7 +216,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         int days = LoanDuration.daysOf(Arrays.asList(getResources().getStringArray(R.array.tiempo_prestamo)).indexOf(duration));
 
         ConfirmDialogUtil.show(this,
-                getString(R.string.confirmar_solicitar_articulo, item.getPayload().getName(), duration),
+                getString(R.string.confirmar_solicitar_articulo, item.payload().getName(), duration),
                 () -> new LoadingOverlay(this).run(
                         () -> loanService.requestLoan(userId, item, getString(R.string.texto_solicitud, duration), days),
                         () -> Toast.makeText(this, R.string.solicitud_enviada, Toast.LENGTH_SHORT).show(),
@@ -238,23 +238,23 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         this.loan = loan;
         loan.putInto(getIntent());
 
-        if (loan.getImageUri() != null) {
+        if (loan.imageUri() != null) {
             ((ImageView) findViewById(R.id.iv_imagen_articulo)).setImageBitmap(
-                    ImagePreviewUtil.tryLoad(this, Uri.parse(loan.getImageUri()), IMAGE_MAX_SIZE_PX));
+                    ImagePreviewUtil.tryLoad(this, Uri.parse(loan.imageUri()), IMAGE_MAX_SIZE_PX));
         }
         ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(R.string.DP_tv_titulo_pantalla);
         TextView statusLabel = findViewById(R.id.tv_estado_articulo);
-        statusLabel.setText(loan.getStatus().getMessageRes());
-        statusLabel.setBackgroundResource(loan.getStatus().getBadgeRes());
-        ((TextView) findViewById(R.id.tv_nombre_articulo)).setText(loan.getItemName());
-        ((TextView) findViewById(R.id.tv_descripcion)).setText(loan.getDescription());
-        showOwner(loan.getOtherUserId());
+        statusLabel.setText(loan.status().getMessageRes());
+        statusLabel.setBackgroundResource(loan.status().getBadgeRes());
+        ((TextView) findViewById(R.id.tv_nombre_articulo)).setText(loan.itemName());
+        ((TextView) findViewById(R.id.tv_descripcion)).setText(loan.description());
+        showOwner(loan.otherUserId());
         findViewById(R.id.layout_prestamista).setOnClickListener(v ->
-                startActivity(UserFeedbackActivity.intentFor(this, loan.getOtherUserId())));
+                startActivity(UserFeedbackActivity.intentFor(this, loan.otherUserId())));
 
-        String startDate = loan.getStartDate() == null ? getString(R.string.sin_iniciar) : loan.getStartDate();
+        String startDate = loan.startDate() == null ? getString(R.string.sin_iniciar) : loan.startDate();
         TextView datesLabel = findViewById(R.id.tv_fechas_prestamo);
-        datesLabel.setText(getString(R.string.fechas_prestamo, startDate, loan.getEndDate()));
+        datesLabel.setText(getString(R.string.fechas_prestamo, startDate, loan.endDate()));
         datesLabel.setVisibility(View.VISIBLE);
 
         findViewById(R.id.tv_categoria).setVisibility(View.GONE);
@@ -263,8 +263,8 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         findViewById(R.id.btn_accion_articulo).setVisibility(View.GONE);
         findViewById(R.id.layout_acciones_prestamo).setVisibility(View.VISIBLE);
         Button codeButton = findViewById(R.id.btn_introducir_codigo);
-        boolean finished = loan.getStatus() == LoanStatus.FINISHED;
+        boolean finished = loan.status() == LoanStatus.FINISHED;
         codeButton.setText(finished ? R.string.btn_calificar_vecino : R.string.btn_introducir_codigo);
-        codeButton.setVisibility(finished || loan.getStatus().acceptsCode() ? View.VISIBLE : View.GONE);
+        codeButton.setVisibility(finished || loan.status().acceptsCode() ? View.VISIBLE : View.GONE);
     }
 }

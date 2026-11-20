@@ -17,7 +17,7 @@ public class SessionRepository {
     }
 
     public void createSession(User user) {
-        preferences.edit().putString(KEY_USER_ID, user.getId()).apply();
+        preferences.edit().putString(KEY_USER_ID, user.id()).apply();
     }
 
     public void saveToken(String token) {

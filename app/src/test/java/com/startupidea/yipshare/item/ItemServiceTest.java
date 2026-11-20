@@ -1,5 +1,8 @@
 package com.startupidea.yipshare.item;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -32,7 +35,7 @@ public class ItemServiceTest {
         public List<Item> getAllItemsByCondominiumId(String condominiumId) {
             List<Item> inCondominium = new ArrayList<>();
             for (Item item : stored) {
-                if (item.getCondominiumId().equals(condominiumId)) inCondominium.add(item);
+                if (item.condominiumId().equals(condominiumId)) inCondominium.add(item);
             }
             return inCondominium;
         }
@@ -44,7 +47,7 @@ public class ItemServiceTest {
 
         @Override
         public Item modifyItem(Item item, ItemPayload payload) {
-            return new Item(item.getId(), item.getOwnerId(), item.getCondominiumId(), item.getAvailability(), payload);
+            return new Item(item.id(), item.ownerId(), item.condominiumId(), item.availability(), payload);
         }
 
         @Override
@@ -73,10 +76,10 @@ public class ItemServiceTest {
 
         Item item = service.createItem(CONDO, payload);
 
-        assertFalse(item.getId().isEmpty());
-        assertSame(payload, item.getPayload());
-        assertEquals(OWNER, item.getOwnerId());
-        assertEquals(ItemAvailability.AVAILABLE, item.getAvailability());
+        assertFalse(item.id().isEmpty());
+        assertSame(payload, item.payload());
+        assertEquals(OWNER, item.ownerId());
+        assertEquals(ItemAvailability.AVAILABLE, item.availability());
     }
 
     @Test
@@ -111,7 +114,7 @@ public class ItemServiceTest {
     public void acceptsSeveralDurations() {
         Item item = service.createItem(CONDO, payload(NAME, DESCRIPTION, IMAGE, Arrays.asList("1 day", "1 week")));
 
-        assertEquals(2, item.getPayload().getLoanDurations().size());
+        assertEquals(2, item.payload().getLoanDurations().size());
     }
 
     @Test
@@ -139,7 +142,7 @@ public class ItemServiceTest {
 
     @Test
     public void publishesOnlyWithACondominiumSelected() {
-        assertThrows(NoCondominiumSelected.class,
+        assertThrows(ConflictException.class,
                 () -> service.createItem(null, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
     }
 
@@ -157,7 +160,7 @@ public class ItemServiceTest {
         Item modified = service.modifyItem(OWNER, item("1", OWNER, ItemAvailability.AVAILABLE, NAME),
                 payload("Hammer", DESCRIPTION, IMAGE, DURATIONS));
 
-        assertEquals("Hammer", modified.getPayload().getName());
+        assertEquals("Hammer", modified.payload().getName());
     }
 
     @Test
@@ -174,9 +177,9 @@ public class ItemServiceTest {
         Item lent = item("1", OWNER, ItemAvailability.NOT_AVAILABLE, NAME);
         Item pending = item("2", OWNER, ItemAvailability.PENDING, NAME);
 
-        assertThrows(ItemNotAvailable.class,
+        assertThrows(ConflictException.class,
                 () -> service.modifyItem(OWNER, lent, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
-        assertThrows(ItemNotAvailable.class, () -> service.deleteItem(OWNER, pending));
+        assertThrows(ConflictException.class, () -> service.deleteItem(OWNER, pending));
         assertNull(deleted);
     }
 
@@ -184,7 +187,7 @@ public class ItemServiceTest {
     public void cannotModifyItemsOfOtherUsers() {
         Item others = item("1", "other", ItemAvailability.AVAILABLE, NAME);
 
-        assertThrows(ItemNotFound.class,
+        assertThrows(ResourceNotFound.class,
                 () -> service.modifyItem(OWNER, others, payload(NAME, DESCRIPTION, IMAGE, DURATIONS)));
     }
 }

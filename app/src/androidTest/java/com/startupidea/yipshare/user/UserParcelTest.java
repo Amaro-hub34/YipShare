@@ -26,8 +26,8 @@ public class UserParcelTest {
         parcel.recycle();
 
         User user = User.fromIntent(restored);
-        assertEquals("id-1", user.getId());
-        assertEquals("ana", user.getUsername());
+        assertEquals("id-1", user.id());
+        assertEquals("ana", user.username());
     }
 
     @Test
@@ -46,12 +46,12 @@ public class UserParcelTest {
         parcel.recycle();
 
         RegistrationDraft result = RegistrationDraft.fromIntent(restored);
-        assertEquals("Pérez", result.getPaternalLastName());
-        assertEquals("López", result.getMaternalLastName());
-        assertEquals("Ana", result.getFirstNames());
-        assertEquals("anitas", result.getUsername());
-        assertEquals("Secret1!", result.getPassword());
-        assertEquals("Secret1!", result.getPasswordConfirmation());
-        assertEquals("ana@test.com", result.getEmail());
+        assertEquals("Pérez", result.paternalLastName());
+        assertEquals("López", result.maternalLastName());
+        assertEquals("Ana", result.firstNames());
+        assertEquals("anitas", result.username());
+        assertEquals("Secret1!", result.password());
+        assertEquals("Secret1!", result.passwordConfirmation());
+        assertEquals("ana@test.com", result.email());
     }
 }

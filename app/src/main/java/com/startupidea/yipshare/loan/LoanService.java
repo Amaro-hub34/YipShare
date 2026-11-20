@@ -1,9 +1,11 @@
 package com.startupidea.yipshare.loan;
 
+import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.error.BadRequestException;
+import com.startupidea.yipshare.error.ConflictException;
+import com.startupidea.yipshare.error.ResourceNotFound;
 import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemAvailability;
-import com.startupidea.yipshare.item.ItemNotAvailable;
-import com.startupidea.yipshare.item.ItemNotFound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class LoanService {
         List<Loan> loans = new ArrayList<>();
         if (condominiumId == null) return loans;
         for (Loan loan : loanRepository.getAllLoansByCondominiumId(condominiumId)) {
-            if (loan.getStatus() != LoanStatus.PENDING && loan.getStatus() != LoanStatus.REJECTED) loans.add(loan);
+            if (loan.status() != LoanStatus.PENDING && loan.status() != LoanStatus.REJECTED) loans.add(loan);
         }
         return loans;
     }
@@ -35,9 +37,9 @@ public class LoanService {
     }
 
     public void requestLoan(String userId, Item item, String requestText, int days) {
-        if (item.isOwnedBy(userId)) throw new ItemNotFound();
-        if (item.getAvailability() != ItemAvailability.AVAILABLE) throw new ItemNotAvailable();
-        loanRepository.createLoanRequest(item.getId(), requestText, days);
+        if (item.isOwnedBy(userId)) throw new ResourceNotFound("Item does not exist or belongs to another user", R.string.error_articulo_no_existe);
+        if (item.availability() != ItemAvailability.AVAILABLE) throw new ConflictException("Only an available item can be modified or deleted", R.string.error_articulo_no_disponible);
+        loanRepository.createLoanRequest(item.id(), requestText, days);
     }
 
     public void acceptLoanRequest(String userId, String loanId) {
@@ -49,14 +51,14 @@ public class LoanService {
     }
 
     public String createCode(Loan loan) {
-        if (!loan.isLentByMe() || !loan.getStatus().acceptsCode()) throw new LoanNotActive();
-        return loanRepository.createCode(loan.getId());
+        if (!loan.lentByMe() || !loan.status().acceptsCode()) throw new ConflictException("Loan does not take codes in its current state", R.string.error_prestamo_no_activo);
+        return loanRepository.createCode(loan.id());
     }
 
     public Loan confirmCode(String userId, Loan loan, String code) {
         String normalized = code.trim().toUpperCase(Locale.ROOT);
-        if (!CODE.matcher(normalized).matches()) throw new InvalidCode();
-        if (loan.isLentByMe() || !loan.getStatus().acceptsCode()) throw new LoanNotActive();
-        return loanRepository.confirmCode(loan.getId(), normalized);
+        if (!CODE.matcher(normalized).matches()) throw new BadRequestException("Loan code is wrong or must have 6 digits", R.string.error_codigo_longitud);
+        if (loan.lentByMe() || !loan.status().acceptsCode()) throw new ConflictException("Loan does not take codes in its current state", R.string.error_prestamo_no_activo);
+        return loanRepository.confirmCode(loan.id(), normalized);
     }
 }

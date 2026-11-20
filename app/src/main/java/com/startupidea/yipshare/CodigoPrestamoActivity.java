@@ -1,6 +1,7 @@
 package com.startupidea.yipshare;
 
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
+import com.startupidea.yipshare.error.BadRequestException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.startupidea.yipshare.api.ApiClient;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.loan.ApiLoanRepository;
-import com.startupidea.yipshare.loan.InvalidCode;
 import com.startupidea.yipshare.loan.Loan;
 import com.startupidea.yipshare.loan.LoanService;
 import com.startupidea.yipshare.loan.LoanStatus;
@@ -48,9 +48,9 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
         TextView codeLabel = findViewById(R.id.tv_codigo_generado);
         codeField = findViewById(R.id.et_codigo);
 
-        itemLabel.setText(loan.getItemName());
+        itemLabel.setText(loan.itemName());
 
-        boolean lender = loan.isLentByMe();
+        boolean lender = loan.lentByMe();
         int lenderOnly = lender ? View.VISIBLE : View.GONE;
         int borrowerOnly = lender ? View.GONE : View.VISIBLE;
         findViewById(R.id.btn_generar_codigo).setVisibility(lenderOnly);
@@ -75,7 +75,7 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
 
     private void showConfirmed(Loan updated) {
         Toast.makeText(this, R.string.codigo_confirmado, Toast.LENGTH_SHORT).show();
-        if (updated.getStatus() == LoanStatus.FINISHED) {
+        if (updated.status() == LoanStatus.FINISHED) {
             Intent review = new Intent(this, CalificarUsuarioActivity.class);
             updated.putInto(review);
             startActivity(review);
@@ -88,7 +88,7 @@ public class CodigoPrestamoActivity extends AppCompatActivity {
     }
 
     private void showCodeError(AppException e) {
-        if (e instanceof InvalidCode) {
+        if (e instanceof BadRequestException) {
             codeField.setError(getString(e.getMessageRes()));
         } else {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();

@@ -7,7 +7,12 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.core.content.IntentCompat;
 
-public final class Item implements Parcelable {
+public record Item(
+        String id,
+        String ownerId,
+        String condominiumId,
+        ItemAvailability availability,
+        ItemPayload payload) implements Parcelable {
 
     private static final String EXTRA_ITEM = "com.startupidea.yipshare.extra.ITEM";
 
@@ -34,20 +39,6 @@ public final class Item implements Parcelable {
         }
     };
 
-    private final String id;
-    private final String ownerId;
-    private final String condominiumId;
-    private final ItemAvailability availability;
-    private final ItemPayload payload;
-
-    public Item(String id, String ownerId, String condominiumId, ItemAvailability availability, ItemPayload payload) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.condominiumId = condominiumId;
-        this.availability = availability;
-        this.payload = payload;
-    }
-
     public static Item fromIntent(Intent intent) {
         return IntentCompat.getParcelableExtra(intent, EXTRA_ITEM, Item.class);
     }
@@ -56,28 +47,8 @@ public final class Item implements Parcelable {
         intent.putExtra(EXTRA_ITEM, this);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public String getCondominiumId() {
-        return condominiumId;
-    }
-
-    public ItemAvailability getAvailability() {
-        return availability;
-    }
-
     public boolean isOwnedBy(String userId) {
         return ownerId != null && ownerId.equals(userId);
-    }
-
-    public ItemPayload getPayload() {
-        return payload;
     }
 
     @Override

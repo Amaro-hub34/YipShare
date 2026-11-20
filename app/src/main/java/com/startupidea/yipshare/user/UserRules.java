@@ -4,6 +4,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 final class UserRules {
@@ -16,13 +17,15 @@ final class UserRules {
     static final Pattern PASSWORD = Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_])[!-~]{8,255}");
     static final Pattern EMAIL = Pattern.compile("[^@\\s]+@[^@\\s]+\\.[^@\\s]+");
 
-    static String normalizePhoneNumber(String phoneNumber) {
+    static Optional<String> normalizePhoneNumber(String phoneNumber) {
         PhoneNumberUtil util = PhoneNumberUtil.getInstance();
         try {
             Phonenumber.PhoneNumber number = util.parse(phoneNumber, null);
-            return util.isValidNumber(number) ? util.format(number, PhoneNumberUtil.PhoneNumberFormat.E164) : null;
+            return util.isValidNumber(number)
+                    ? Optional.of(util.format(number, PhoneNumberUtil.PhoneNumberFormat.E164))
+                    : Optional.empty();
         } catch (NumberParseException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
