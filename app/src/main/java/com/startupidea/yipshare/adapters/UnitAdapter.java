@@ -6,21 +6,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.condominium.Unit;
 
-import java.util.List;
 import java.util.function.Consumer;
 
-public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitViewHolder> {
+public class UnitAdapter extends ListAdapter<Unit, UnitAdapter.UnitViewHolder> {
 
-    private final List<Unit> units;
     private final Consumer<Unit> onUnitClick;
 
-    public UnitAdapter(List<Unit> units, Consumer<Unit> onUnitClick) {
-        this.units = units;
+    public UnitAdapter(Consumer<Unit> onUnitClick) {
+        super(new RecordDiff<>(Unit::id));
         this.onUnitClick = onUnitClick;
     }
 
@@ -33,14 +32,9 @@ public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull UnitViewHolder holder, int position) {
-        Unit unit = units.get(position);
+        Unit unit = getItem(position);
         holder.nameLabel.setText(unit.name());
         holder.itemView.setOnClickListener(v -> onUnitClick.accept(unit));
-    }
-
-    @Override
-    public int getItemCount() {
-        return units.size();
     }
 
     static class UnitViewHolder extends RecyclerView.ViewHolder {

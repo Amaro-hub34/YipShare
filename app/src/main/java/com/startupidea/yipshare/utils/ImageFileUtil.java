@@ -57,6 +57,12 @@ public final class ImageFileUtil {
         }
     }
 
+    public static File createCameraFile(Context context) {
+        File folder = folder(context);
+        if (!folder.isDirectory() && !folder.mkdirs()) throw new BadRequestException("Image could not be read", R.string.error_imagen_invalida);
+        return new File(folder, UUID.randomUUID() + ".jpg");
+    }
+
     private static boolean isLargerThan(Context context, Uri uri, long maxBytes) {
         try (InputStream input = context.getContentResolver().openInputStream(uri)) {
             if (input == null) return false;

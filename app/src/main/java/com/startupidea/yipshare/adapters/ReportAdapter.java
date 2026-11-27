@@ -6,24 +6,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.feedback.Report;
 
-import java.util.List;
-
-public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
+public class ReportAdapter extends ListAdapter<Report, ReportAdapter.ReportViewHolder> {
 
     public interface OnReportClick {
         void onReportClick(Report report);
     }
 
-    private final List<Report> reports;
     private final OnReportClick onReportClick;
 
-    public ReportAdapter(List<Report> reports, OnReportClick onReportClick) {
-        this.reports = reports;
+    public ReportAdapter(OnReportClick onReportClick) {
+        super(new RecordDiff<>(report -> report.id() == null ? report : report.id()));
         this.onReportClick = onReportClick;
     }
 
@@ -36,17 +34,12 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
 
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
-        Report report = reports.get(position);
+        Report report = getItem(position);
         holder.statusLabel.setText(report.state().getMessageRes());
         holder.statusLabel.setBackgroundResource(report.state().getBadgeRes());
         holder.textLabel.setText(report.text());
         holder.itemView.setOnClickListener(onReportClick == null ? null : v -> onReportClick.onReportClick(report));
         holder.itemView.setClickable(onReportClick != null);
-    }
-
-    @Override
-    public int getItemCount() {
-        return reports.size();
     }
 
     static class ReportViewHolder extends RecyclerView.ViewHolder {

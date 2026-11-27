@@ -18,6 +18,7 @@ import com.startupidea.yipshare.condominium.SqliteCondominiumRepository;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.condominium.Neighbor;
 import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.user.User;
 
 public class NeighborsActivity extends AppCompatActivity {
 
@@ -25,6 +26,7 @@ public class NeighborsActivity extends AppCompatActivity {
     private String userId;
     private String condominiumId;
     private RecyclerView neighborList;
+    private NeighborAdapter neighborAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +56,23 @@ public class NeighborsActivity extends AppCompatActivity {
         SessionRepository session = new SessionRepository(this);
         userId = session.getUserId();
         condominiumId = session.getCondominiumId();
+        neighborAdapter = new NeighborAdapter(new NeighborAdapter.OnNeighborAction() {
+            @Override
+            public void onNeighborClick(Neighbor neighbor) {
+                startActivity(UserFeedbackActivity.intentFor(NeighborsActivity.this, new User(neighbor.userId(), neighbor.username())));
+            }
+
+            @Override
+            public void onLoanAccessChange(Neighbor neighbor, boolean allowed) {
+                confirmLoanAccess(neighbor, allowed);
+            }
+        });
+        neighborList.setAdapter(neighborAdapter);
         showNeighbors();
     }
 
     private void showNeighbors() {
-        TaskUtil.run(this, () -> condominiumService.getAllNeighbors(userId, condominiumId), neighbors ->
-            neighborList.setAdapter(new NeighborAdapter(neighbors,
-                    new NeighborAdapter.OnNeighborAction() {
-                        @Override
-                        public void onNeighborClick(Neighbor neighbor) {
-                            startActivity(UserFeedbackActivity.intentFor(NeighborsActivity.this, neighbor.userId()));
-                        }
-
-                        @Override
-                        public void onLoanAccessChange(Neighbor neighbor, boolean allowed) {
-                            confirmLoanAccess(neighbor, allowed);
-                        }
-                    })), e -> {
+        TaskUtil.run(this, () -> condominiumService.getAllNeighbors(userId, condominiumId), neighborAdapter::submitList, e -> {
             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
             finish();
         });
@@ -85,8 +87,13 @@ public class NeighborsActivity extends AppCompatActivity {
                         this::showNeighbors,
                         e -> {
                             Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show();
-                            showNeighbors();
+                            restoreSwitch(neighbor);
                         }),
-                this::showNeighbors);
+                () -> restoreSwitch(neighbor));
+    }
+
+    private void restoreSwitch(Neighbor neighbor) {
+        int position = neighborAdapter.getCurrentList().indexOf(neighbor);
+        if (position >= 0) neighborAdapter.notifyItemChanged(position);
     }
 }

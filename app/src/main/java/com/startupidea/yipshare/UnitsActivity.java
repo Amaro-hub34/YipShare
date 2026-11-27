@@ -29,6 +29,7 @@ public class UnitsActivity extends AppCompatActivity {
     private CondominiumService condominiumService;
     private String condominiumId;
     private RecyclerView unitList;
+    private final UnitAdapter unitAdapter = new UnitAdapter(this::askUnitName);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +58,13 @@ public class UnitsActivity extends AppCompatActivity {
 
         condominiumService = new CondominiumService(new SqliteCondominiumRepository(this));
         condominiumId = new SessionRepository(this).getCondominiumId();
+        unitList.setAdapter(unitAdapter);
         showUnits();
     }
 
     private void showUnits() {
         TaskUtil.run(this, () -> condominiumService.getAllUnits(condominiumId),
-                units -> unitList.setAdapter(new UnitAdapter(units, this::askUnitName)),
+                unitAdapter::submitList,
                 e -> {
                     showError(e);
                     finish();

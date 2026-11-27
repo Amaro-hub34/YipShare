@@ -6,21 +6,34 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseContract.Articles;
+import com.startupidea.yipshare.database.DatabaseContract.Users;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.utils.ImageFileUtil;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class SqliteItemRepository implements ItemRepository {
 
+    private static final String ACCENTED = "áéíóúüñÁÉÍÓÚÜÑ";
+    private static final String PLAIN = "aeiouunAEIOUUN";
+
     private static final String getAllItemsByCondominiumId
-            = "SELECT article_id, lending_user, availability, name, category, description, physical_condition,"
-            + " image, loan_durations FROM articles WHERE condominium_id = ? AND deleted = 0"
-            + " AND lending_user IN (SELECT user_id FROM users WHERE state = 'active') ORDER BY rowid DESC";
+            = "SELECT " + Articles.ID + ", " + Articles.LENDING_USER + ", " + Articles.AVAILABILITY + ", "
+            + Articles.NAME + ", " + Articles.CATEGORY + ", " + Articles.DESCRIPTION + ", " + Articles.PHYSICAL_CONDITION + ", "
+            + Articles.IMAGE + ", " + Articles.LOAN_DURATIONS
+            + " FROM " + Articles.TABLE
+            + " WHERE " + Articles.CONDOMINIUM_ID + " = ? AND " + Articles.DELETED + " = 0"
+            + " AND " + normalized(Articles.NAME) + " LIKE ? ESCAPE '\\'"
+            + " AND " + Articles.LENDING_USER + " IN (SELECT " + Users.ID + " FROM " + Users.TABLE
+            + " WHERE " + Users.STATE + " = 'active')"
+            + " ORDER BY rowid DESC";
 
     private final DatabaseDriver databaseDriver;
     private final SessionRepository sessionRepository;
@@ -39,9 +52,13 @@ public class SqliteItemRepository implements ItemRepository {
     }
 
     @Override
-    public List<Item> getAllItemsByCondominiumId(String condominiumId) {
+    public List<Item> getAllItemsByCondominiumId(String condominiumId, String query) {
+        String needle = Normalizer.normalize(query.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        String pattern = "%" + needle.toLowerCase(Locale.ROOT)
+                .replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
         List<Item> items = new ArrayList<>();
-        try (Cursor cursor = databaseDriver.getReadableDatabase().rawQuery(getAllItemsByCondominiumId, new String[]{condominiumId})) {
+        try (Cursor cursor = databaseDriver.getReadableDatabase().rawQuery(getAllItemsByCondominiumId,
+                new String[]{condominiumId, pattern})) {
             while (cursor.moveToNext()) {
                 List<String> offered = new ArrayList<>();
                 for (String index : cursor.getString(8).split(",")) offered.add(durations.get(Integer.parseInt(index)));
@@ -67,23 +84,33 @@ public class SqliteItemRepository implements ItemRepository {
         String id = UUID.randomUUID().toString();
         ItemPayload stored = withStoredImage(payload);
         ContentValues values = toValues(stored);
-        values.put("article_id", id);
-        values.put("condominium_id", condominiumId);
-        values.put("lending_user", sessionRepository.getUserId());
-        databaseDriver.getWritableDatabase().insertOrThrow("articles", null, values);
+        values.put(Articles.ID, id);
+        values.put(Articles.CONDOMINIUM_ID, condominiumId);
+        values.put(Articles.LENDING_USER, sessionRepository.getUserId());
+        databaseDriver.getWritableDatabase().insertOrThrow(Articles.TABLE, null, values);
         return new Item(id, sessionRepository.getUserId(), condominiumId, ItemAvailability.AVAILABLE, stored);
     }
 
     @Override
     public Item modifyItem(Item item, ItemPayload payload) {
         ItemPayload stored = withStoredImage(payload);
-        databaseDriver.getWritableDatabase().update("articles", toValues(stored), "article_id = ?", new String[]{item.id()});
+        databaseDriver.getWritableDatabase().update(Articles.TABLE, toValues(stored), Articles.ID + " = ?", new String[]{item.id()});
         return new Item(item.id(), item.ownerId(), item.condominiumId(), item.availability(), stored);
     }
 
     @Override
     public void deleteItem(Item item) {
-        databaseDriver.getWritableDatabase().execSQL("UPDATE articles SET deleted = 1 WHERE article_id = ?", new Object[]{item.id()});
+        ContentValues values = new ContentValues();
+        values.put(Articles.DELETED, 1);
+        databaseDriver.getWritableDatabase().update(Articles.TABLE, values, Articles.ID + " = ?", new String[]{item.id()});
+    }
+
+    private static String normalized(String column) {
+        String expression = column;
+        for (int i = 0; i < ACCENTED.length(); i++) {
+            expression = "REPLACE(" + expression + ", '" + ACCENTED.charAt(i) + "', '" + PLAIN.charAt(i) + "')";
+        }
+        return "LOWER(" + expression + ")";
     }
 
     private ItemPayload withStoredImage(ItemPayload payload) {
@@ -97,12 +124,12 @@ public class SqliteItemRepository implements ItemRepository {
             if (durations.contains(duration)) offered.add(String.valueOf(durations.indexOf(duration)));
         }
         ContentValues values = new ContentValues();
-        values.put("name", payload.getName().trim());
-        values.put("category", Math.max(0, categories.indexOf(payload.getCategory())));
-        values.put("description", payload.getDescription().trim());
-        values.put("physical_condition", Math.max(0, conditions.indexOf(payload.getPhysicalCondition())));
-        values.put("image", payload.getImageUri());
-        values.put("loan_durations", TextUtils.join(",", offered));
+        values.put(Articles.NAME, payload.getName().trim());
+        values.put(Articles.CATEGORY, Math.max(0, categories.indexOf(payload.getCategory())));
+        values.put(Articles.DESCRIPTION, payload.getDescription().trim());
+        values.put(Articles.PHYSICAL_CONDITION, Math.max(0, conditions.indexOf(payload.getPhysicalCondition())));
+        values.put(Articles.IMAGE, payload.getImageUri());
+        values.put(Articles.LOAN_DURATIONS, TextUtils.join(",", offered));
         return values;
     }
 }

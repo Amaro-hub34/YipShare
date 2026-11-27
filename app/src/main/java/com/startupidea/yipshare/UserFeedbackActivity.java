@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.startupidea.yipshare.user.SqliteUserRepository;
+import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.user.UserService;
 import com.startupidea.yipshare.utils.FeedbackSectionUtil;
 import com.startupidea.yipshare.utils.TaskUtil;
@@ -23,10 +24,10 @@ import java.util.Locale;
 
 public class UserFeedbackActivity extends AppCompatActivity {
 
-    private static final String EXTRA_USER_ID = "com.startupidea.yipshare.extra.USER_ID";
-
-    public static Intent intentFor(Context context, String userId) {
-        return new Intent(context, UserFeedbackActivity.class).putExtra(EXTRA_USER_ID, userId);
+    public static Intent intentFor(Context context, User user) {
+        Intent intent = new Intent(context, UserFeedbackActivity.class);
+        user.putInto(intent);
+        return intent;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class UserFeedbackActivity extends AppCompatActivity {
         });
         findViewById(R.id.btn_regresar).setOnClickListener(v -> finish());
 
-        String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+        String userId = User.fromIntent(getIntent()).id();
         UserService userService = new UserService(new SqliteUserRepository(this));
         TaskUtil.run(this, () -> userService.getUserProfile(userId), profile -> {
             ((TextView) findViewById(R.id.tv_titulo_pantalla)).setText(profile.username());

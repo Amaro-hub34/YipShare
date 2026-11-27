@@ -29,10 +29,12 @@ public class ItemServiceTest {
 
     private final List<Item> stored = new ArrayList<>();
     private Item deleted;
+    private String lastQuery;
 
     private final ItemService service = new ItemService(new ItemRepository() {
         @Override
-        public List<Item> getAllItemsByCondominiumId(String condominiumId) {
+        public List<Item> getAllItemsByCondominiumId(String condominiumId, String query) {
+            lastQuery = query;
             List<Item> inCondominium = new ArrayList<>();
             for (Item item : stored) {
                 if (item.condominiumId().equals(condominiumId)) inCondominium.add(item);
@@ -118,14 +120,14 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void filtersOnlyOwnItemsByNameIgnoringCase() {
+    public void filtersOnlyOwnItemsAndForwardsSearchToRepository() {
         Item drill = item("1", OWNER, ItemAvailability.AVAILABLE, "Power Drill");
         Item ladder = item("2", OWNER, ItemAvailability.AVAILABLE, "Ladder");
         stored.addAll(Arrays.asList(drill, ladder, item("3", "other", ItemAvailability.AVAILABLE, "Drill")));
-        List<Item> items = service.getAllItems(CONDO);
+        List<Item> items = service.getAllItems(CONDO, " dRi ");
 
-        assertEquals(Collections.singletonList(drill), service.filterMyItems(items, OWNER, " dRi "));
-        assertEquals(Arrays.asList(drill, ladder), service.filterMyItems(items, OWNER, ""));
+        assertEquals(" dRi ", lastQuery);
+        assertEquals(Arrays.asList(drill, ladder), service.filterMyItems(items, OWNER));
     }
 
     @Test
@@ -136,8 +138,8 @@ public class ItemServiceTest {
         Item elsewhere = new Item("4", "other", "another", ItemAvailability.AVAILABLE, payload("Bike", DESCRIPTION, IMAGE, DURATIONS));
         stored.addAll(Arrays.asList(mine, free, lent, elsewhere));
 
-        assertEquals(Collections.singletonList(free), service.filterAvailableItems(service.getAllItems(CONDO), OWNER, ""));
-        assertTrue(service.getAllItems(null).isEmpty());
+        assertEquals(Collections.singletonList(free), service.filterAvailableItems(service.getAllItems(CONDO, ""), OWNER));
+        assertTrue(service.getAllItems(null, "").isEmpty());
     }
 
     @Test

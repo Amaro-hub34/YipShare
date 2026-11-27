@@ -6,6 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseContract.Articles;
+import com.startupidea.yipshare.database.DatabaseContract.Loans;
+import com.startupidea.yipshare.database.DatabaseContract.ReportEvidences;
+import com.startupidea.yipshare.database.DatabaseContract.Reports;
+import com.startupidea.yipshare.database.DatabaseContract.Reviews;
+import com.startupidea.yipshare.database.DatabaseContract.Users;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.ConflictException;
 import com.startupidea.yipshare.user.SessionRepository;
@@ -20,39 +26,46 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
     private static final int RATING_SCALE = 10;
 
     private static final String getAllReviewsByUserId
-            = "SELECT author.username, review.review_text, review.rating FROM reviews review"
-            + " JOIN users author ON author.user_id = review.author_id"
-            + " WHERE review.user_id = ? ORDER BY review.rowid DESC";
+            = "SELECT w." + Users.USERNAME + ", r." + Reviews.REVIEW_TEXT + ", r." + Reviews.RATING
+            + " FROM " + Reviews.TABLE + " r"
+            + " JOIN " + Users.TABLE + " w ON w." + Users.ID + " = r." + Reviews.AUTHOR_ID
+            + " WHERE r." + Reviews.USER_ID + " = ? ORDER BY r.rowid DESC";
 
     private static final String getAllReportsByUserId
-            = "SELECT report_text, state FROM reports WHERE user_id = ? ORDER BY rowid DESC";
+            = "SELECT " + Reports.REPORT_TEXT + ", " + Reports.STATE + " FROM " + Reports.TABLE
+            + " WHERE " + Reports.USER_ID + " = ? ORDER BY rowid DESC";
 
     private static final String getAllReviewsByCondominiumId
-            = "SELECT author.username || ' → ' || reviewed.username || ' · ' || article.name, review.review_text, review.rating"
-            + " FROM reviews review"
-            + " JOIN users author ON author.user_id = review.author_id"
-            + " JOIN users reviewed ON reviewed.user_id = review.user_id"
-            + " JOIN loans loan ON loan.loan_id = review.loan_id"
-            + " JOIN articles article ON article.article_id = loan.article_id"
-            + " WHERE article.condominium_id = ? ORDER BY review.rowid DESC";
+            = "SELECT w." + Users.USERNAME + " || ' → ' || t." + Users.USERNAME + " || ' · ' || a." + Articles.NAME + ","
+            + " r." + Reviews.REVIEW_TEXT + ", r." + Reviews.RATING
+            + " FROM " + Reviews.TABLE + " r"
+            + " JOIN " + Users.TABLE + " w ON w." + Users.ID + " = r." + Reviews.AUTHOR_ID
+            + " JOIN " + Users.TABLE + " t ON t." + Users.ID + " = r." + Reviews.USER_ID
+            + " JOIN " + Loans.TABLE + " l ON l." + Loans.ID + " = r." + Reviews.LOAN_ID
+            + " JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " WHERE a." + Articles.CONDOMINIUM_ID + " = ? ORDER BY r.rowid DESC";
 
     private static final String getAllReportsByCondominiumId
-            = "SELECT report.report_id, author.username || ' → ' || reported.username || ': ' || report.report_text, report.state"
-            + " FROM reports report"
-            + " JOIN users author ON author.user_id = report.author_id"
-            + " JOIN users reported ON reported.user_id = report.user_id"
-            + " JOIN loans loan ON loan.loan_id = report.loan_id"
-            + " JOIN articles article ON article.article_id = loan.article_id"
-            + " WHERE article.condominium_id = ? ORDER BY report.rowid DESC";
+            = "SELECT r." + Reports.ID + ", w." + Users.USERNAME + " || ' → ' || t." + Users.USERNAME + " || ': ' || r." + Reports.REPORT_TEXT + ","
+            + " r." + Reports.STATE
+            + " FROM " + Reports.TABLE + " r"
+            + " JOIN " + Users.TABLE + " w ON w." + Users.ID + " = r." + Reports.AUTHOR_ID
+            + " JOIN " + Users.TABLE + " t ON t." + Users.ID + " = r." + Reports.USER_ID
+            + " JOIN " + Loans.TABLE + " l ON l." + Loans.ID + " = r." + Reports.LOAN_ID
+            + " JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " WHERE a." + Articles.CONDOMINIUM_ID + " = ? ORDER BY r.rowid DESC";
 
     private static final String getOtherUserByLoanId
-            = "SELECT CASE WHEN lender_id = ? THEN user_id ELSE lender_id END FROM loans WHERE loan_id = ?";
+            = "SELECT CASE WHEN " + Loans.LENDER_ID + " = ? THEN " + Loans.USER_ID + " ELSE " + Loans.LENDER_ID + " END"
+            + " FROM " + Loans.TABLE + " WHERE " + Loans.ID + " = ?";
 
     private static final String getFeedbackByAuthor
-            = "SELECT 1 FROM %s WHERE loan_id = ? AND author_id = ?";
+            = "SELECT 1 FROM %s WHERE " + Reviews.LOAN_ID + " = ? AND " + Reviews.AUTHOR_ID + " = ?";
 
     private static final String updateComputedRating
-            = "UPDATE users SET computed_rating = (SELECT CAST(AVG(rating) AS INTEGER) FROM reviews WHERE user_id = ?) WHERE user_id = ?";
+            = "UPDATE " + Users.TABLE + " SET " + Users.COMPUTED_RATING
+            + " = (SELECT CAST(AVG(" + Reviews.RATING + ") AS INTEGER) FROM " + Reviews.TABLE + " WHERE " + Reviews.USER_ID + " = ?)"
+            + " WHERE " + Users.ID + " = ?";
 
     private final DatabaseDriver databaseDriver;
     private final SessionRepository sessionRepository;
@@ -81,20 +94,20 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
     @Override
     public void createReview(String loanId, int stars, String text) {
         String authorId = sessionRepository.getUserId();
-        if (exists("reviews", loanId, authorId)) throw new ConflictException("User already reviewed this loan", R.string.error_ya_calificaste);
+        if (exists(Reviews.TABLE, loanId, authorId)) throw new ConflictException("User already reviewed this loan", R.string.error_ya_calificaste);
         String userId = otherUserOf(loanId, authorId);
 
         SQLiteDatabase db = databaseDriver.getWritableDatabase();
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put("review_id", UUID.randomUUID().toString());
-            values.put("loan_id", loanId);
-            values.put("author_id", authorId);
-            values.put("user_id", userId);
-            values.put("review_text", text);
-            values.put("rating", stars * RATING_SCALE);
-            db.insertOrThrow("reviews", null, values);
+            values.put(Reviews.ID, UUID.randomUUID().toString());
+            values.put(Reviews.LOAN_ID, loanId);
+            values.put(Reviews.AUTHOR_ID, authorId);
+            values.put(Reviews.USER_ID, userId);
+            values.put(Reviews.REVIEW_TEXT, text);
+            values.put(Reviews.RATING, stars * RATING_SCALE);
+            db.insertOrThrow(Reviews.TABLE, null, values);
             db.execSQL(updateComputedRating, new Object[]{userId, userId});
             db.setTransactionSuccessful();
         } finally {
@@ -105,7 +118,7 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
     @Override
     public void createReport(String loanId, String text, List<String> imageUris) {
         String authorId = sessionRepository.getUserId();
-        if (exists("reports", loanId, authorId)) throw new ConflictException("User already reported this loan", R.string.error_ya_reportado);
+        if (exists(Reports.TABLE, loanId, authorId)) throw new ConflictException("User already reported this loan", R.string.error_ya_reportado);
         List<String> images = new ArrayList<>();
         for (String imageUri : imageUris) images.add(ImageFileUtil.save(context, imageUri));
 
@@ -114,19 +127,19 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put("report_id", reportId);
-            values.put("loan_id", loanId);
-            values.put("author_id", authorId);
-            values.put("user_id", otherUserOf(loanId, authorId));
-            values.put("report_text", text);
-            values.put("state", ReportState.PENDING.name());
-            db.insertOrThrow("reports", null, values);
+            values.put(Reports.ID, reportId);
+            values.put(Reports.LOAN_ID, loanId);
+            values.put(Reports.AUTHOR_ID, authorId);
+            values.put(Reports.USER_ID, otherUserOf(loanId, authorId));
+            values.put(Reports.REPORT_TEXT, text);
+            values.put(Reports.STATE, ReportState.PENDING.name());
+            db.insertOrThrow(Reports.TABLE, null, values);
             for (String image : images) {
                 ContentValues evidence = new ContentValues();
-                evidence.put("report_evidence_id", UUID.randomUUID().toString());
-                evidence.put("report_id", reportId);
-                evidence.put("image", image);
-                db.insertOrThrow("report_evidences", null, evidence);
+                evidence.put(ReportEvidences.ID, UUID.randomUUID().toString());
+                evidence.put(ReportEvidences.REPORT_ID, reportId);
+                evidence.put(ReportEvidences.IMAGE, image);
+                db.insertOrThrow(ReportEvidences.TABLE, null, evidence);
             }
             db.setTransactionSuccessful();
         } finally {
@@ -152,7 +165,9 @@ public class SqliteFeedbackRepository implements FeedbackRepository {
 
     @Override
     public void modifyReportState(String condominiumId, String reportId, ReportState state) {
-        databaseDriver.getWritableDatabase().execSQL("UPDATE reports SET state = ? WHERE report_id = ?", new Object[]{state.name(), reportId});
+        ContentValues values = new ContentValues();
+        values.put(Reports.STATE, state.name());
+        databaseDriver.getWritableDatabase().update(Reports.TABLE, values, Reports.ID + " = ?", new String[]{reportId});
     }
 
     private List<Review> readReviews(String query, String id) {

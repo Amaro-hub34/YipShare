@@ -1,8 +1,10 @@
 package com.startupidea.yipshare.notification;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.startupidea.yipshare.database.DatabaseContract.Notifications;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.user.SessionRepository;
 
@@ -12,7 +14,8 @@ import java.util.List;
 public class SqliteNotificationRepository implements NotificationRepository {
 
     private static final String getAllNotificationsByUserId
-            = "SELECT notification_id, header, body, is_read FROM notifications WHERE user_id = ? ORDER BY rowid DESC";
+            = "SELECT " + Notifications.ID + ", " + Notifications.HEADER + ", " + Notifications.BODY + ", " + Notifications.IS_READ
+            + " FROM " + Notifications.TABLE + " WHERE " + Notifications.USER_ID + " = ? ORDER BY rowid DESC";
 
     private final DatabaseDriver databaseDriver;
     private final SessionRepository sessionRepository;
@@ -36,11 +39,13 @@ public class SqliteNotificationRepository implements NotificationRepository {
 
     @Override
     public void markAsRead(String id) {
-        databaseDriver.getWritableDatabase().execSQL("UPDATE notifications SET is_read = 1 WHERE notification_id = ?", new Object[]{id});
+        ContentValues values = new ContentValues();
+        values.put(Notifications.IS_READ, 1);
+        databaseDriver.getWritableDatabase().update(Notifications.TABLE, values, Notifications.ID + " = ?", new String[]{id});
     }
 
     @Override
     public void deleteNotification(String id) {
-        databaseDriver.getWritableDatabase().delete("notifications", "notification_id = ?", new String[]{id});
+        databaseDriver.getWritableDatabase().delete(Notifications.TABLE, Notifications.ID + " = ?", new String[]{id});
     }
 }

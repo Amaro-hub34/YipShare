@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ItemRepository {
 
-    List<Item> getAllItemsByCondominiumId(String condominiumId);
+    List<Item> getAllItemsByCondominiumId(String condominiumId, String query);
 
     Item createItem(String condominiumId, ItemPayload payload);
 

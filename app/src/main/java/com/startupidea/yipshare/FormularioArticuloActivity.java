@@ -3,6 +3,7 @@ package com.startupidea.yipshare;
 import com.startupidea.yipshare.animation_yipshare.LoadingOverlay;
 import com.startupidea.yipshare.error.BadRequestException;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,7 +26,9 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.constraintlayout.widget.Guideline;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -39,8 +42,10 @@ import com.startupidea.yipshare.item.ItemField;
 import com.startupidea.yipshare.item.ItemPayload;
 import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.utils.ImageFileUtil;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +53,7 @@ import java.util.Set;
 public class FormularioArticuloActivity extends AppCompatActivity {
 
     private static final String KEY_IMAGE_URI = "image_uri";
+    private static final String KEY_CAMERA_FILE = "camera_file";
     private static final int DURATION_ID_BASE = 1000;
     private static final int PREVIEW_MAX_SIZE_PX = 1080;
 
@@ -57,6 +63,8 @@ public class FormularioArticuloActivity extends AppCompatActivity {
             uri -> {
                 if (uri != null) showImage(uri);
             });
+    private final ActivityResultLauncher<Uri> camera = registerForActivityResult(
+            new ActivityResultContracts.TakePicture(), this::onPictureTaken);
 
     private ItemService itemService;
     private String userId;
@@ -70,6 +78,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
     private TextView durationErrorLabel;
     private TextView imageErrorLabel;
     private Uri imageUri;
+    private File cameraFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,12 +101,14 @@ public class FormularioArticuloActivity extends AppCompatActivity {
         editingItem = Item.fromIntent(getIntent());
 
         addDurationBoxes();
-        findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> openGallery());
+        findViewById(R.id.btn_cambiar_imagen).setOnClickListener(v -> chooseImageSource());
         Button mainButton = findViewById(R.id.btn_accion_principal);
         mainButton.setOnClickListener(v -> tryPostItem());
         if (editingItem != null) mainButton.setText(R.string.btn_guardar_cambios);
 
         if (savedInstanceState != null) {
+            String savedCameraFile = savedInstanceState.getString(KEY_CAMERA_FILE);
+            if (savedCameraFile != null) cameraFile = new File(savedCameraFile);
             String savedUri = savedInstanceState.getString(KEY_IMAGE_URI);
             if (savedUri != null) showImage(Uri.parse(savedUri));
         } else if (editingItem != null) {
@@ -140,6 +151,7 @@ public class FormularioArticuloActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (imageUri != null) outState.putString(KEY_IMAGE_URI, imageUri.toString());
+        if (cameraFile != null) outState.putString(KEY_CAMERA_FILE, cameraFile.getPath());
     }
 
     private void addDurationBoxes() {
@@ -158,6 +170,35 @@ public class FormularioArticuloActivity extends AppCompatActivity {
             grid.addView(box, params);
             durationBoxes.add(box);
         }
+    }
+
+    private void chooseImageSource() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.elegir_origen_imagen)
+                .setItems(new CharSequence[]{getString(R.string.opcion_galeria), getString(R.string.opcion_camara)},
+                        (dialog, which) -> {
+                            if (which == 0) openGallery();
+                            else openCamera();
+                        })
+                .setNegativeButton(R.string.opcion_cancelar, null)
+                .show();
+    }
+
+    private void openCamera() {
+        try {
+            cameraFile = ImageFileUtil.createCameraFile(this);
+            camera.launch(FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", cameraFile));
+        } catch (BadRequestException e) {
+            showImageError(e.getMessageRes());
+        } catch (ActivityNotFoundException e) {
+            cameraFile.delete();
+            Toast.makeText(this, R.string.error_sin_camara, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onPictureTaken(boolean taken) {
+        if (taken) showImage(Uri.fromFile(cameraFile));
+        else cameraFile.delete();
     }
 
     private void openGallery() {

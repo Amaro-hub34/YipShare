@@ -404,4 +404,8 @@
     <string name="notif_prestamo_rechazado_cuerpo">%1$s rechazó tu solicitud de %2$s</string>
     <string name="notif_union_aceptada">Solicitud aceptada</string>
     <string name="notif_union_aceptada_cuerpo">Ya eres miembro de %1$s</string>
+    <string name="elegir_origen_imagen">Origen de la imagen</string>
+    <string name="opcion_galeria">Galería</string>
+    <string name="opcion_camara">Cámara</string>
+    <string name="error_sin_camara">No hay una app de cámara disponible</string>
 </resources>

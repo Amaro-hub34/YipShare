@@ -8,16 +8,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.condominium.JoinRequest;
 import com.startupidea.yipshare.utils.PhoneUtil;
 
-import java.util.List;
 import java.util.Locale;
 
-public class JoinRequestAdapter extends RecyclerView.Adapter<JoinRequestAdapter.JoinRequestViewHolder> {
+public class JoinRequestAdapter extends ListAdapter<JoinRequest, JoinRequestAdapter.JoinRequestViewHolder> {
 
     public interface OnJoinRequestAction {
         void onAccept(JoinRequest request);
@@ -27,11 +27,10 @@ public class JoinRequestAdapter extends RecyclerView.Adapter<JoinRequestAdapter.
         void onRequesterClick(JoinRequest request);
     }
 
-    private final List<JoinRequest> requests;
     private final OnJoinRequestAction listener;
 
-    public JoinRequestAdapter(List<JoinRequest> requests, OnJoinRequestAction listener) {
-        this.requests = requests;
+    public JoinRequestAdapter(OnJoinRequestAction listener) {
+        super(new RecordDiff<>(request -> request.userId() + request.condominiumId()));
         this.listener = listener;
     }
 
@@ -44,7 +43,7 @@ public class JoinRequestAdapter extends RecyclerView.Adapter<JoinRequestAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull JoinRequestViewHolder holder, int position) {
-        JoinRequest request = requests.get(position);
+        JoinRequest request = getItem(position);
         Context context = holder.itemView.getContext();
         holder.messageLabel.setText(context.getString(R.string.notif_quiere_unirse, request.condominiumName()));
         holder.requesterLabel.setText(request.username());
@@ -57,11 +56,6 @@ public class JoinRequestAdapter extends RecyclerView.Adapter<JoinRequestAdapter.
         holder.requesterArea.setOnClickListener(v -> listener.onRequesterClick(request));
         holder.acceptButton.setOnClickListener(v -> listener.onAccept(request));
         holder.rejectButton.setOnClickListener(v -> listener.onReject(request));
-    }
-
-    @Override
-    public int getItemCount() {
-        return requests.size();
     }
 
     static class JoinRequestViewHolder extends RecyclerView.ViewHolder {

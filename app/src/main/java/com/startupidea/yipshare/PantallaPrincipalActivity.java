@@ -37,7 +37,6 @@ import com.startupidea.yipshare.condominium.CondominiumMembership;
 import com.startupidea.yipshare.condominium.CondominiumService;
 import com.startupidea.yipshare.error.AppException;
 import com.startupidea.yipshare.item.SqliteItemRepository;
-import com.startupidea.yipshare.item.Item;
 import com.startupidea.yipshare.item.ItemService;
 import com.startupidea.yipshare.notification.SqliteNotificationRepository;
 import com.startupidea.yipshare.notification.NotificationService;
@@ -56,9 +55,8 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
     private SessionRepository session;
     private String userId;
     private List<CondominiumMembership> memberships = new ArrayList<>();
-    private List<Item> items = new ArrayList<>();
-    private RecyclerView myItemsList;
-    private RecyclerView availableItemsList;
+    private final ArticuloAdapter myItemsAdapter = new ArticuloAdapter();
+    private final ArticuloAdapter availableItemsAdapter = new ArticuloAdapter();
     private EditText searchField;
 
     @Override
@@ -97,9 +95,8 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
         userService = new UserService(new SqliteUserRepository(this));
         userId = session.getUserId();
         showGreeting();
-        myItemsList = findViewById(R.id.rv_mis_articulos);
-
-        availableItemsList = findViewById(R.id.rv_articulos_disponibles);
+        ((RecyclerView) findViewById(R.id.rv_mis_articulos)).setAdapter(myItemsAdapter);
+        ((RecyclerView) findViewById(R.id.rv_articulos_disponibles)).setAdapter(availableItemsAdapter);
         searchField = findViewById(R.id.et_buscar);
         searchField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -112,7 +109,7 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                showItems();
+                loadItems();
             }
         });
 
@@ -187,16 +184,12 @@ public class PantallaPrincipalActivity extends AppCompatActivity {
 
     private void loadItems() {
         String condominiumId = session.getCondominiumId();
-        TaskUtil.run(this, () -> itemService.getAllItems(condominiumId), loaded -> {
-            items = loaded;
-            showItems();
-        }, this::showError);
-    }
-
-    private void showItems() {
         String query = searchField.getText().toString();
-        myItemsList.setAdapter(new ArticuloAdapter(itemService.filterMyItems(items, userId, query)));
-        availableItemsList.setAdapter(new ArticuloAdapter(itemService.filterAvailableItems(items, userId, query)));
+        TaskUtil.run(this, () -> itemService.getAllItems(condominiumId, query), loaded -> {
+            if (!query.equals(searchField.getText().toString())) return;
+            myItemsAdapter.submitList(itemService.filterMyItems(loaded, userId));
+            availableItemsAdapter.submitList(itemService.filterAvailableItems(loaded, userId));
+        }, this::showError);
     }
 
     private void showError(AppException e) {

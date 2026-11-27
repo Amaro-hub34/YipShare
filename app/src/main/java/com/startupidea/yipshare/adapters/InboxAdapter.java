@@ -6,14 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.notification.Notification;
 
-import java.util.List;
-
-public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHolder> {
+public class InboxAdapter extends ListAdapter<Notification, InboxAdapter.InboxViewHolder> {
 
     public interface OnNotificationAction {
         void onRead(Notification notification);
@@ -21,11 +20,10 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         void onDelete(Notification notification);
     }
 
-    private final List<Notification> notifications;
     private final OnNotificationAction listener;
 
-    public InboxAdapter(List<Notification> notifications, OnNotificationAction listener) {
-        this.notifications = notifications;
+    public InboxAdapter(OnNotificationAction listener) {
+        super(new RecordDiff<>(Notification::id));
         this.listener = listener;
     }
 
@@ -38,7 +36,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
 
     @Override
     public void onBindViewHolder(@NonNull InboxViewHolder holder, int position) {
-        Notification notification = notifications.get(position);
+        Notification notification = getItem(position);
         holder.statusLabel.setText(notification.read() ? R.string.aviso_leido : R.string.aviso_nuevo);
         holder.statusLabel.setBackgroundResource(
                 notification.read() ? R.drawable.bg_badge_disponible : R.drawable.bg_badge_uso);
@@ -49,11 +47,6 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
             listener.onDelete(notification);
             return true;
         });
-    }
-
-    @Override
-    public int getItemCount() {
-        return notifications.size();
     }
 
     static class InboxViewHolder extends RecyclerView.ViewHolder {

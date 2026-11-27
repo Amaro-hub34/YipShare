@@ -7,19 +7,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.feedback.Review;
 
-import java.util.List;
+public class ReviewAdapter extends ListAdapter<Review, ReviewAdapter.ReviewViewHolder> {
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
-
-    private final List<Review> reviews;
-
-    public ReviewAdapter(List<Review> reviews) {
-        this.reviews = reviews;
+    public ReviewAdapter() {
+        super(new RecordDiff<>(review -> review));
     }
 
     @NonNull
@@ -31,15 +28,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
-        Review review = reviews.get(position);
+        Review review = getItem(position);
         holder.authorLabel.setText(review.authorUsername());
         holder.ratingBar.setRating(review.getRating());
         holder.textLabel.setText(review.text());
-    }
-
-    @Override
-    public int getItemCount() {
-        return reviews.size();
     }
 
     static class ReviewViewHolder extends RecyclerView.ViewHolder {

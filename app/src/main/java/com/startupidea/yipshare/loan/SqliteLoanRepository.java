@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseContract.Articles;
+import com.startupidea.yipshare.database.DatabaseContract.Loans;
+import com.startupidea.yipshare.database.DatabaseContract.Members;
+import com.startupidea.yipshare.database.DatabaseContract.Users;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.BadRequestException;
 import com.startupidea.yipshare.error.ConflictException;
@@ -27,39 +31,45 @@ public class SqliteLoanRepository implements LoanRepository {
     private static final int CODE_LENGTH = 6;
 
     private static final String selectLoan
-            = "SELECT loan.loan_id, article.name, article.description, article.image, other.user_id, other.username,"
-            + " loan.lender_id = ?, loan.start_time, loan.return_time, loan.state, other.phone_number"
-            + " FROM loans loan"
-            + " JOIN articles article ON article.article_id = loan.article_id"
-            + " JOIN users other ON other.user_id = CASE WHEN loan.lender_id = ? THEN loan.user_id ELSE loan.lender_id END";
+            = "SELECT l." + Loans.ID + ", a." + Articles.NAME + ", a." + Articles.DESCRIPTION + ", a." + Articles.IMAGE + ","
+            + " o." + Users.ID + ", o." + Users.USERNAME + ", l." + Loans.LENDER_ID + " = ?, l." + Loans.START_TIME + ","
+            + " l." + Loans.RETURN_TIME + ", l." + Loans.STATE + ", o." + Users.PHONE_NUMBER
+            + " FROM " + Loans.TABLE + " l"
+            + " JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " JOIN " + Users.TABLE + " o ON o." + Users.ID
+            + " = CASE WHEN l." + Loans.LENDER_ID + " = ? THEN l." + Loans.USER_ID + " ELSE l." + Loans.LENDER_ID + " END";
 
     private static final String getAllLoansByCondominiumId
-            = selectLoan + " WHERE article.condominium_id = ? AND (loan.lender_id = ? OR loan.user_id = ?)"
-            + " ORDER BY loan.rowid DESC";
+            = selectLoan + " WHERE a." + Articles.CONDOMINIUM_ID + " = ? AND (l." + Loans.LENDER_ID + " = ? OR l." + Loans.USER_ID + " = ?)"
+            + " ORDER BY l.rowid DESC";
 
-    private static final String getLoanById = selectLoan + " WHERE loan.loan_id = ?";
+    private static final String getLoanById = selectLoan + " WHERE l." + Loans.ID + " = ?";
 
     private static final String getAllLoanRequestsByCondominiumId
-            = "SELECT loan.loan_id, article.name, requester.user_id, requester.username, requester.computed_rating,"
-            + " loan.request_text FROM loans loan"
-            + " JOIN articles article ON article.article_id = loan.article_id"
-            + " JOIN users requester ON requester.user_id = loan.user_id"
-            + " WHERE article.condominium_id = ? AND loan.lender_id = ? AND loan.state = 'PENDING'"
-            + " AND article.deleted = 0 AND requester.state = 'active'"
-            + " ORDER BY loan.rowid";
+            = "SELECT l." + Loans.ID + ", a." + Articles.NAME + ", r." + Users.ID + ", r." + Users.USERNAME + ","
+            + " r." + Users.COMPUTED_RATING + ", l." + Loans.REQUEST_TEXT
+            + " FROM " + Loans.TABLE + " l"
+            + " JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " JOIN " + Users.TABLE + " r ON r." + Users.ID + " = l." + Loans.USER_ID
+            + " WHERE a." + Articles.CONDOMINIUM_ID + " = ? AND l." + Loans.LENDER_ID + " = ? AND l." + Loans.STATE + " = 'PENDING'"
+            + " AND a." + Articles.DELETED + " = 0 AND r." + Users.STATE + " = 'active'"
+            + " ORDER BY l.rowid";
 
     private static final String getArticleForRequest
-            = "SELECT article.lending_user, article.availability,"
-            + " EXISTS (SELECT 1 FROM condominium_members member WHERE member.user_id = ?"
-            + " AND member.condominium_id = article.condominium_id AND member.can_request_loans = 0),"
-            + " EXISTS (SELECT 1 FROM loans loan WHERE loan.article_id = article.article_id AND loan.user_id = ?"
-            + " AND loan.state = 'PENDING')"
-            + " FROM articles article WHERE article.article_id = ? AND article.deleted = 0";
+            = "SELECT a." + Articles.LENDING_USER + ", a." + Articles.AVAILABILITY + ","
+            + " EXISTS (SELECT 1 FROM " + Members.TABLE + " m WHERE m." + Members.USER_ID + " = ?"
+            + " AND m." + Members.CONDOMINIUM_ID + " = a." + Articles.CONDOMINIUM_ID + " AND m." + Members.CAN_REQUEST_LOANS + " = 0),"
+            + " EXISTS (SELECT 1 FROM " + Loans.TABLE + " l WHERE l." + Loans.ARTICLE_ID + " = a." + Articles.ID
+            + " AND l." + Loans.USER_ID + " = ? AND l." + Loans.STATE + " = 'PENDING')"
+            + " FROM " + Articles.TABLE + " a WHERE a." + Articles.ID + " = ? AND a." + Articles.DELETED + " = 0";
 
     private static final String getLoanState
-            = "SELECT loan.state, loan.article_id, loan.user_id, loan.days, loan.code, article.name, lender.username"
-            + " FROM loans loan JOIN articles article ON article.article_id = loan.article_id"
-            + " JOIN users lender ON lender.user_id = loan.lender_id WHERE loan.loan_id = ?";
+            = "SELECT l." + Loans.STATE + ", l." + Loans.ARTICLE_ID + ", l." + Loans.USER_ID + ", l." + Loans.DAYS + ","
+            + " l." + Loans.CODE + ", a." + Articles.NAME + ", d." + Users.USERNAME
+            + " FROM " + Loans.TABLE + " l"
+            + " JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " JOIN " + Users.TABLE + " d ON d." + Users.ID + " = l." + Loans.LENDER_ID
+            + " WHERE l." + Loans.ID + " = ?";
 
     private final DatabaseDriver databaseDriver;
     private final SessionRepository sessionRepository;
@@ -109,13 +119,13 @@ public class SqliteLoanRepository implements LoanRepository {
         }
 
         ContentValues values = new ContentValues();
-        values.put("loan_id", UUID.randomUUID().toString());
-        values.put("article_id", articleId);
-        values.put("lender_id", lenderId);
-        values.put("user_id", userId);
-        values.put("request_text", requestText);
-        values.put("days", days);
-        databaseDriver.getWritableDatabase().insertOrThrow("loans", null, values);
+        values.put(Loans.ID, UUID.randomUUID().toString());
+        values.put(Loans.ARTICLE_ID, articleId);
+        values.put(Loans.LENDER_ID, lenderId);
+        values.put(Loans.USER_ID, userId);
+        values.put(Loans.REQUEST_TEXT, requestText);
+        values.put(Loans.DAYS, days);
+        databaseDriver.getWritableDatabase().insertOrThrow(Loans.TABLE, null, values);
     }
 
     @Override
@@ -135,11 +145,14 @@ public class SqliteLoanRepository implements LoanRepository {
                 lenderName = cursor.getString(6);
             }
 
-            db.execSQL("UPDATE loans SET state = ? WHERE loan_id = ?", new Object[]{answer.name(), loanId});
+            ContentValues values = new ContentValues();
+            values.put(Loans.STATE, answer.name());
+            db.update(Loans.TABLE, values, Loans.ID + " = ?", new String[]{loanId});
             if (answer == LoanStatus.ACCEPTED) {
-                db.execSQL("UPDATE articles SET availability = ? WHERE article_id = ?", new Object[]{ItemAvailability.PENDING.name(), articleId});
-                db.execSQL("UPDATE loans SET state = ? WHERE article_id = ? AND state = ?",
-                        new Object[]{LoanStatus.REJECTED.name(), articleId, LoanStatus.PENDING.name()});
+                modifyAvailability(db, articleId, ItemAvailability.PENDING);
+                values.put(Loans.STATE, LoanStatus.REJECTED.name());
+                db.update(Loans.TABLE, values, Loans.ARTICLE_ID + " = ? AND " + Loans.STATE + " = ?",
+                        new String[]{articleId, LoanStatus.PENDING.name()});
                 databaseDriver.createNotification(borrowerId, context.getString(R.string.notif_prestamo_aceptado),
                         context.getString(R.string.notif_prestamo_aceptado_cuerpo, lenderName, articleName));
             } else {
@@ -156,7 +169,9 @@ public class SqliteLoanRepository implements LoanRepository {
     public String createCode(String loanId) {
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < CODE_LENGTH; i++) code.append(CODE_CHARACTERS.charAt(random.nextInt(CODE_CHARACTERS.length())));
-        databaseDriver.getWritableDatabase().execSQL("UPDATE loans SET code = ? WHERE loan_id = ?", new Object[]{code.toString(), loanId});
+        ContentValues values = new ContentValues();
+        values.put(Loans.CODE, code.toString());
+        databaseDriver.getWritableDatabase().update(Loans.TABLE, values, Loans.ID + " = ?", new String[]{loanId});
         return code.toString();
     }
 
@@ -177,17 +192,20 @@ public class SqliteLoanRepository implements LoanRepository {
                 days = cursor.getInt(3);
             }
 
+            ContentValues values = new ContentValues();
+            values.putNull(Loans.CODE);
             if (status == LoanStatus.ACCEPTED) {
                 Calendar calendar = Calendar.getInstance();
-                String start = toDate(calendar);
+                values.put(Loans.START_TIME, toDate(calendar));
                 calendar.add(Calendar.DAY_OF_MONTH, days);
-                db.execSQL("UPDATE loans SET state = ?, code = NULL, start_time = ?, return_time = ? WHERE loan_id = ?",
-                        new Object[]{LoanStatus.ON_LOAN.name(), start, toDate(calendar), loanId});
-                db.execSQL("UPDATE articles SET availability = ? WHERE article_id = ?", new Object[]{ItemAvailability.NOT_AVAILABLE.name(), articleId});
+                values.put(Loans.RETURN_TIME, toDate(calendar));
+                values.put(Loans.STATE, LoanStatus.ON_LOAN.name());
+                modifyAvailability(db, articleId, ItemAvailability.NOT_AVAILABLE);
             } else {
-                db.execSQL("UPDATE loans SET state = ?, code = NULL WHERE loan_id = ?", new Object[]{LoanStatus.FINISHED.name(), loanId});
-                db.execSQL("UPDATE articles SET availability = ? WHERE article_id = ?", new Object[]{ItemAvailability.AVAILABLE.name(), articleId});
+                values.put(Loans.STATE, LoanStatus.FINISHED.name());
+                modifyAvailability(db, articleId, ItemAvailability.AVAILABLE);
             }
+            db.update(Loans.TABLE, values, Loans.ID + " = ?", new String[]{loanId});
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
@@ -198,6 +216,12 @@ public class SqliteLoanRepository implements LoanRepository {
             cursor.moveToFirst();
             return readLoan(cursor);
         }
+    }
+
+    private static void modifyAvailability(SQLiteDatabase db, String articleId, ItemAvailability availability) {
+        ContentValues values = new ContentValues();
+        values.put(Articles.AVAILABILITY, availability.name());
+        db.update(Articles.TABLE, values, Articles.ID + " = ?", new String[]{articleId});
     }
 
     private static Loan readLoan(Cursor cursor) {

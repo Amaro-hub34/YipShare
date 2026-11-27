@@ -412,4 +412,8 @@
     <string name="notif_prestamo_rechazado_cuerpo">%1$s rejected your request for %2$s</string>
     <string name="notif_union_aceptada">Request accepted</string>
     <string name="notif_union_aceptada_cuerpo">You are now a member of %1$s</string>
+    <string name="elegir_origen_imagen">Image source</string>
+    <string name="opcion_galeria">Gallery</string>
+    <string name="opcion_camara">Camera</string>
+    <string name="error_sin_camara">No camera app is available</string>
 </resources>

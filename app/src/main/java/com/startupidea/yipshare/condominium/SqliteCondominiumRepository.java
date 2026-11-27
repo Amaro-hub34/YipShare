@@ -6,6 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseContract.Articles;
+import com.startupidea.yipshare.database.DatabaseContract.Condominiums;
+import com.startupidea.yipshare.database.DatabaseContract.Loans;
+import com.startupidea.yipshare.database.DatabaseContract.Members;
+import com.startupidea.yipshare.database.DatabaseContract.PendingMembers;
+import com.startupidea.yipshare.database.DatabaseContract.Units;
+import com.startupidea.yipshare.database.DatabaseContract.Users;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.ConflictException;
 import com.startupidea.yipshare.error.ResourceNotFound;
@@ -22,59 +29,60 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
     private static final int SHORT_CODE_LENGTH = 6;
 
     private static final String getCondominiumByCode
-            = "SELECT condominium_id FROM condominiums WHERE short_code = ?";
+            = "SELECT " + Condominiums.ID + " FROM " + Condominiums.TABLE + " WHERE " + Condominiums.SHORT_CODE + " = ?";
 
     private static final String getMembership
-            = "SELECT 1 FROM condominiums WHERE condominium_id = ?2 AND admin_id = ?1"
-            + " UNION SELECT 1 FROM condominium_members WHERE condominium_id = ?2 AND user_id = ?1"
-            + " UNION SELECT 1 FROM pending_condominium_members WHERE condominium_id = ?2 AND user_id = ?1";
+            = "SELECT 1 FROM " + Condominiums.TABLE + " WHERE " + Condominiums.ID + " = ?2 AND " + Condominiums.ADMIN_ID + " = ?1"
+            + " UNION SELECT 1 FROM " + Members.TABLE + " WHERE " + Members.CONDOMINIUM_ID + " = ?2 AND " + Members.USER_ID + " = ?1"
+            + " UNION SELECT 1 FROM " + PendingMembers.TABLE
+            + " WHERE " + PendingMembers.CONDOMINIUM_ID + " = ?2 AND " + PendingMembers.USER_ID + " = ?1";
 
     private static final String getSuggestedUnit
-            = "SELECT condominium_unit_id FROM condominium_units WHERE condominium_id = ?"
-            + " ORDER BY name = ? COLLATE NOCASE DESC, CAST(name AS INTEGER) LIMIT 1";
+            = "SELECT " + Units.ID + " FROM " + Units.TABLE + " WHERE " + Units.CONDOMINIUM_ID + " = ?"
+            + " ORDER BY " + Units.NAME + " = ? COLLATE NOCASE DESC, CAST(" + Units.NAME + " AS INTEGER) LIMIT 1";
 
     private static final String getAllMembershipsByUserId
-            = "SELECT condominium.condominium_id, condominium.name, condominium.admin_id = ?1,"
-            + " (SELECT COUNT(*) FROM loans loan JOIN articles article ON article.article_id = loan.article_id"
-            + " WHERE loan.lender_id = ?1 AND loan.state = 'PENDING' AND article.deleted = 0"
-            + " AND article.condominium_id = condominium.condominium_id)"
-            + " + CASE WHEN condominium.admin_id = ?1 THEN (SELECT COUNT(*) FROM pending_condominium_members pending"
-            + " WHERE pending.condominium_id = condominium.condominium_id) ELSE 0 END,"
-            + " CASE WHEN condominium.admin_id = ?1 THEN condominium.short_code END"
-            + " FROM condominiums condominium"
-            + " WHERE condominium.admin_id = ?1 OR EXISTS (SELECT 1 FROM condominium_members member"
-            + " WHERE member.condominium_id = condominium.condominium_id AND member.user_id = ?1)"
-            + " ORDER BY condominium.name";
+            = "SELECT c." + Condominiums.ID + ", c." + Condominiums.NAME + ", c." + Condominiums.ADMIN_ID + " = ?1,"
+            + " (SELECT COUNT(*) FROM " + Loans.TABLE + " l JOIN " + Articles.TABLE + " a ON a." + Articles.ID + " = l." + Loans.ARTICLE_ID
+            + " WHERE l." + Loans.LENDER_ID + " = ?1 AND l." + Loans.STATE + " = 'PENDING' AND a." + Articles.DELETED + " = 0"
+            + " AND a." + Articles.CONDOMINIUM_ID + " = c." + Condominiums.ID + ")"
+            + " + CASE WHEN c." + Condominiums.ADMIN_ID + " = ?1 THEN (SELECT COUNT(*) FROM " + PendingMembers.TABLE + " p"
+            + " WHERE p." + PendingMembers.CONDOMINIUM_ID + " = c." + Condominiums.ID + ") ELSE 0 END,"
+            + " CASE WHEN c." + Condominiums.ADMIN_ID + " = ?1 THEN c." + Condominiums.SHORT_CODE + " END"
+            + " FROM " + Condominiums.TABLE + " c"
+            + " WHERE c." + Condominiums.ADMIN_ID + " = ?1 OR EXISTS (SELECT 1 FROM " + Members.TABLE + " m"
+            + " WHERE m." + Members.CONDOMINIUM_ID + " = c." + Condominiums.ID + " AND m." + Members.USER_ID + " = ?1)"
+            + " ORDER BY c." + Condominiums.NAME;
 
     private static final String getAllNeighborsByCondominiumId
-            = "SELECT neighbor.user_id, neighbor.username, GROUP_CONCAT(unit.name, ', '), neighbor.phone_number,"
-            + " neighbor.computed_rating, condominium.admin_id = neighbor.user_id, MIN(member.can_request_loans)"
-            + " FROM condominium_members member"
-            + " JOIN users neighbor ON neighbor.user_id = member.user_id"
-            + " JOIN condominium_units unit ON unit.condominium_unit_id = member.condominium_unit_id"
-            + " JOIN condominiums condominium ON condominium.condominium_id = member.condominium_id"
-            + " WHERE member.condominium_id = ? AND neighbor.state = 'active'"
-            + " GROUP BY neighbor.user_id ORDER BY neighbor.username";
+            = "SELECT n." + Users.ID + ", n." + Users.USERNAME + ", GROUP_CONCAT(u." + Units.NAME + ", ', '), n." + Users.PHONE_NUMBER + ","
+            + " n." + Users.COMPUTED_RATING + ", c." + Condominiums.ADMIN_ID + " = n." + Users.ID + ", MIN(m." + Members.CAN_REQUEST_LOANS + ")"
+            + " FROM " + Members.TABLE + " m"
+            + " JOIN " + Users.TABLE + " n ON n." + Users.ID + " = m." + Members.USER_ID
+            + " JOIN " + Units.TABLE + " u ON u." + Units.ID + " = m." + Members.UNIT_ID
+            + " JOIN " + Condominiums.TABLE + " c ON c." + Condominiums.ID + " = m." + Members.CONDOMINIUM_ID
+            + " WHERE m." + Members.CONDOMINIUM_ID + " = ? AND n." + Users.STATE + " = 'active'"
+            + " GROUP BY n." + Users.ID + " ORDER BY n." + Users.USERNAME;
 
     private static final String getAllJoinRequestsByCondominiumId
-            = "SELECT requester.user_id, requester.username,"
-            + " TRIM(requester.name || ' ' || requester.paternal_surname || ' ' || IFNULL(requester.maternal_surname, '')),"
-            + " requester.phone_number, pending.unit, pending.suggested_unit_id, requester.computed_rating"
-            + " FROM pending_condominium_members pending"
-            + " JOIN users requester ON requester.user_id = pending.user_id"
-            + " WHERE pending.condominium_id = ? AND requester.state = 'active'"
-            + " ORDER BY requester.username";
+            = "SELECT r." + Users.ID + ", r." + Users.USERNAME + ","
+            + " TRIM(r." + Users.NAME + " || ' ' || r." + Users.PATERNAL_SURNAME + " || ' ' || IFNULL(r." + Users.MATERNAL_SURNAME + ", '')),"
+            + " r." + Users.PHONE_NUMBER + ", p." + PendingMembers.UNIT + ", p." + PendingMembers.SUGGESTED_UNIT_ID + ", r." + Users.COMPUTED_RATING
+            + " FROM " + PendingMembers.TABLE + " p"
+            + " JOIN " + Users.TABLE + " r ON r." + Users.ID + " = p." + PendingMembers.USER_ID
+            + " WHERE p." + PendingMembers.CONDOMINIUM_ID + " = ? AND r." + Users.STATE + " = 'active'"
+            + " ORDER BY r." + Users.USERNAME;
 
     private static final String getCondominiumName
-            = "SELECT name FROM condominiums WHERE condominium_id = ?";
+            = "SELECT " + Condominiums.NAME + " FROM " + Condominiums.TABLE + " WHERE " + Condominiums.ID + " = ?";
 
     private static final String getAllUnitsByCondominiumId
-            = "SELECT condominium_unit_id, name FROM condominium_units WHERE condominium_id = ?"
-            + " ORDER BY CAST(name AS INTEGER), name";
+            = "SELECT " + Units.ID + ", " + Units.NAME + " FROM " + Units.TABLE + " WHERE " + Units.CONDOMINIUM_ID + " = ?"
+            + " ORDER BY CAST(" + Units.NAME + " AS INTEGER), " + Units.NAME;
 
     private static final String getUnitInUse
-            = "SELECT 1 FROM condominium_members WHERE condominium_unit_id = ?1"
-            + " UNION SELECT 1 FROM pending_condominium_members WHERE suggested_unit_id = ?1";
+            = "SELECT 1 FROM " + Members.TABLE + " WHERE " + Members.UNIT_ID + " = ?1"
+            + " UNION SELECT 1 FROM " + PendingMembers.TABLE + " WHERE " + PendingMembers.SUGGESTED_UNIT_ID + " = ?1";
 
     private final DatabaseDriver databaseDriver;
     private final SessionRepository sessionRepository;
@@ -94,21 +102,21 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put("condominium_id", condominiumId);
-            values.put("short_code", generateShortCode(db));
-            values.put("admin_id", sessionRepository.getUserId());
-            values.put("name", payload.name().trim());
-            values.put("street", payload.street().trim());
-            values.put("neighborhood", payload.neighborhood().trim());
-            values.put("postal_code", payload.zipCode());
-            values.put("municipality", payload.municipality().trim());
-            values.put("city", payload.city().trim());
-            values.put("state", payload.state().trim());
-            values.put("deed", payload.deedUri());
-            values.put("minutes", payload.minutesUri());
-            values.put("tax_id", payload.taxIdUri());
-            values.put("identification", payload.identificationUri());
-            db.insertOrThrow("condominiums", null, values);
+            values.put(Condominiums.ID, condominiumId);
+            values.put(Condominiums.SHORT_CODE, generateShortCode(db));
+            values.put(Condominiums.ADMIN_ID, sessionRepository.getUserId());
+            values.put(Condominiums.NAME, payload.name().trim());
+            values.put(Condominiums.STREET, payload.street().trim());
+            values.put(Condominiums.NEIGHBORHOOD, payload.neighborhood().trim());
+            values.put(Condominiums.POSTAL_CODE, payload.zipCode());
+            values.put(Condominiums.MUNICIPALITY, payload.municipality().trim());
+            values.put(Condominiums.CITY, payload.city().trim());
+            values.put(Condominiums.STATE, payload.state().trim());
+            values.put(Condominiums.DEED, payload.deedUri());
+            values.put(Condominiums.MINUTES, payload.minutesUri());
+            values.put(Condominiums.TAX_ID, payload.taxIdUri());
+            values.put(Condominiums.IDENTIFICATION, payload.identificationUri());
+            db.insertOrThrow(Condominiums.TABLE, null, values);
             for (int number = 1; number <= payload.units(); number++) insertUnit(db, condominiumId, String.valueOf(number));
             db.setTransactionSuccessful();
         } finally {
@@ -130,13 +138,13 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         }
 
         ContentValues values = new ContentValues();
-        values.put("user_id", userId);
-        values.put("condominium_id", condominiumId);
-        values.put("unit", unit);
+        values.put(PendingMembers.USER_ID, userId);
+        values.put(PendingMembers.CONDOMINIUM_ID, condominiumId);
+        values.put(PendingMembers.UNIT, unit);
         try (Cursor cursor = db.rawQuery(getSuggestedUnit, new String[]{condominiumId, unit})) {
-            if (cursor.moveToFirst()) values.put("suggested_unit_id", cursor.getString(0));
+            if (cursor.moveToFirst()) values.put(PendingMembers.SUGGESTED_UNIT_ID, cursor.getString(0));
         }
-        db.insertOrThrow("pending_condominium_members", null, values);
+        db.insertOrThrow(PendingMembers.TABLE, null, values);
     }
 
     @Override
@@ -184,10 +192,10 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         try {
             deleteJoinRequest(db, userId, condominiumId);
             ContentValues values = new ContentValues();
-            values.put("user_id", userId);
-            values.put("condominium_id", condominiumId);
-            values.put("condominium_unit_id", unitId);
-            db.insertWithOnConflict("condominium_members", null, values, SQLiteDatabase.CONFLICT_IGNORE);
+            values.put(Members.USER_ID, userId);
+            values.put(Members.CONDOMINIUM_ID, condominiumId);
+            values.put(Members.UNIT_ID, unitId);
+            db.insertWithOnConflict(Members.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
             try (Cursor cursor = db.rawQuery(getCondominiumName, new String[]{condominiumId})) {
                 cursor.moveToFirst();
                 databaseDriver.createNotification(userId, context.getString(R.string.notif_union_aceptada),
@@ -206,9 +214,10 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
 
     @Override
     public void modifyLoanAccess(String userId, String condominiumId, boolean allowed) {
-        databaseDriver.getWritableDatabase().execSQL(
-                "UPDATE condominium_members SET can_request_loans = ? WHERE user_id = ? AND condominium_id = ?",
-                new Object[]{allowed ? 1 : 0, userId, condominiumId});
+        ContentValues values = new ContentValues();
+        values.put(Members.CAN_REQUEST_LOANS, allowed ? 1 : 0);
+        databaseDriver.getWritableDatabase().update(Members.TABLE, values,
+                Members.USER_ID + " = ? AND " + Members.CONDOMINIUM_ID + " = ?", new String[]{userId, condominiumId});
     }
 
     @Override
@@ -227,8 +236,9 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
 
     @Override
     public void modifyUnit(String condominiumId, String unitId, String name) {
-        databaseDriver.getWritableDatabase().execSQL("UPDATE condominium_units SET name = ? WHERE condominium_unit_id = ?",
-                new Object[]{name, unitId});
+        ContentValues values = new ContentValues();
+        values.put(Units.NAME, name);
+        databaseDriver.getWritableDatabase().update(Units.TABLE, values, Units.ID + " = ?", new String[]{unitId});
     }
 
     @Override
@@ -237,20 +247,20 @@ public class SqliteCondominiumRepository implements CondominiumRepository {
         try (Cursor cursor = db.rawQuery(getUnitInUse, new String[]{unitId})) {
             if (cursor.moveToFirst()) throw new ConflictException("Unit has members assigned", R.string.error_unidad_ocupada);
         }
-        db.delete("condominium_units", "condominium_unit_id = ?", new String[]{unitId});
+        db.delete(Units.TABLE, Units.ID + " = ?", new String[]{unitId});
     }
 
     private void deleteJoinRequest(SQLiteDatabase db, String userId, String condominiumId) {
-        int deleted = db.delete("pending_condominium_members", "user_id = ? AND condominium_id = ?", new String[]{userId, condominiumId});
+        int deleted = db.delete(PendingMembers.TABLE, PendingMembers.USER_ID + " = ? AND " + PendingMembers.CONDOMINIUM_ID + " = ?", new String[]{userId, condominiumId});
         if (deleted == 0) throw new ResourceNotFound("Join request was already answered", R.string.error_solicitud_respondida);
     }
 
     private static void insertUnit(SQLiteDatabase db, String condominiumId, String name) {
         ContentValues values = new ContentValues();
-        values.put("condominium_unit_id", UUID.randomUUID().toString());
-        values.put("condominium_id", condominiumId);
-        values.put("name", name);
-        db.insertOrThrow("condominium_units", null, values);
+        values.put(Units.ID, UUID.randomUUID().toString());
+        values.put(Units.CONDOMINIUM_ID, condominiumId);
+        values.put(Units.NAME, name);
+        db.insertOrThrow(Units.TABLE, null, values);
     }
 
     private String generateShortCode(SQLiteDatabase db) {

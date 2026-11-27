@@ -7,15 +7,15 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.loan.LoanRequest;
 
-import java.util.List;
 import java.util.Locale;
 
-public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapter.NotificacionViewHolder> {
+public class NotificacionAdapter extends ListAdapter<LoanRequest, NotificacionAdapter.NotificacionViewHolder> {
 
     public interface OnLoanRequestAction {
         void onAccept(LoanRequest request);
@@ -25,11 +25,10 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
         void onRequesterClick(LoanRequest request);
     }
 
-    private final List<LoanRequest> requests;
     private final OnLoanRequestAction listener;
 
-    public NotificacionAdapter(List<LoanRequest> requests, OnLoanRequestAction listener) {
-        this.requests = requests;
+    public NotificacionAdapter(OnLoanRequestAction listener) {
+        super(new RecordDiff<>(LoanRequest::loanId));
         this.listener = listener;
     }
 
@@ -43,7 +42,7 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificacionViewHolder holder, int position) {
-        LoanRequest request = requests.get(position);
+        LoanRequest request = getItem(position);
         holder.itemNameLabel.setText(request.itemName());
         holder.requesterLabel.setText(request.requesterUsername());
         holder.ratingBar.setRating(request.getRequesterRating());
@@ -54,11 +53,6 @@ public class NotificacionAdapter extends RecyclerView.Adapter<NotificacionAdapte
         holder.ratingRow.setOnClickListener(v -> listener.onRequesterClick(request));
         holder.acceptButton.setOnClickListener(v -> listener.onAccept(request));
         holder.rejectButton.setOnClickListener(v -> listener.onReject(request));
-    }
-
-    @Override
-    public int getItemCount() {
-        return requests.size();
     }
 
     static class NotificacionViewHolder extends RecyclerView.ViewHolder {

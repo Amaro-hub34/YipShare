@@ -40,6 +40,7 @@ import com.startupidea.yipshare.loan.LoanStatus;
 import com.startupidea.yipshare.user.SqliteUserRepository;
 import com.startupidea.yipshare.user.SessionRepository;
 import com.startupidea.yipshare.user.UserService;
+import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.utils.ImagePreviewUtil;
 import com.startupidea.yipshare.utils.PhoneUtil;
 import com.startupidea.yipshare.utils.TaskUtil;
@@ -162,7 +163,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         statusLabel.setBackgroundResource(item.availability().getBadgeRes());
         showOwner(item.ownerId());
         findViewById(R.id.layout_prestamista).setOnClickListener(v ->
-                startActivity(UserFeedbackActivity.intentFor(this, item.ownerId())));
+                startActivity(UserFeedbackActivity.intentFor(this, new User(item.ownerId(), null))));
 
         boolean own = item.isOwnedBy(userId);
         findViewById(R.id.btn_accion_articulo).setVisibility(own ? View.GONE : View.VISIBLE);
@@ -248,7 +249,7 @@ public class DetalleArticuloActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tv_descripcion)).setText(loan.description());
         showOwner(loan.otherUserId());
         findViewById(R.id.layout_prestamista).setOnClickListener(v ->
-                startActivity(UserFeedbackActivity.intentFor(this, loan.otherUserId())));
+                startActivity(UserFeedbackActivity.intentFor(this, new User(loan.otherUserId(), loan.otherUsername()))));
 
         String startDate = loan.startDate() == null ? getString(R.string.sin_iniciar) : loan.startDate();
         TextView datesLabel = findViewById(R.id.tv_fechas_prestamo);

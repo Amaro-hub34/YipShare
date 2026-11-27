@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.startupidea.yipshare.R;
+import com.startupidea.yipshare.database.DatabaseContract.Users;
 import com.startupidea.yipshare.database.DatabaseDriver;
 import com.startupidea.yipshare.error.UnauthorizedException;
 import com.startupidea.yipshare.utils.ImageFileUtil;
@@ -16,20 +17,23 @@ import java.util.UUID;
 public class SqliteUserRepository implements UserRepository {
 
     private static final String getActiveUserByUsername
-            = "SELECT user_id, password_hash FROM users WHERE username = ? AND state = 'active'";
+            = "SELECT " + Users.ID + ", " + Users.PASSWORD_HASH + " FROM " + Users.TABLE
+            + " WHERE " + Users.USERNAME + " = ? AND " + Users.STATE + " = 'active'";
 
     private static final String getUserProfileById
-            = "SELECT user_id, username, name, paternal_surname, maternal_surname, phone_number, email,"
-            + " computed_rating, profile_picture FROM users WHERE user_id = ? AND state = 'active'";
+            = "SELECT " + Users.ID + ", " + Users.USERNAME + ", " + Users.NAME + ", " + Users.PATERNAL_SURNAME + ", "
+            + Users.MATERNAL_SURNAME + ", " + Users.PHONE_NUMBER + ", " + Users.EMAIL + ", "
+            + Users.COMPUTED_RATING + ", " + Users.PROFILE_PICTURE
+            + " FROM " + Users.TABLE + " WHERE " + Users.ID + " = ? AND " + Users.STATE + " = 'active'";
 
     private static final String getPasswordHash
-            = "SELECT password_hash FROM users WHERE user_id = ?";
+            = "SELECT " + Users.PASSWORD_HASH + " FROM " + Users.TABLE + " WHERE " + Users.ID + " = ?";
 
     private static final String getActiveUser
-            = "SELECT 1 FROM users WHERE user_id = ? AND state = 'active'";
+            = "SELECT 1 FROM " + Users.TABLE + " WHERE " + Users.ID + " = ? AND " + Users.STATE + " = 'active'";
 
     private static final String getOtherUserByColumn
-            = "SELECT 1 FROM users WHERE %s = ? AND user_id <> ?";
+            = "SELECT 1 FROM " + Users.TABLE + " WHERE %s = ? AND " + Users.ID + " <> ?";
 
     private final DatabaseDriver databaseDriver;
     private final Context context;
@@ -54,15 +58,15 @@ public class SqliteUserRepository implements UserRepository {
         ensureUnique(id, payload.username(), payload.email(), payload.phoneNumber());
 
         ContentValues values = new ContentValues();
-        values.put("user_id", id);
-        values.put("username", payload.username());
-        values.put("email", payload.email());
-        values.put("phone_number", payload.phoneNumber());
-        values.put("password_hash", PasswordHashUtil.hash(payload.password()));
-        values.put("name", payload.firstNames());
-        values.put("paternal_surname", payload.paternalLastName());
-        values.put("maternal_surname", payload.maternalLastName());
-        databaseDriver.getWritableDatabase().insertOrThrow("users", null, values);
+        values.put(Users.ID, id);
+        values.put(Users.USERNAME, payload.username());
+        values.put(Users.EMAIL, payload.email());
+        values.put(Users.PHONE_NUMBER, payload.phoneNumber());
+        values.put(Users.PASSWORD_HASH, PasswordHashUtil.hash(payload.password()));
+        values.put(Users.NAME, payload.firstNames());
+        values.put(Users.PATERNAL_SURNAME, payload.paternalLastName());
+        values.put(Users.MATERNAL_SURNAME, payload.maternalLastName());
+        databaseDriver.getWritableDatabase().insertOrThrow(Users.TABLE, null, values);
         return new User(id, payload.username());
     }
 
@@ -89,28 +93,28 @@ public class SqliteUserRepository implements UserRepository {
         ensureUnique(id, payload.username(), payload.email(), payload.phoneNumber());
 
         ContentValues values = new ContentValues();
-        values.put("username", payload.username());
-        values.put("name", payload.firstNames());
-        values.put("paternal_surname", payload.paternalLastName());
-        values.put("maternal_surname", payload.maternalLastName());
-        values.put("phone_number", payload.phoneNumber());
-        values.put("email", payload.email());
-        if (newPassword != null) values.put("password_hash", PasswordHashUtil.hash(newPassword));
-        databaseDriver.getWritableDatabase().update("users", values, "user_id = ?", new String[]{id});
+        values.put(Users.USERNAME, payload.username());
+        values.put(Users.NAME, payload.firstNames());
+        values.put(Users.PATERNAL_SURNAME, payload.paternalLastName());
+        values.put(Users.MATERNAL_SURNAME, payload.maternalLastName());
+        values.put(Users.PHONE_NUMBER, payload.phoneNumber());
+        values.put(Users.EMAIL, payload.email());
+        if (newPassword != null) values.put(Users.PASSWORD_HASH, PasswordHashUtil.hash(newPassword));
+        databaseDriver.getWritableDatabase().update(Users.TABLE, values, Users.ID + " = ?", new String[]{id});
     }
 
     @Override
     public void modifyProfilePicture(String id, String imageUri) {
         ContentValues values = new ContentValues();
-        values.put("profile_picture", ImageFileUtil.saveProfilePicture(context, imageUri));
-        databaseDriver.getWritableDatabase().update("users", values, "user_id = ?", new String[]{id});
+        values.put(Users.PROFILE_PICTURE, ImageFileUtil.saveProfilePicture(context, imageUri));
+        databaseDriver.getWritableDatabase().update(Users.TABLE, values, Users.ID + " = ?", new String[]{id});
     }
 
     @Override
     public void deleteUser(String id) {
         ContentValues values = new ContentValues();
-        values.put("state", "deleted");
-        databaseDriver.getWritableDatabase().update("users", values, "user_id = ?", new String[]{id});
+        values.put(Users.STATE, "deleted");
+        databaseDriver.getWritableDatabase().update(Users.TABLE, values, Users.ID + " = ?", new String[]{id});
     }
 
     @Override
@@ -127,9 +131,9 @@ public class SqliteUserRepository implements UserRepository {
     }
 
     private void ensureUnique(String id, String username, String email, String phoneNumber) {
-        if (isTaken("username", username, id)) throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_duplicado);
-        if (isTaken("email", email, id)) throw new InvalidField(RegistrationField.EMAIL, R.string.error_correo_duplicado);
-        if (isTaken("phone_number", phoneNumber, id)) throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_duplicado);
+        if (isTaken(Users.USERNAME, username, id)) throw new InvalidField(RegistrationField.USERNAME, R.string.error_usuario_duplicado);
+        if (isTaken(Users.EMAIL, email, id)) throw new InvalidField(RegistrationField.EMAIL, R.string.error_correo_duplicado);
+        if (isTaken(Users.PHONE_NUMBER, phoneNumber, id)) throw new InvalidField(RegistrationField.PHONE_NUMBER, R.string.error_telefono_duplicado);
     }
 
     private boolean isTaken(String column, String value, String id) {

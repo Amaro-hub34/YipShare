@@ -24,7 +24,7 @@ import android.widget.Toast;
 public class PrestamoActivity extends AppCompatActivity {
 
     private LoanService loanService;
-    private RecyclerView loanList;
+    private final PrestamoAdapter loanAdapter = new PrestamoAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class PrestamoActivity extends AppCompatActivity {
         });
 
         loanService = new LoanService(new SqliteLoanRepository(this));
-        loanList = findViewById(R.id.rv_prestamos);
+        ((RecyclerView) findViewById(R.id.rv_prestamos)).setAdapter(loanAdapter);
 
         findViewById(R.id.nav_inicio).setOnClickListener(v ->
                 startActivity(new Intent(PrestamoActivity.this, PantallaPrincipalActivity.class)));
@@ -74,7 +74,7 @@ public class PrestamoActivity extends AppCompatActivity {
         super.onResume();
         SessionRepository session = new SessionRepository(this);
         TaskUtil.run(this, () -> loanService.getAllLoansByUserId(session.getUserId(), session.getCondominiumId()),
-                loans -> loanList.setAdapter(new PrestamoAdapter(loans)),
+                loanAdapter::submitList,
                 e -> Toast.makeText(this, e.getMessageRes(), Toast.LENGTH_SHORT).show());
     }
 }

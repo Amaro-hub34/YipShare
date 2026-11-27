@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public final class ItemPayload implements Serializable {
 
@@ -53,5 +54,19 @@ public final class ItemPayload implements Serializable {
 
     public List<String> getLoanDurations() {
         return loanDurations;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof ItemPayload payload)) return false;
+        return Objects.equals(name, payload.name) && Objects.equals(category, payload.category)
+                && Objects.equals(description, payload.description) && Objects.equals(physicalCondition, payload.physicalCondition)
+                && Objects.equals(imageUri, payload.imageUri) && loanDurations.equals(payload.loanDurations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, category, description, physicalCondition, imageUri, loanDurations);
     }
 }

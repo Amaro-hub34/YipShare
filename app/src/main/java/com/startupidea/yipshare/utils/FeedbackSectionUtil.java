@@ -44,11 +44,15 @@ public final class FeedbackSectionUtil {
 
         reviewsButton.setOnClickListener(v -> {
             select(reviewsButton, reportsButton);
-            show(list, emptyLabel, new ReviewAdapter(reviews), reviews.isEmpty(), R.string.sin_calificaciones);
+            ReviewAdapter adapter = new ReviewAdapter();
+            adapter.submitList(reviews);
+            show(list, emptyLabel, adapter, reviews.isEmpty(), R.string.sin_calificaciones);
         });
         reportsButton.setOnClickListener(v -> {
             select(reportsButton, reviewsButton);
-            show(list, emptyLabel, new ReportAdapter(reports, onReportClick), reports.isEmpty(), R.string.sin_reportes);
+            ReportAdapter adapter = new ReportAdapter(onReportClick);
+            adapter.submitList(reports);
+            show(list, emptyLabel, adapter, reports.isEmpty(), R.string.sin_reportes);
         });
         (showingReports ? reportsButton : reviewsButton).performClick();
     }

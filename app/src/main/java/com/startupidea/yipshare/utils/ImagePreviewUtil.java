@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,20 @@ public final class ImagePreviewUtil {
     private static final String TYPE_JPEG = "image/jpeg";
 
     private ImagePreviewUtil() {
+    }
+
+    public static void loadInto(ImageView imageView, String imageUri, int maxSizePx) {
+        imageView.setTag(imageUri);
+        imageView.setImageBitmap(null);
+        if (imageUri == null) return;
+
+        Context context = imageView.getContext().getApplicationContext();
+        TaskUtil.runInBackground(() -> {
+            Bitmap image = tryLoad(context, Uri.parse(imageUri), maxSizePx);
+            imageView.post(() -> {
+                if (imageUri.equals(imageView.getTag())) imageView.setImageBitmap(image);
+            });
+        });
     }
 
     public static Bitmap tryLoad(Context context, Uri uri, int maxSizePx) {

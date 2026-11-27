@@ -2,7 +2,6 @@ package com.startupidea.yipshare.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.DetalleArticuloActivity;
@@ -21,18 +21,15 @@ import com.startupidea.yipshare.utils.PhoneUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.PrestamoViewHolder> {
+public class PrestamoAdapter extends ListAdapter<Loan, PrestamoAdapter.PrestamoViewHolder> {
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final int CARD_IMAGE_MAX_SIZE_PX = 400;
 
-    private final List<Loan> loans;
-
-    public PrestamoAdapter(List<Loan> loans) {
-        this.loans = loans;
+    public PrestamoAdapter() {
+        super(new RecordDiff<>(Loan::id));
     }
 
     @NonNull
@@ -45,11 +42,9 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
 
     @Override
     public void onBindViewHolder(@NonNull PrestamoViewHolder holder, int position) {
-        Loan loan = loans.get(position);
+        Loan loan = getItem(position);
         holder.typeLabel.setText(loan.lentByMe() ? R.string.prestaste_a : R.string.te_prestaron);
-        String imageUri = loan.imageUri();
-        holder.itemImage.setImageBitmap(imageUri == null
-                ? null : ImagePreviewUtil.tryLoad(holder.itemView.getContext(), Uri.parse(imageUri), CARD_IMAGE_MAX_SIZE_PX));
+        ImagePreviewUtil.loadInto(holder.itemImage, loan.imageUri(), CARD_IMAGE_MAX_SIZE_PX);
         holder.itemLabel.setText(loan.itemName());
         holder.personLabel.setText(loan.otherUsername());
         holder.statusLabel.setText(loan.status().getMessageRes());
@@ -64,7 +59,7 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
 
             Context context = v.getContext();
             Intent intent = new Intent(context, DetalleArticuloActivity.class);
-            loans.get(current).putInto(intent);
+            getItem(current).putInto(intent);
             context.startActivity(intent);
         });
     }
@@ -79,11 +74,6 @@ public class PrestamoAdapter extends RecyclerView.Adapter<PrestamoAdapter.Presta
 
     private static boolean isToday(String date) {
         return new SimpleDateFormat(DATE_FORMAT, Locale.ROOT).format(new Date()).equals(date);
-    }
-
-    @Override
-    public int getItemCount() {
-        return loans.size();
     }
 
     static class PrestamoViewHolder extends RecyclerView.ViewHolder {

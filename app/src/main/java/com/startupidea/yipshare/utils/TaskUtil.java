@@ -40,6 +40,10 @@ public final class TaskUtil {
         });
     }
 
+    public static void runInBackground(Runnable work) {
+        EXECUTOR.execute(work);
+    }
+
     public static void run(Activity activity, Runnable work, Runnable onDone, Consumer<AppException> onError) {
         run(activity, () -> {
             work.run();

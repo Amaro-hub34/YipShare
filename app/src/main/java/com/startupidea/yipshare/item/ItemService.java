@@ -6,7 +6,6 @@ import com.startupidea.yipshare.error.ResourceNotFound;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 public class ItemService {
@@ -19,22 +18,22 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public List<Item> getAllItems(String condominiumId) {
+    public List<Item> getAllItems(String condominiumId, String query) {
         if (condominiumId == null) return new ArrayList<>();
-        return itemRepository.getAllItemsByCondominiumId(condominiumId);
+        return itemRepository.getAllItemsByCondominiumId(condominiumId, query);
     }
 
-    public List<Item> filterMyItems(List<Item> items, String userId, String query) {
+    public List<Item> filterMyItems(List<Item> items, String userId) {
         List<Item> matches = new ArrayList<>();
-        for (Item item : search(items, query)) {
+        for (Item item : items) {
             if (item.isOwnedBy(userId)) matches.add(item);
         }
         return matches;
     }
 
-    public List<Item> filterAvailableItems(List<Item> items, String userId, String query) {
+    public List<Item> filterAvailableItems(List<Item> items, String userId) {
         List<Item> matches = new ArrayList<>();
-        for (Item item : search(items, query)) {
+        for (Item item : items) {
             if (!item.isOwnedBy(userId) && item.availability() == ItemAvailability.AVAILABLE) matches.add(item);
         }
         return matches;
@@ -66,15 +65,6 @@ public class ItemService {
     public void deleteItem(String userId, Item item) {
         if (item.isOwnedBy(userId)) ensureOwnerCanChange(userId, item);
         itemRepository.deleteItem(item);
-    }
-
-    private List<Item> search(List<Item> items, String query) {
-        String needle = query.trim().toLowerCase(Locale.ROOT);
-        List<Item> matches = new ArrayList<>();
-        for (Item item : items) {
-            if (item.payload().getName().toLowerCase(Locale.ROOT).contains(needle)) matches.add(item);
-        }
-        return matches;
     }
 
     private void ensureOwnerCanChange(String userId, Item item) {

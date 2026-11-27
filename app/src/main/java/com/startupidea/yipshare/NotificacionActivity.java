@@ -34,6 +34,7 @@ import com.startupidea.yipshare.notification.SqliteNotificationRepository;
 import com.startupidea.yipshare.notification.Notification;
 import com.startupidea.yipshare.notification.NotificationService;
 import com.startupidea.yipshare.user.SessionRepository;
+import com.startupidea.yipshare.user.User;
 import com.startupidea.yipshare.utils.TaskUtil;
 
 import java.util.List;
@@ -45,6 +46,9 @@ public class NotificacionActivity extends AppCompatActivity {
     private NotificationService notificationService;
     private String userId;
     private String condominiumId;
+    private final JoinRequestAdapter joinRequestAdapter = joinAdapter();
+    private final NotificacionAdapter loanRequestAdapter = loanRequestAdapter();
+    private final InboxAdapter inboxAdapter = inboxAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,8 @@ public class NotificacionActivity extends AppCompatActivity {
         SessionRepository session = new SessionRepository(this);
         userId = session.getUserId();
         condominiumId = session.getCondominiumId();
+        ((RecyclerView) findViewById(R.id.rv_notificaciones))
+                .setAdapter(new ConcatAdapter(joinRequestAdapter, loanRequestAdapter, inboxAdapter));
         showLoanRequests();
     }
 
@@ -115,7 +121,13 @@ public class NotificacionActivity extends AppCompatActivity {
         findViewById(R.id.tv_sin_notificaciones).setVisibility(notificationsExist ? View.GONE : View.VISIBLE);
         RecyclerView notificationList = findViewById(R.id.rv_notificaciones);
         notificationList.setVisibility(notificationsExist ? View.VISIBLE : View.GONE);
-        notificationList.setAdapter(new ConcatAdapter(joinAdapter(joinRequests), new NotificacionAdapter(requests, new NotificacionAdapter.OnLoanRequestAction() {
+        joinRequestAdapter.submitList(joinRequests);
+        loanRequestAdapter.submitList(requests);
+        inboxAdapter.submitList(inbox.notifications);
+    }
+
+    private NotificacionAdapter loanRequestAdapter() {
+        return new NotificacionAdapter(new NotificacionAdapter.OnLoanRequestAction() {
             @Override
             public void onAccept(LoanRequest request) {
                 confirm(getString(R.string.confirmar_aceptar_solicitud, request.requesterUsername(), request.itemName()),
@@ -130,13 +142,13 @@ public class NotificacionActivity extends AppCompatActivity {
 
             @Override
             public void onRequesterClick(LoanRequest request) {
-                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.requesterId()));
+                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, new User(request.requesterId(), request.requesterUsername())));
             }
-        }), inboxAdapter(inbox.notifications)));
+        });
     }
 
-    private InboxAdapter inboxAdapter(List<Notification> notifications) {
-        return new InboxAdapter(notifications, new InboxAdapter.OnNotificationAction() {
+    private InboxAdapter inboxAdapter() {
+        return new InboxAdapter(new InboxAdapter.OnNotificationAction() {
             @Override
             public void onRead(Notification notification) {
                 TaskUtil.run(NotificacionActivity.this, () -> notificationService.markAsRead(notification),
@@ -151,8 +163,8 @@ public class NotificacionActivity extends AppCompatActivity {
         });
     }
 
-    private JoinRequestAdapter joinAdapter(List<JoinRequest> joinRequests) {
-        return new JoinRequestAdapter(joinRequests, new JoinRequestAdapter.OnJoinRequestAction() {
+    private JoinRequestAdapter joinAdapter() {
+        return new JoinRequestAdapter(new JoinRequestAdapter.OnJoinRequestAction() {
             @Override
             public void onAccept(JoinRequest request) {
                 if (request.suggestedUnitId() != null) {
@@ -173,7 +185,7 @@ public class NotificacionActivity extends AppCompatActivity {
 
             @Override
             public void onRequesterClick(JoinRequest request) {
-                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, request.userId()));
+                startActivity(UserFeedbackActivity.intentFor(NotificacionActivity.this, new User(request.userId(), request.username())));
             }
         });
     }

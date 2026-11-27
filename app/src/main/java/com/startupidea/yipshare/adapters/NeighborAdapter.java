@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.startupidea.yipshare.R;
 import com.startupidea.yipshare.condominium.Neighbor;
 import com.startupidea.yipshare.utils.PhoneUtil;
 
-import java.util.List;
 import java.util.Locale;
 
-public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.NeighborViewHolder> {
+public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.NeighborViewHolder> {
 
     public interface OnNeighborAction {
         void onNeighborClick(Neighbor neighbor);
@@ -25,11 +25,10 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         void onLoanAccessChange(Neighbor neighbor, boolean allowed);
     }
 
-    private final List<Neighbor> neighbors;
     private final OnNeighborAction listener;
 
-    public NeighborAdapter(List<Neighbor> neighbors, OnNeighborAction listener) {
-        this.neighbors = neighbors;
+    public NeighborAdapter(OnNeighborAction listener) {
+        super(new RecordDiff<>(Neighbor::userId));
         this.listener = listener;
     }
 
@@ -42,7 +41,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 
     @Override
     public void onBindViewHolder(@NonNull NeighborViewHolder holder, int position) {
-        Neighbor neighbor = neighbors.get(position);
+        Neighbor neighbor = getItem(position);
         String unit = holder.itemView.getContext().getString(R.string.unidad_vecino, neighbor.unit());
         if (neighbor.admin()) {
             unit = unit + " · " + holder.itemView.getContext().getString(R.string.rol_admin_condominio);
@@ -58,11 +57,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         holder.loanAccess.setChecked(neighbor.canRequestLoans());
         holder.loanAccess.setVisibility(neighbor.admin() ? View.GONE : View.VISIBLE);
         holder.loanAccess.setOnCheckedChangeListener((button, checked) -> listener.onLoanAccessChange(neighbor, checked));
-    }
-
-    @Override
-    public int getItemCount() {
-        return neighbors.size();
     }
 
     static class NeighborViewHolder extends RecyclerView.ViewHolder {
